@@ -1,0 +1,33 @@
+[[item]]
+file = "~/.themes/FlatColor/colors3"
+template = "gtk-flatcolor"
+subtemplate = "gtk-3"
+rewrite = true
+
+[[item]]
+file = "~/.themes/FlatColor/colors2"
+template = "gtk-flatcolor"
+subtemplate = "gtk-2"
+rewrite = true
+
+[[item]]
+file = "~/.config/qutebrowser/config.py"
+template = "qutebrowser"
+hook = "reloadqb"
+
+[[item]]
+file = "~/.config/zathura/zathurarc"
+template = "zathura"
+
+[[item]]
+file = "~/.config/beautifuldiscord/style.css"
+template = "styles"
+subtemplate = "css-variables"
+rewrite = false
+start= "/* Start flavours */"
+end = "/* End flavours */"
+
+[[item]]
+file = "~/.config/kitty/base16.conf"
+template = "kitty"
+rewrite = true

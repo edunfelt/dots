@@ -1,0 +1,60 @@
+#
+#  __                 __              
+# |  |--.---.-.-----.|  |--.----.----.
+# |  _  |  _  |__ --||     |   _|  __|
+# |_____|___._|_____||__|__|__| |____|
+#
+# Emilia's bashrc <3
+# Edited: 2021-04-03
+# Author: Emilia Dunfelt, edun@dunfelt.se
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+########################################################
+# Variables
+########################################################
+# path
+export PATH=$PATH:$HOME/.local/bin
+
+# vim
+export MYVIMRC="~/.config/vim/vimrc"
+export VIMINIT="source $MYVIMRC"
+export VISUAL=vim;
+export EDITOR=vim;
+
+# ps1
+export PS1="\[\e[31m\]✨ \[\e[m\]\W\[\e[31;40m\] >>\[\e[m\] "
+
+########################################################
+# Aliases
+########################################################
+# common commands
+alias ll='ls -alF'              # easy long listing
+alias ls='ls --color=auto'      # nice ls coloring
+alias grep='grep --color=auto'  # nice grep coloring
+alias diff='colordiff'          # nice diff coloring
+alias cp="cp -i"                # confirm before overwriting something
+alias df='df -h'                # human-readable sizes
+alias free='free -m'            # show sizes in MB
+alias v="vim"                   # vim, of course :)
+alias h='history'               # I'm lazy
+alias j='jobs -l'               # faster, better jobs
+alias ..='cd ..'                # up a dir
+alias ...='cd ../../..'         # up two dirs
+
+# current projects
+alias thesis="cd /media/nas/home/current/thesis2021-emilia"
+alias current="cd /media/nas/home/current"
+
+########################################################
+# Misc
+########################################################
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell/"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        eval "$("$BASE16_SHELL/profile_helper.sh")"
+
+pfetch

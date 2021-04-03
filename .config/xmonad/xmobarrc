@@ -1,0 +1,45 @@
+Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=true,FontAwesome:pixelsize=16"
+       , bgColor = "#fbf1f2"
+       , fgColor = "#bb99b4"
+       , position  = Static { xpos = 0, ypos = 0, width = 1920, height = 20 }
+       , allDesktops = True
+       , persistent = True
+       , commands = [ Run CommandReader "while true; do current_song.sh; sleep 2; done" "song"
+                    , Run Weather "ESSB" [ "--template", "\xf2c7 <tempC>" 
+                               , "--Low"      , "10"      -- units: %
+                               , "--High"     , "20"      -- units: %
+                               , "--low"      , "#7297b9"
+                               , "--normal"   , "#bb99b4"
+                               , "--high"     , "#d57e85"
+                               , "--ppad"      , "3"
+                               , "--width"     , "3"
+                               , "--maxtwidth" , "18"
+                               ] 6000
+
+                    , Run Com "/bin/bash" ["-c", "~/.local/bin/get_volume.sh"] "vol" 1
+
+                    , Run Battery [ "--template"  , "<leftipat>  <acstatus>"
+                             , "--Low"       , "30"      -- units: %
+                             , "--High"      , "70"      -- units: %
+                             , "--low"       , "#d57e85"
+                             , "--normal"    , "#bb99b4"
+                             , "--high"      , "#69a9a7"
+                             , "--maxtwidth" , "10"
+                             , "--"
+                               , "--on-icon-pattern"   , "\xf0e7"
+                               , "--off-icon-pattern"  , "\xf241"
+                               , "--idle-icon-pattern" , "\xf240"
+                               , "-o" , "<left><fc=#bb99b4>%</fc>"            -- discharging status
+                               , "-O" , "<left><fc=#bb99b4>%</fc>"            -- plugged in status
+                               , "-i" , "<fc=#bb99b4>idle</fc>"               -- charged status
+                             ] 50
+
+                    , Run Date "\xf133  %b %d - %H:%M" "date" 10
+
+                    , Run StdinReader
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "        %StdinReader% }  {  %ESSB%     %vol%    %battery%    |    %date%        "
+       }
+
