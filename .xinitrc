@@ -34,6 +34,9 @@ batsignal -b -W "Did you bring my charger? I'm at 15%." -C "Hey, I need charging
 # notifications
 dunst &
 
+# flameshot (apparently this is needed now :/)
+flameshot &
+
 # bluetooth
 bluetoothctl power on
 

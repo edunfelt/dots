@@ -5,7 +5,7 @@
 "  \___/ |__||__|__|__|__| |____|                                        "
 "                                                                        "
 " Emilia's vimrc <3                                                      "
-" Edited: 2021-04-03                                                     "
+" Edited: 2021-04-06                                                     "
 " Author: Emilia Dunfelt, edun@dunfelt.se                                "
 "                                                                        "
 " Structure:                                                             "
@@ -246,7 +246,7 @@ let g:airline#extensions#branch#empty_message = ""
 
 let g:airline#extensions#default#layout = [
       \ [ 'a', 'b', 'c' ],
-      \ [ 'x', 'z', 'error' ]
+      \ [ 'x', 'z' ]
       \ ]
 
 let g:airline#extensions#nerdtree_statusline = 1

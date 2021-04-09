@@ -1,8 +1,11 @@
 # bitwarden using dmenu
-config.bind('ll', 'spawn --userscript bw-dmenu-fill')
+config.bind('zl', 'spawn --userscript bw-dmenu-fill')
 
 # mpv picture in picture mode
 config.bind('qq', 'spawn xdotool key space ;; spawn --detach $HOME/.local/bin/qutebrowser-mpv.sh {url}')
+
+# zotero integration
+config.bind('zt', 'spawn --userscript qute-zotero')
 
 # Start flavours
 # base16-qutebrowser (https://github.com/theova/base16-qutebrowser)

@@ -1,5 +1,5 @@
 [global]
-    font = WenQuanYi Micro Hei
+    font = Anonymice Nerd Font
     markup = full
     format = "<b>%s</b>\n%b"
     sort = yes
