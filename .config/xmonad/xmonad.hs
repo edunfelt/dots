@@ -194,14 +194,14 @@ myProjects = [Project
                 { projectName = myWorkspaces !! 2
                 , projectDirectory = "$HOME"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 2) "qutebrowser ':session-load work --nowindow"
+                    spawnOn (myWorkspaces !! 2) "qutebrowser ':session-load work' --nowindow"
                 }
              , Project
                  { projectName = myWorkspaces !! 3
                  , projectDirectory = "/media/nas/home/current"
                  , projectStartHook = Just $ do
                      spawnOn (myWorkspaces !! 3) "zotero"
-                     spawnOn (myWorkspaces !! 3) "qutebrowser ':session-load thesis --nowindow"
+                     spawnOn (myWorkspaces !! 3) "qutebrowser ':session-load thesis' --nowindow"
                      spawnOn (myWorkspaces !! 3) "kitty -e ranger /media/nas/home/current"
                  }
              , Project
