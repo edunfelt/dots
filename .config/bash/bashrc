@@ -5,7 +5,7 @@
 # |_____|___._|_____||__|__|__| |____|
 #
 # Emilia's bashrc <3
-# Edited: 2021-04-03
+# Edited: 2021-04-15
 # Author: Emilia Dunfelt, edun@dunfelt.se
 #
 
@@ -51,6 +51,7 @@ alias ...='cd ../../..'         # up two dirs
 # current projects
 alias thesis="cd /media/nas/home/current/thesis2021-emilia"
 alias current="cd /media/nas/home/current"
+alias TA="cd /media/nas/home/current/TA/mm5016_numerical_analysis"
 
 ########################################################
 # Misc

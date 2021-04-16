@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-03
+-- Edited: 2021-04-16
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -15,11 +15,16 @@
 -- 1.3 Layout
 -- 1.4 Actions
 -- 1.5 Utilities
+-- 1.6 Data
 -- 2. Variables
--- 2.1 Theme
--- 2.2 Xmobar
--- 2.3 Colors
+-- 2.1 Colors
+-- 2.2 Theme
+-- 2.3 Xmobar
+-- 2.4 PP settings
 -- 3. Workspaces
+-- 3.1 Workspaces
+-- 3.2 Projects
+-- 3.3 Prompt
 -- 4. Layouts
 -- 4.1 Startup
 -- 4.2 Layouts
@@ -43,17 +48,19 @@
 ----------------------------------------------------------------------------------------------
 
 -- 1.1 Basics --------------------------------------------------------------------------------
-import XMonad                                             -- core libraries
-import qualified XMonad.StackSet as W                     -- window stack manipulation
-import XMonad.Layout.WindowNavigation                     -- window navigation
+import XMonad                                            -- core libraries
+import qualified XMonad.StackSet as W                    -- window stack manipulation
+import XMonad.Prompt                                     -- graphical prompts
+import System.IO                                         -- for xmobar
 
 -- 1.2 Hooks ---------------------------------------------------------------------------------
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.ManageDocks                           -- don't cover the bar with windows
-import Data.Monoid
+import XMonad.Hooks.ManageDocks                          -- don't cover the bar with windows
+import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
 import XMonad.ManageHook
 
 -- 1.3 Layout --------------------------------------------------------------------------------
+import XMonad.Layout.WindowNavigation                    -- window navigation
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.Spacing
@@ -71,14 +78,16 @@ import XMonad.Actions.Promote                            -- to move focued windo
 import XMonad.Actions.CycleWS                            -- cycle through workspaces
 import XMonad.Actions.WithAll                            -- killAll
 import XMonad.Actions.SpawnOn
+import XMonad.Actions.DynamicProjects
 
 -- 1.5 Utilities -----------------------------------------------------------------------------
 import XMonad.Util.Run                                   -- spawnPipe and hPutStrLn
 import XMonad.Util.EZConfig (additionalKeysP)            -- Emacs-style keybindings
-import System.IO
-import qualified Data.Map as M
-import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
 import XMonad.Util.NamedScratchpad
+
+-- 1.6 Data ----------------------------------------------------------------------------------
+import qualified Data.Map as M
+import Data.Monoid
 
 
 ----------------------------------------------------------------------------------------------
@@ -91,7 +100,25 @@ myTerminal                  = "kitty"
 myModMask :: KeyMask
 myModMask                   = mod4Mask
 
--- 2.1 Theme ----------------------------------------------------------------------------------
+-- 2.1 Colors --------------------------------------------------------------------------------
+color0                      = "#fbf1f2"
+color1                      = "#d57e85"
+color2                      = "#a3b367"
+color3                      = "#dcb16c"
+color4                      = "#7297b9"
+color5                      = "#bb99b4"
+color6                      = "#69a9a7"
+color7                      = "#8b8198"
+color8                      = "#bfb9c6"
+color9                      = "#ebb790"
+color10                     = "#f2f1f4"
+color11                     = "#d8d5dd"
+color12                     = "#a59daf"
+color13                     = "#72677e"
+color14                     = "#baa58c"
+color15                     = "#585062"
+
+-- 2.2 Theme ----------------------------------------------------------------------------------
 myFont :: [Char]
 myFont                      = "xft:Anonymice Nerd Font:pixelsize=14:antialias=true:hinting=true,FontAwesome:pixelsize=14"
 
@@ -99,37 +126,132 @@ myBorderWidth :: Dimension
 myBorderWidth               = 3
 
 myFocusedBorderColor :: [Char]
-myFocusedBorderColor        = "#bb99b4"
+myFocusedBorderColor        = color5
 
 myNormalBorderColor :: [Char]
-myNormalBorderColor         = "#d8d5dd"
+myNormalBorderColor         = color11
 
--- 2.2 Xmobar ---------------------------------------------------------------------------------
+-- 2.3 Xmobar ---------------------------------------------------------------------------------
 myLogHook :: Handle -> X ()
-myLogHook h    = dynamicLogWithPP $ wsPP { ppOutput = hPutStrLn h }
+myLogHook h                 = dynamicLogWithPP $ wsPP { ppOutput = hPutStrLn h }
 
 myWsBar :: [Char]
 myWsBar        = "xmobar ~/.config/xmonad/xmobarrc"
 
--- 2.3 Colors ---------------------------------------------------------------------------------
+-- 2.4 PP settings ---------------------------------------------------------------------------------
 wsPP :: PP
-wsPP           = xmobarPP { ppOrder               = \(ws:l:t:_)   -> [ws]
-                            , ppCurrent             = xmobarColor   "#bb99b4" ""
-                            , ppUrgent              = xmobarColor   "#d57e85" ""
-                            , ppVisible             = xmobarColor   "#bfb9c6" "" 
-                            , ppHidden              = xmobarColor   "#bfb9c6" "" 
-                            , ppHiddenNoWindows     = xmobarColor   "#d8d5dd" ""
-                            , ppSep                 = ""
-                            , ppWsSep               = "    "
-                            }
+wsPP           = xmobarPP { ppOrder               = id
+                          , ppTitle               = xmobarColor   color5 "" . shorten 50
+                          , ppCurrent             = xmobarColor   color4 "" . wrap "{ " " }"
+                          , ppUrgent              = xmobarColor   color1 ""
+                          , ppVisible             = xmobarColor   color8 "" 
+                          , ppHidden              = xmobarColor   color8 "" 
+                          , ppHiddenNoWindows     = const ""
+                          , ppSep                 = "  :  "
+                          , ppWsSep               = "    "
+                          , ppSort                = fmap
+                                  (namedScratchpadFilterOutWorkspace.)
+                                  (ppSort def)
+                          }
 
 
 -----------------------------------------------------------------------------------------------
 -- 3. Workspaces
 -----------------------------------------------------------------------------------------------
 
-myWorkspaces = [" \xf120 ", " \xf269 ", " \xf001 ", " \xf0e6 ", " \xf085 ", " \xf19c "]
+-- 3.1 Workspaces -----------------------------------------------------------------------------
+myWorkspaces :: [WorkspaceId]
+myWorkspaces = [ "the"          -- thesis
+               , "num"          -- TA
+               , "www"          -- browsing
+               , "res"          -- research
+               , "com"          -- communication
+               , "mul"          -- multimedia, ok it's basically just music
+               , "prg"          -- coding general project
+               , "msc"          -- misc. (but useful)
+               , "tmp"          -- temporary stuff
+               ]
 
+-- 3.2 Projects -------------------------------------------------------------------------------
+myProjects :: [Project]
+myProjects = [Project 
+                { projectName = myWorkspaces !! 0
+                , projectDirectory = "/media/nas/home/current/thesis2021-emilia"
+                , projectStartHook = Just $ do
+                    spawnOn (myWorkspaces !! 0) "zotero"
+                    spawnOn (myWorkspaces !! 0) "kitty -e vim"
+                    spawnOn (myWorkspaces !! 0) "qutebrowser ':session-load thesis' --nowindow"
+                }
+            , Project
+                { projectName = myWorkspaces !! 1
+                , projectDirectory = "/media/nas/home/current/TA/mm5016_numerical_analysis"
+                , projectStartHook = Just $ do
+                    spawnOn (myWorkspaces !! 1) "qutebrowser ':session-load TA' --nowindow"
+                    spawnOn (myWorkspaces !! 1) "kitty -e ranger /media/nas/home/current/TA"
+                    spawnOn (myWorkspaces !! 1) "zotero"
+                }
+             , Project
+                { projectName = myWorkspaces !! 2
+                , projectDirectory = "$HOME"
+                , projectStartHook = Just $ do
+                    spawnOn (myWorkspaces !! 2) "qutebrowser ':session-load work --nowindow"
+                }
+             , Project
+                 { projectName = myWorkspaces !! 3
+                 , projectDirectory = "/media/nas/home/current"
+                 , projectStartHook = Just $ do
+                     spawnOn (myWorkspaces !! 3) "zotero"
+                     spawnOn (myWorkspaces !! 3) "qutebrowser ':session-load thesis --nowindow"
+                     spawnOn (myWorkspaces !! 3) "kitty -e ranger /media/nas/home/current"
+                 }
+             , Project
+                 { projectName = myWorkspaces !! 4
+                 , projectDirectory = "/media/nas/home/current"
+                 , projectStartHook = Just $ do
+                     spawnOn (myWorkspaces !! 4) "discord"
+                     spawnOn (myWorkspaces !! 4) "thunderbird"
+                     spawnOn (myWorkspaces !! 4) "telegram-desktop"
+                 }
+             , Project
+                 { projectName = myWorkspaces !! 5
+                 , projectDirectory = "$HOME"
+                 , projectStartHook = Just $ do
+                     spawnOn (myWorkspaces !! 5) "spotify"
+                 }
+             , Project
+                 { projectName = myWorkspaces !! 6
+                 , projectDirectory = "/media/nas/home/current"
+                 , projectStartHook = Just $ do
+                     spawnOn (myWorkspaces !! 6) "code"
+                     spawnOn (myWorkspaces !! 6) "cantor"
+                     spawnOn (myWorkspaces !! 6) myTerminal
+                 }
+             , Project
+                 { projectName = myWorkspaces !! 7
+                 , projectDirectory = "$HOME"
+                 , projectStartHook = Just $ do
+                     spawnOn (myWorkspaces !! 7) "emacs"
+                 }
+             , Project
+                 { projectName = myWorkspaces !! 8
+                 , projectDirectory = "/media/nas/home"
+                 , projectStartHook = Nothing
+                 }
+             ]
+                 
+-- 3.3 Prompt ---------------------------------------------------------------------------------
+myPromptTheme :: XPConfig
+myPromptTheme = def
+    { font = myFont
+    , bgColor = color7
+    , fgColor = color0
+    , fgHLight = color0
+    , bgHLight = color4
+    , borderColor = color14
+    , promptBorderWidth = 0
+    , height = 20
+    , position = Bottom
+    }
 
 -----------------------------------------------------------------------------------------------
 -- 4. Layouts
@@ -202,7 +324,7 @@ myManageHook = composeAll
     , className =? "VirtualBox Manager" --> doFloat
     , className =? "VirtualBox Machine" --> doFloat
     , className =? "Matplotlib"         --> doFloat
-    , className =? "discord"            --> doShift ( myWorkspaces !! 3 )
+    , className =? "TelegramDesktop"    --> doFloat
     ]
     <+> manageDocks 
     <+> manageSpawn 
@@ -214,24 +336,23 @@ myScratchPads = [ NS "calendar" spawnCal findCal manageCal
                 , NS "diary" spawnDiary findDiary manageDiary
                 ]
   where
-    spawnCal  = myTerminal ++ " -e calcurse"
+    spawnCal  = "kitty -e calcurse"
     findCal   = resource =? "calcurse"
     manageCal = customFloating $ W.RationalRect (1/6) (1/6) (1/4) (1/4)
 
-    spawnDiary  = myTerminal ++ " -e vim -c VimwikiMakeDiaryNote"
-    findDiary   = title =? "vim"
+    spawnDiary  = "kitty -e vim -c VimwikiMakeDiaryNote"
+    findDiary   = title =? "diary"
     manageDiary = customFloating $ W.RationalRect (1/6) (1/6) (1/4) (1/4)
 
 
 ----------------------------------------------------------------------------------------------
 -- 6. Keybindings
 ----------------------------------------------------------------------------------------------
-
 myKeys :: [([Char], X ())]
 myKeys =
 -- 6.1 General -------------------------------------------------------------------------------
     [ ("M-<Return>", spawn myTerminal)                                          -- open a terminal
-    , ("M-b", spawn "firefox")                                                  -- start firefox
+    , ("M-b", spawn "qutebrowser")                                              -- start firefox
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
     , ("M-p", spawn "dmenu_run -nf '#FBF1F2' -nb '#8B8198' -sb '#BB99B4' -sf '#585062'")
@@ -245,9 +366,11 @@ myKeys =
     , ("M-m", windows W.focusMaster)                                            -- focus master
     , ("M-q", kill)                                                             -- kill focused
     , ("M-S-q", killAll)                                                        -- kill workspace
-    , ("M-<Tab>", nextWS)                                                       -- move to next workspace
-    , ("M-S-<Tab>", prevWS)                                                     -- move to previous workspace
+    , ("M-<Tab>", moveTo Next NonEmptyWS)                                       -- move to next workspace
+    , ("M-S-<Tab>", moveTo Prev NonEmptyWS)                                     -- move to previous workspace
     , ("M-0", moveTo Next EmptyWS)                                              -- move focused to next empty workspace
+    , ("M-w", switchProjectPrompt myPromptTheme)                                -- switch project
+    , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
 
 -- 6.3 Keypad navigation --------------------------------------------------------------------
     , ("M-<KP_End>", windows $ W.greedyView " \xf120 ")
@@ -330,17 +453,21 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -----------------------------------------------------------------------------------------------
 
 main = do
-    wsBar <- spawnPipe myWsBar
-    xmonad $ docks def                                              -- some space for the bar
-        { borderWidth               = myBorderWidth
-        , startupHook               = myStartupHook
-        , terminal                  = myTerminal
-        , modMask                   = myModMask
-        , normalBorderColor         = myNormalBorderColor
-        , focusedBorderColor        = myFocusedBorderColor
-        , workspaces                = myWorkspaces
-        , mouseBindings             = myMouseBindings
-        , layoutHook                = myLayoutHook
-        , logHook                   = myLogHook wsBar
-        , manageHook                = myManageHook
-        } `additionalKeysP` myKeys
+    xmproc <- spawnPipe myWsBar
+    xmonad 
+        $ docks 
+        $ dynamicProjects myProjects 
+        $ myConfig xmproc
+myConfig p = def
+    { borderWidth               = myBorderWidth
+    , startupHook               = myStartupHook
+    , terminal                  = myTerminal
+    , modMask                   = myModMask
+    , normalBorderColor         = myNormalBorderColor
+    , focusedBorderColor        = myFocusedBorderColor
+    , workspaces                = myWorkspaces
+    , mouseBindings             = myMouseBindings
+    , layoutHook                = myLayoutHook
+    , logHook                   = myLogHook p
+    , manageHook                = myManageHook
+    } `additionalKeysP` myKeys
