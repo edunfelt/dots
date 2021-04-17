@@ -5,7 +5,7 @@
 "  \___/ |__||__|__|__|__| |____|                                        "
 "                                                                        "
 " Emilia's vimrc <3                                                      "
-" Edited: 2021-04-06                                                     "
+" Edited: 2021-04-17                                                     "
 " Author: Emilia Dunfelt, edun@dunfelt.se                                "
 "                                                                        "
 " Structure:                                                             "
@@ -27,7 +27,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 1. General settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set nocompatible		                            " be iMproved
+set nocompatible                                    " be iMproved
 set background=light
 set termguicolors
 set runtimepath+=~/.config/vim,~/.config/vim/after
@@ -170,7 +170,7 @@ Plugin 'SirVer/ultisnips'
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-let g:UltiSnipsSnippetDirectories = ["$HOME/.config/vim/snippets"]
+let g:UltiSnipsSnippetDirectories = ["$HOME/.config/vim/ultisnips"]
 
 " 3.4 Nerdtree
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
