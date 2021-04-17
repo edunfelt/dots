@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-16
+-- Edited: 2021-04-17
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -261,23 +261,8 @@ myPromptTheme = def
 myStartupHook :: X ()
 myStartupHook = do
     setWMName "LG3D"
-    -- WS 1: Work
-    -- spawnOn " \xf120 " myTerminal
-    -- spawnOn " \xf120 " myTerminal
-    -- WS 2: Browse
-    -- spawnOn " \xf269 " (myTerminal ++ " -e  ranger")
-    -- spawnOn " \xf269 " "firefox"
-    -- WS 3: Music etc.
-    -- spawnOn " \xf001 " (myTerminal ++ " -e calcurse")
-    -- spawnOn " \xf001 " (myTerminal ++ " -e cava")
-    -- spawnOn " \xf001 " "spotify"
-    -- WS 4: Chat & Email
-    -- spawnOn " \xf0e6 " (myTerminal ++ " -e weechat")
-    -- spawnOn " \xf0e6 " "telegram-desktop"
-    -- spawnOn " \xf0e6 " "thunderbird"
-    -- WS 5: Resources
-    -- spawnOn " \xf085 " "milanote"
-
+    activateProject (myProjects !! 7)
+    
 -- 4.2 Layouts --------------------------------------------------------------------------------
 tall = renamed [Replace "tall"]
      $ ResizableTall 1 (3/100) (6/10) []
@@ -290,13 +275,13 @@ bsp = renamed [Replace "bsp"]
 
 -- Tabbed layout theme
 myTabConfig :: Theme
-myTabConfig = def { inactiveColor = "#d8d5dd"
-                    , inactiveBorderColor = "#bfb9c6"
-                    , inactiveTextColor = "#a59daf"
-                    , activeColor = "#bb99b4"
-                    , activeBorderColor = "#bb99b4"
-                    , activeTextColor = "#fbf1f2"
-                    , fontName = "xft:Anonymice Nerd Font:pixelsize=12:antialias=true:hinting=true,FontAwesome:pixelsize=14"
+myTabConfig = def { inactiveColor           = color11
+                    , inactiveBorderColor   = color8
+                    , inactiveTextColor     = color12
+                    , activeColor           = color5
+                    , activeBorderColor     = color5
+                    , activeTextColor       = color0
+                    , fontName              = myFont
                     }
     
 myDefaultLayout = tall
@@ -325,6 +310,7 @@ myManageHook = composeAll
     , className =? "VirtualBox Machine" --> doFloat
     , className =? "Matplotlib"         --> doFloat
     , className =? "TelegramDesktop"    --> doFloat
+    , className =? "mpv"                --> doFloat
     ]
     <+> manageDocks 
     <+> manageSpawn 
@@ -373,6 +359,7 @@ myKeys =
     , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
 
 -- 6.3 Keypad navigation --------------------------------------------------------------------
+-- this part is not relevant anymore, after updating workspaces and new keyboard, but leaving it for now
     , ("M-<KP_End>", windows $ W.greedyView " \xf120 ")
     , ("M-S-<KP_End>", windows $ W.shift " \xf120 ")
     , ("M-<KP_Down>", windows $ W.greedyView " \xf269 ")
