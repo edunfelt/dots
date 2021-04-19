@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-17
+-- Edited: 2021-04-19
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -176,7 +176,7 @@ myWorkspaces = [ "the"          -- thesis
 myProjects :: [Project]
 myProjects = [Project 
                 { projectName = myWorkspaces !! 0
-                , projectDirectory = "/media/nas/home/current/thesis2021-emilia"
+                , projectDirectory = "/media/nas/home/10-19_Education/13_Bachelors_Degree/13.28_Thesis_CS"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 0) "zotero"
                     spawnOn (myWorkspaces !! 0) "kitty -e vim"
@@ -184,10 +184,10 @@ myProjects = [Project
                 }
             , Project
                 { projectName = myWorkspaces !! 1
-                , projectDirectory = "/media/nas/home/current/TA/mm5016_numerical_analysis"
+                , projectDirectory = "/media/nas/home/20-29_Work/22_TA/22.03_Numerical_Analysis"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 1) "qutebrowser ':session-load TA' --nowindow"
-                    spawnOn (myWorkspaces !! 1) "kitty -e ranger /media/nas/home/current/TA"
+                    spawnOn (myWorkspaces !! 1) "kitty -e ranger /media/nas/home/20-29_Work/22_TA"
                     spawnOn (myWorkspaces !! 1) "zotero"
                 }
              , Project
@@ -198,15 +198,15 @@ myProjects = [Project
                 }
              , Project
                  { projectName = myWorkspaces !! 3
-                 , projectDirectory = "/media/nas/home/current"
+                 , projectDirectory = "/media/nas/home"
                  , projectStartHook = Just $ do
                      spawnOn (myWorkspaces !! 3) "zotero"
                      spawnOn (myWorkspaces !! 3) "qutebrowser ':session-load thesis' --nowindow"
-                     spawnOn (myWorkspaces !! 3) "kitty -e ranger /media/nas/home/current"
+                     spawnOn (myWorkspaces !! 3) "kitty -e ranger /media/nas/home"
                  }
              , Project
                  { projectName = myWorkspaces !! 4
-                 , projectDirectory = "/media/nas/home/current"
+                 , projectDirectory = "/media/nas/home"
                  , projectStartHook = Just $ do
                      spawnOn (myWorkspaces !! 4) "discord"
                      spawnOn (myWorkspaces !! 4) "thunderbird"
@@ -220,7 +220,7 @@ myProjects = [Project
                  }
              , Project
                  { projectName = myWorkspaces !! 6
-                 , projectDirectory = "/media/nas/home/current"
+                 , projectDirectory = "/media/nas/home"
                  , projectStartHook = Just $ do
                      spawnOn (myWorkspaces !! 6) "code"
                      spawnOn (myWorkspaces !! 6) "cantor"
@@ -311,6 +311,8 @@ myManageHook = composeAll
     , className =? "Matplotlib"         --> doFloat
     , className =? "TelegramDesktop"    --> doFloat
     , className =? "mpv"                --> doFloat
+    , className =? "Quodlibet"          --> doFloat
+    , className =? "Spotify"            --> doFloat
     ]
     <+> manageDocks 
     <+> manageSpawn 

@@ -6,7 +6,7 @@
 ;; |____|_____|__|__|__| |__||___  |__|_____||__|                             ;;
 ;;                           |_____|                                          ;;
 ;; Emilia's config.el <3                                                      ;;
-;; Edited: 2021-04-09                                                         ;;
+;; Edited: 2021-04-19                                                         ;;
 ;; Author: Emilia Dunfelt, edun@dunfelt.se                                    ;;
 ;;                                                                            ;;
 ;; Structure:                                                                 ;;
@@ -63,7 +63,7 @@
  ;; If there is more than one, they won't work right.
  '(org-journal-date-format "%A, %d %B %Y" t)
  '(org-journal-date-prefix "#+TITLE: " t)
- '(org-journal-dir "/media/nas/home/org/journal/" t)
+ '(org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/" t)
  '(org-journal-file-format "%Y-%m-%d.org" t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -149,8 +149,8 @@
 ;; 3. Org-stuff
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-directory "/media/nas/home/org/")
-(setq org-agenda-files (list "/media/nas/home/org/uni.org"
-                             "/media/nas/home/org/home.org"))
+(setq org-agenda-files (list "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/uni.org"
+                             "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/home.org"))
 
 ;; Helm-Bibtex
 (use-package! helm-bibtex
@@ -167,13 +167,13 @@
 (setq
       bibtex-completion-pdf-field "file"
       bibtex-completion-bibliography
-      '("/media/nas/home/zotero/export.bib")
-      bibtex-completion-library-path '("/media/nas/home/zotero/")
+      '("/media/nas/home/00-09_Meta/03_Zotero/export.bib")
+      bibtex-completion-library-path '("/media/nas/home/00-09_Meta/03_Zotero/")
       )
 
 ;; Org-Roam-Bibtex
 (use-package! org-roam-bibtex
-  :load-path "/media/nas/home/zotero/export.bib" ;Modify with your own path
+  :load-path "/media/nas/home/00-09_Meta/03_Zotero/export.bib" ;Modify with your own path
   :hook (org-roam-mode . org-roam-bibtex-mode)
   :bind (:map org-mode-map
          (("C-c n a" . orb-note-actions))))
@@ -202,7 +202,7 @@
 :END:")))
 
 ;; Org Roam
-(setq org-roam-directory "/media/nas/home/org/org-roam")
+(setq org-roam-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/org-roam")
 (after! org-roam
         (map! :leader
             :prefix "n"
@@ -226,7 +226,7 @@
 ;; Org-Journal
 (use-package org-journal
   :init
-  (setq org-journal-dir "/media/nas/home/org/journal/"
+  (setq org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/"
         org-journal-date-prefix "#+TITLE: "
         org-journal-file-format "%Y-%m-%d.org"
         org-journal-date-format "%A, %d %B %Y")
@@ -247,7 +247,7 @@
       (deft-recursive t)
       (deft-use-filter-string-for-filename t)
       (deft-default-extension "org")
-      (deft-directory "/media/nas/home/org/org-roam/"))
+      (deft-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/org-roam/"))
 
 ;; Org-Roam-Server
 (use-package! org-roam-server
@@ -272,7 +272,7 @@
 ;; 4. Yasnippet
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq yas-snippet-dirs
-      '("/media/nas/home/emacs/yasnippet"))
+      '("/media/nas/home/00-09_Meta/01_Emacs/01.02_Yasnippet"))
 (yas-global-mode 1)
 (defun my-yas-try-expanding-auto-snippets ()
   (when yas-minor-mode
