@@ -1,10 +1,10 @@
 Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=true,FontAwesome:pixelsize=16"
        , bgColor = "#fbf1f2"
        , fgColor = "#bb99b4"
-       , position  = Static { xpos = 0, ypos = 0, width = 1920, height = 20 }
+       , position  = TopW L 100
        , allDesktops = True
        , persistent = True
-       , commands = [ Run CommandReader "while true; do current_song.sh; sleep 2; done" "song"
+       , commands = [ Run CommandReader "while true; do current_song; sleep 2; done" "song"
                     , Run Weather "ESSB" [ "--template", "\xf2c7 <tempC>" 
                                , "--Low"      , "10"      -- units: %
                                , "--High"     , "20"      -- units: %
@@ -16,7 +16,7 @@ Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=tru
                                , "--maxtwidth" , "18"
                                ] 6000
 
-                    , Run Com "/bin/bash" ["-c", "~/.local/bin/get_volume.sh"] "vol" 1
+                    , Run Com "/bin/bash" ["-c", "~/.local/bin/get_volume"] "vol" 1
 
                     , Run Battery [ "--template"  , "<leftipat>  <acstatus>"
                              , "--Low"       , "30"      -- units: %
@@ -40,6 +40,6 @@ Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=tru
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "        %StdinReader% }  {  %ESSB%     %vol%    %battery%    |    %date%        "
+       , template = "        %StdinReader% } ♪ %song% ♪ {  %ESSB%     %vol%    %battery%    |    %date%        "
        }
 

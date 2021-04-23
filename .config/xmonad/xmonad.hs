@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-19
+-- Edited: 2021-04-23
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -28,9 +28,11 @@
 -- 4. Layouts
 -- 4.1 Startup
 -- 4.2 Layouts
+-- 4.3 Float layouts
 -- 5. Utilities
 -- 5.1 Managehook
 -- 5.2 Scratchpads
+-- 5.3 Float cycling
 -- 6. Keybindings
 -- 6.1 General
 -- 6.2 Navigation
@@ -58,6 +60,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks                          -- don't cover the bar with windows
 import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
 import XMonad.ManageHook
+import XMonad.Hooks.ManageHelpers
 
 -- 1.3 Layout --------------------------------------------------------------------------------
 import XMonad.Layout.WindowNavigation                    -- window navigation
@@ -72,6 +75,7 @@ import XMonad.Layout.Simplest
 import XMonad.Layout.MultiToggle as MT
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 import XMonad.Layout.Renamed
+import XMonad.Layout.PerWorkspace
 
 -- 1.4 Actions -------------------------------------------------------------------------------
 import XMonad.Actions.Promote                            -- to move focued window to master
@@ -88,6 +92,7 @@ import XMonad.Util.NamedScratchpad
 -- 1.6 Data ----------------------------------------------------------------------------------
 import qualified Data.Map as M
 import Data.Monoid
+import Data.List
 
 
 ----------------------------------------------------------------------------------------------
@@ -152,6 +157,7 @@ wsPP           = xmobarPP { ppOrder               = id
                           , ppSort                = fmap
                                   (namedScratchpadFilterOutWorkspace.)
                                   (ppSort def)
+                          , ppLayout              = const ""
                           }
 
 
@@ -296,6 +302,14 @@ myLayoutHook = avoidStruts
              $ mkToggle (NBFULL ?? NOBORDERS ?? EOT)
              myDefaultLayout
 
+-- 4.3 Floating layouts -----------------------------------------------------------------------
+myFloatLayouts :: [W.RationalRect]
+myFloatLayouts = [ rtRect 0.41
+                 , ltRect 0.4
+                 , W.RationalRect 0.30 0.03 0.39 0.96
+                 , W.RationalRect 0.15 0.20 0.30 0.60
+                 , centeredRect 0.29 0.2
+                 ]
 
 -----------------------------------------------------------------------------------------------
 -- 5. Utilities
@@ -308,11 +322,13 @@ myManageHook = composeAll
     , className =? "gimp"               --> doFloat
     , className =? "VirtualBox Manager" --> doFloat
     , className =? "VirtualBox Machine" --> doFloat
-    , className =? "Matplotlib"         --> doFloat
+    , className =? "matplotlib"         --> doFloat
     , className =? "TelegramDesktop"    --> doFloat
     , className =? "mpv"                --> doFloat
-    , className =? "Quodlibet"          --> doFloat
-    , className =? "Spotify"            --> doFloat
+    ]
+    <+> composeOne
+    [ currentWs =? "msc"               -?> doFloat
+    , currentWs =? "mul"               -?> doFloat
     ]
     <+> manageDocks 
     <+> manageSpawn 
@@ -332,6 +348,32 @@ myScratchPads = [ NS "calendar" spawnCal findCal manageCal
     findDiary   = title =? "diary"
     manageDiary = customFloating $ W.RationalRect (1/6) (1/6) (1/4) (1/4)
 
+-- 5.3 Float cycling -------------------------------------------------------------------------
+cycleFloat :: [W.RationalRect] -> Window -> WindowSet -> WindowSet
+cycleFloat recs w s = 
+    maybe (W.sink w) (W.float w) mRec s
+        where
+            mRec = find ( (< width) . rationalWidth) recs
+            width = maybe 1 rationalWidth (w `M.lookup` W.floating s)
+
+rationalWidth :: W.RationalRect -> Rational
+rationalWidth (W.RationalRect _ _ w _) = w
+
+centeredRect :: Rational -> Rational -> W.RationalRect
+centeredRect w h = W.RationalRect x y w h
+    where
+        x :: Rational
+        x = (1 - w) / 2
+
+        y :: Rational
+        y = (1 - h) / 2
+
+ltRect :: Rational -> W.RationalRect
+rtRect w = W.RationalRect 0.01 0.03 w 0.96
+
+rtRect :: Rational -> W.RationalRect
+ltRect w = W.RationalRect (1 - w - 0.01) 0.03 w 0.96
+        
 
 ----------------------------------------------------------------------------------------------
 -- 6. Keybindings
@@ -380,6 +422,7 @@ myKeys =
 -- 6.4 Layout --------------------------------------------------------------------------------
     , ("M-<Space>", sendMessage NextLayout)                                     -- next layout
     , ("M-S-<Space>", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)   -- fullscreen view
+    , ("M-f", withFocused $ windows . cycleFloat myFloatLayouts)
 
 -- 6.5 Resizing ------------------------------------------------------------------------------
     , ("M-h", sendMessage Shrink)                                               -- shrink horizontally
@@ -406,12 +449,12 @@ myKeys =
     , ("M-C-u", withFocused (sendMessage . UnMerge))                            -- unmerge tabbed
 
 -- 6.7 Media keys -----------------------------------------------------------------------------
-    , ("M-<XF86AudioMute>", spawn "playerctl play-pause")                       -- play/pause (no external kb)
-    , ("<XF86AudioPlay", spawn "playerctl play-pause")                          -- play/pause                        
-    , ("M-<XF86AudioRaiseVolume>", spawn "playerctl next")                      -- next track (no external kb)
-    , ("<XF86AudioNext>", spawn "playerctl next")                               -- next track
-    , ("M-<XF86AudioLowerVolume>", spawn "playerctl previous")                  -- prev track (no external kb)
-    , ("<XF86AudioPrev>", spawn "playerctl previous")                           -- prev track
+    , ("M-<XF86AudioMute>", spawn "playerctl -i Bose_QC35_II play-pause")       -- play/pause (no external kb)
+    , ("<XF86AudioPlay", spawn "playerctl -i Bose_QC35_II play-pause")          -- play/pause                        
+    , ("M-<XF86AudioRaiseVolume>", spawn "playerctl -i Bose_QC35_II next")      -- next track (no external kb)
+    , ("<XF86AudioNext>", spawn "playerctl -i Bose_QC35_II next")               -- next track
+    , ("M-<XF86AudioLowerVolume>", spawn "playerctl -i Bose_QC35_II previous")  -- prev track (no external kb)
+    , ("<XF86AudioPrev>", spawn "playerctl -i Bose_QC35_II previous")           -- prev track
     , ("<XF86AudioMute>", spawn "amixer -D pulse set Master toggle")            -- mute
     , ("<XF86AudioLowerVolume>",   spawn "amixer set Master 5%- unmute")        -- raise volume by 5%
     , ("<XF86AudioRaiseVolume>",   spawn "amixer set Master 5%+ unmute")        -- lower volume by 5%

@@ -2,7 +2,8 @@
 config.bind('zl', 'spawn --userscript bw-dmenu-fill')
 
 # mpv picture in picture mode
-config.bind('qq', 'spawn xdotool key space ;; spawn --detach $HOME/.local/bin/qutebrowser-mpv.sh {url}')
+config.bind('qq', 'spawn xdotool key space ;; spawn --detach ~/.local/bin/qutebrowser-mpv.sh {url}')
+
 
 # zotero integration
 config.bind('zt', 'spawn --userscript qute-zotero')

@@ -5,7 +5,7 @@
 # |__.__||__||__|__||__|____|__| |____|
 #                                     
 # Emilia's xinitrc <3
-# Edited: 2021-04-03
+# Edited: 2021-04-22
 # Author: Emilia Dunfelt, edun@dunfelt.se
 # 
 
@@ -19,7 +19,7 @@ xsetroot -cursor_name left_ptr &
 ############################################
 # Applications
 ############################################
-feh --bg-scale ~/.config/walls/city.jpg
+feh --bg-fill ~/.config/walls/city.jpg
 
 # automounter
 udiskie &
