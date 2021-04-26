@@ -40,5 +40,7 @@ flameshot &
 # bluetooth
 bluetoothctl power on
 
+picom &
+
 # start wm
 exec xmonad

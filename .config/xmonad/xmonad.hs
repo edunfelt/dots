@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-23
+-- Edited: 2021-04-26
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -79,10 +79,12 @@ import XMonad.Layout.PerWorkspace
 
 -- 1.4 Actions -------------------------------------------------------------------------------
 import XMonad.Actions.Promote                            -- to move focued window to master
-import XMonad.Actions.CycleWS                            -- cycle through workspaces
+import XMonad.Actions.CycleWS as CWS                           -- cycle through workspaces
 import XMonad.Actions.WithAll                            -- killAll
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.DynamicProjects
+import XMonad.Actions.GridSelect                         -- experiment with GridSelect
+import XMonad.Actions.TreeSelect as TS
 
 -- 1.5 Utilities -----------------------------------------------------------------------------
 import XMonad.Util.Run                                   -- spawnPipe and hPutStrLn
@@ -93,6 +95,7 @@ import XMonad.Util.NamedScratchpad
 import qualified Data.Map as M
 import Data.Monoid
 import Data.List
+import Data.Tree
 
 
 ----------------------------------------------------------------------------------------------
@@ -101,6 +104,9 @@ import Data.List
 
 myTerminal :: [Char]
 myTerminal                  = "kitty"
+
+myEditor :: [Char]
+myEditor                    = "vim"
 
 myModMask :: KeyMask
 myModMask                   = mod4Mask
@@ -327,8 +333,8 @@ myManageHook = composeAll
     , className =? "mpv"                --> doFloat
     ]
     <+> composeOne
-    [ currentWs =? "msc"               -?> doFloat
-    , currentWs =? "mul"               -?> doFloat
+    [ currentWs =? "msc"               -?> doCenterFloat
+    , currentWs =? "mul"               -?> doCenterFloat
     ]
     <+> manageDocks 
     <+> manageSpawn 
@@ -374,6 +380,127 @@ rtRect w = W.RationalRect 0.01 0.03 w 0.96
 rtRect :: Rational -> W.RationalRect
 ltRect w = W.RationalRect (1 - w - 0.01) 0.03 w 0.96
         
+-- 5.4 Grid select ---------------------------------------------------------------------------
+myGoColorizer :: Window -> Bool -> X (String, String)
+myGoColorizer = colorRangeFromClassName
+        (0xd8, 0xd5, 0xdd)      -- lowest inactive bg
+        (0xbf, 0xb9, 0xc6)      -- highest inactive bg
+        (0xbb, 0x99, 0xb4)      -- active bg
+        (0x72, 0x67, 0x7e)      -- inactive fg
+        (0xfb, 0xf1, 0xf2)      -- active fg
+
+myBringColorizer :: Window -> Bool -> X (String, String)
+myBringColorizer = colorRangeFromClassName
+        (0xd8, 0xd5, 0xdd)      -- lowest inactive bg
+        (0xbf, 0xb9, 0xc6)      -- highest inactive bg
+        (0x69, 0xa9, 0xa7)      -- active bg        
+        (0x72, 0x67, 0x7e)      -- inactive fg
+        (0xfb, 0xf1, 0xf2)      -- active fg
+
+gsWnSelConfig colorizer = (buildDefaultGSConfig myGoColorizer)
+    { gs_cellheight     = 40
+    , gs_cellwidth      = 200
+    , gs_cellpadding    = 16
+    , gs_originFractX   = 0.5
+    , gs_originFractY   = 0.3
+    , gs_font           = myFont
+    }
+
+gsWnBringConfig colorizer = (buildDefaultGSConfig myBringColorizer)
+    { gs_cellheight     = 40
+    , gs_cellwidth      = 200
+    , gs_cellpadding    = 16
+    , gs_originFractX   = 0.5
+    , gs_originFractY   = 0.3
+    , gs_font           = myFont
+    }
+
+gsPopupConfig = def
+    { gs_cellheight   = 30
+    , gs_cellwidth    = 200
+    , gs_cellpadding  = 8
+    , gs_originFractX = 0.5
+    , gs_originFractY = 0.5
+    , gs_font         = myFont
+    }
+
+spawnSelected' :: [(String, String)] -> X ()
+spawnSelected' lst = gridselect conf lst >>= flip whenJust spawn
+    where conf = gsPopupConfig
+
+-- 5.5 Tree select ---------------------------------------------------------------------------
+treeActions :: [Tree (TS.TSNode (X ()))]
+treeActions = [ Node (TS.TSNode "Session" "Session management" (return ()))
+                     [ Node (TS.TSNode "Shutdown" "Good night!" (spawn "shutdown")) []
+                     , Node (TS.TSNode "Restart" "See you soon!" (spawn "reboot")) []
+                     -- lock screen needed
+                     ]
+              , Node (TS.TSNode "Top 10" "My top 10 applications" (return ()))
+                     [ Node (TS.TSNode "Qutebrowser" "Minimal, keyboard-focused browser" (spawn "qutebrowser")) []
+                     , Node (TS.TSNode "PCManFM" "Graphical filemanager" (spawn "pcmanfm")) []
+                     , Node (TS.TSNode "Zotero" "Your personal research assistant" (spawn "zotero")) []
+                     , Node (TS.TSNode "Code" "Code editor redefined" (spawn "code")) []
+                     , Node (TS.TSNode "Cantor" "FOSS mathematics application" (spawn "cantor")) []
+                     , Node (TS.TSNode "Thunderbird" "Email client" (spawn "thunderbird")) []
+                     , Node (TS.TSNode "Discord" "Chat client for uni and work" (spawn "discord")) []
+                     , Node (TS.TSNode "Telegram" "Messaging client for personal" (spawn "telegram-desktop")) []
+                     , Node (TS.TSNode "Idagio" "Idagio classical music player" (spawn "idagio")) []
+                     , Node (TS.TSNode "QuodLibet" "Music player" (spawn "quodlibet")) []
+                     ]
+              , Node (TS.TSNode "Settings" "Graphical settings configuration" (return ()))
+                     [ Node (TS.TSNode "LxAppearance" "Desktop independent theme switcher" (spawn "lxappearance")) []
+                     , Node (TS.TSNode "ARandR" "XRandR GUI" (spawn "arandr")) []
+                     , Node (TS.TSNode "Xscreensaver" "Xscreensaver settings" (spawn "xscreensaver-settings")) []
+                     , Node (TS.TSNode "Blueman manager" "Bluetooth settings" (spawn "blueman-manager")) []
+                     , Node (TS.TSNode "Font manager" "Font manager and organizer" (spawn "font-manager")) []
+                     , Node (TS.TSNode "GColor2" "Color picker" (spawn "gcolor2")) []
+                     ]
+              , Node (TS.TSNode "Applications" "Installed applications" (return ()))
+                     [ Node (TS.TSNode "Anki" "Study flashcards" (spawn "anki")) []
+                     , Node (TS.TSNode "Emacs" "Doom emacs" (spawn "emacs")) []
+                     , Node (TS.TSNode "Firefox" "Firefox browser" (spawn "firefox")) []
+                     , Node (TS.TSNode "Spotify" "Digital music service" (spawn "spotify")) []
+                     , Node (TS.TSNode "VirtualBox" "Oracle VM VirtualBox" (spawn "virtualbox")) []
+                     ]
+              , Node (TS.TSNode "Dots" "Open configuration files" (return ()))
+                     [ Node (TS.TSNode "vim" "The true text editor" (spawn (myEditor ++ "~/.config/vim/vimrc"))) []
+                     , Node (TS.TSNode "bashrc" "The bourne again shell" (spawn (myEditor ++ "~/.config/bash/bashrc"))) []
+                     , Node (TS.TSNode "xmonad" "XMonad configuration" (spawn (myEditor ++ "~/.config/xmonad/xmonad.hs"))) []
+                     , Node (TS.TSNode "xmobar" "XMobar configuration" (spawn (myEditor ++ "~/.config/xmonad/xmobarrc"))) []
+                     , Node (TS.TSNode "kitty" "Kitty terminal emulator" (spawn (myEditor ++ "~/.config/kitty/kitty.conf"))) []
+                     ]
+          ]
+
+tsConfig :: TS.TSConfig a
+tsConfig = TS.TSConfig
+    { TS.ts_hidechildren   = True
+    , TS.ts_background     = 0xc0c0c0c0
+    , TS.ts_font           = myFont
+    , TS.ts_node           = (0xffa59daf, 0xfff2f1f4)
+    , TS.ts_nodealt        = (0xffa59daf, 0xfff2f1f4)
+    , TS.ts_highlight      = (0xfffbf1f2, 0xffbb99b4)
+    , TS.ts_extra          = 0xffd57e85
+    , TS.ts_node_width     = 200
+    , TS.ts_node_height    = 30
+    , TS.ts_originX        = 0
+    , TS.ts_originY        = 0
+    , TS.ts_indent         = 50
+    , TS.ts_navigate       = tsNavigation
+    }
+
+tsNavigation = M.fromList
+    [ ((0, xK_Escape), TS.cancel)
+    , ((0, xK_Return), TS.select)
+    , ((0, xK_space), TS.select)
+    , ((0, xK_Up),     TS.movePrev)
+    , ((0, xK_Down),   TS.moveNext)
+    , ((0, xK_Left),   TS.moveParent)
+    , ((0, xK_Right),  TS.moveChild)
+    , ((0, xK_k),      TS.movePrev)
+    , ((0, xK_j),      TS.moveNext)
+    , ((0, xK_h),      TS.moveParent)
+    , ((0, xK_l),      TS.moveChild)
+    ]
 
 ----------------------------------------------------------------------------------------------
 -- 6. Keybindings
@@ -382,7 +509,6 @@ myKeys :: [([Char], X ())]
 myKeys =
 -- 6.1 General -------------------------------------------------------------------------------
     [ ("M-<Return>", spawn myTerminal)                                          -- open a terminal
-    , ("M-b", spawn "qutebrowser")                                              -- start firefox
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
     , ("M-p", spawn "dmenu_run -nf '#FBF1F2' -nb '#8B8198' -sb '#BB99B4' -sf '#585062'")
@@ -396,11 +522,14 @@ myKeys =
     , ("M-m", windows W.focusMaster)                                            -- focus master
     , ("M-q", kill)                                                             -- kill focused
     , ("M-S-q", killAll)                                                        -- kill workspace
-    , ("M-<Tab>", moveTo Next NonEmptyWS)                                       -- move to next workspace
-    , ("M-S-<Tab>", moveTo Prev NonEmptyWS)                                     -- move to previous workspace
-    , ("M-0", moveTo Next EmptyWS)                                              -- move focused to next empty workspace
+    , ("M-<Tab>", CWS.moveTo Next NonEmptyWS)                                       -- move to next workspace
+    , ("M-S-<Tab>", CWS.moveTo Prev NonEmptyWS)                                     -- move to previous workspace
+    , ("M-0", CWS.moveTo Next EmptyWS)                                              -- move focused to next empty workspace
     , ("M-w", switchProjectPrompt myPromptTheme)                                -- switch project
     , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
+    , ("M-g", goToSelected $ gsWnSelConfig myGoColorizer)                       -- go to window
+    , ("M-b", bringSelected $ gsWnBringConfig myBringColorizer)                 -- bring window
+    , ("M-a", treeselectAction tsConfig treeActions)
 
 -- 6.3 Keypad navigation --------------------------------------------------------------------
 -- this part is not relevant anymore, after updating workspaces and new keyboard, but leaving it for now
