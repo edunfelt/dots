@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-26
+-- Edited: 2021-04-27
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -33,6 +33,8 @@
 -- 5.1 Managehook
 -- 5.2 Scratchpads
 -- 5.3 Float cycling
+-- 5.4 Grid select
+-- 5.5 Tree select
 -- 6. Keybindings
 -- 6.1 General
 -- 6.2 Navigation
@@ -106,7 +108,7 @@ myTerminal :: [Char]
 myTerminal                  = "kitty"
 
 myEditor :: [Char]
-myEditor                    = "vim"
+myEditor                    = myTerminal ++ " -e vim "
 
 myModMask :: KeyMask
 myModMask                   = mod4Mask
@@ -191,7 +193,7 @@ myProjects = [Project
                 , projectDirectory = "/media/nas/home/10-19_Education/13_Bachelors_Degree/13.28_Thesis_CS"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 0) "zotero"
-                    spawnOn (myWorkspaces !! 0) "kitty -e vim"
+                    spawnOn (myWorkspaces !! 0) (myTerminal ++ " -e vim")
                     spawnOn (myWorkspaces !! 0) "qutebrowser ':session-load thesis' --nowindow"
                 }
             , Project
@@ -199,7 +201,7 @@ myProjects = [Project
                 , projectDirectory = "/media/nas/home/20-29_Work/22_TA/22.03_Numerical_Analysis"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 1) "qutebrowser ':session-load TA' --nowindow"
-                    spawnOn (myWorkspaces !! 1) "kitty -e ranger /media/nas/home/20-29_Work/22_TA"
+                    spawnOn (myWorkspaces !! 1) (myTerminal ++ " -e fff /media/nas/home/20-29_Work/22_TA")
                     spawnOn (myWorkspaces !! 1) "zotero"
                 }
              , Project
@@ -214,7 +216,7 @@ myProjects = [Project
                  , projectStartHook = Just $ do
                      spawnOn (myWorkspaces !! 3) "zotero"
                      spawnOn (myWorkspaces !! 3) "qutebrowser ':session-load thesis' --nowindow"
-                     spawnOn (myWorkspaces !! 3) "kitty -e ranger /media/nas/home"
+                     spawnOn (myWorkspaces !! 3) (myTerminal ++ " -e fff /media/nas/home")
                  }
              , Project
                  { projectName = myWorkspaces !! 4
@@ -324,13 +326,19 @@ myFloatLayouts = [ rtRect 0.41
 -- 5.1 Managehook -----------------------------------------------------------------------------
 myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
-    [ className =? "Anki"               --> doFloat
-    , className =? "gimp"               --> doFloat
-    , className =? "VirtualBox Manager" --> doFloat
-    , className =? "VirtualBox Machine" --> doFloat
-    , className =? "matplotlib"         --> doFloat
-    , className =? "TelegramDesktop"    --> doFloat
-    , className =? "mpv"                --> doFloat
+    [ className =? "Anki"                       --> doFloat
+    , className =? "gimp"                       --> doFloat
+    , className =? "VirtualBox Manager"         --> doFloat
+    , className =? "VirtualBox Machine"         --> doFloat
+    , className =? "matplotlib"                 --> doFloat
+    , className =? "TelegramDesktop"            --> doFloat
+    , className =? "mpv"                        --> doFloat
+    , className =? "libreoffice-startcenter"    --> doFloat
+    , className =? "lxappearance"               --> doFloat
+    , className =? "arandr"                     --> doFloat
+    , className =? "xscreensaver-settings"      --> doFloat
+    , className =? "blueman-manager"            --> doFloat
+    , className =? "zoom"                       --> doFloat
     ]
     <+> composeOne
     [ currentWs =? "msc"               -?> doCenterFloat
@@ -346,11 +354,11 @@ myScratchPads = [ NS "calendar" spawnCal findCal manageCal
                 , NS "diary" spawnDiary findDiary manageDiary
                 ]
   where
-    spawnCal  = "kitty -e calcurse"
+    spawnCal  = myTerminal ++ " -e calcurse"
     findCal   = resource =? "calcurse"
     manageCal = customFloating $ W.RationalRect (1/6) (1/6) (1/4) (1/4)
 
-    spawnDiary  = "kitty -e vim -c VimwikiMakeDiaryNote"
+    spawnDiary  = myTerminal ++ " -e vim -c VimwikiMakeDiaryNote"
     findDiary   = title =? "diary"
     manageDiary = customFloating $ W.RationalRect (1/6) (1/6) (1/4) (1/4)
 
@@ -430,24 +438,33 @@ spawnSelected' lst = gridselect conf lst >>= flip whenJust spawn
 
 -- 5.5 Tree select ---------------------------------------------------------------------------
 treeActions :: [Tree (TS.TSNode (X ()))]
-treeActions = [ Node (TS.TSNode "Session" "Session management" (return ()))
-                     [ Node (TS.TSNode "Shutdown" "Good night!" (spawn "shutdown")) []
+treeActions = [ Node (TS.TSNode "Session" "" (return ()))
+                     [ Node (TS.TSNode "Shutdown" "Good night!" (spawn "poweroff")) []
                      , Node (TS.TSNode "Restart" "See you soon!" (spawn "reboot")) []
-                     -- lock screen needed
+                     , Node (TS.TSNode "Suspend" "Breack time!" (spawn "sLockscreenctl suspend")) []
+                     , Node (TS.TSNode "Lock" "brb." (spawn "sLockscreenctl lock")) []
                      ]
-              , Node (TS.TSNode "Top 10" "My top 10 applications" (return ()))
-                     [ Node (TS.TSNode "Qutebrowser" "Minimal, keyboard-focused browser" (spawn "qutebrowser")) []
-                     , Node (TS.TSNode "PCManFM" "Graphical filemanager" (spawn "pcmanfm")) []
-                     , Node (TS.TSNode "Zotero" "Your personal research assistant" (spawn "zotero")) []
-                     , Node (TS.TSNode "Code" "Code editor redefined" (spawn "code")) []
+             , Node (TS.TSNode "Productivity" "" (return ()))
+                     [ Node (TS.TSNode "Zotero" "Your personal research assistant" (spawn "zotero")) []
+                     , Node (TS.TSNode "Anki" "Study flashcards" (spawn "anki")) []
+                     , Node (TS.TSNode "Emacs" "Doom emacs" (spawn "emacs")) []
+                     , Node (TS.TSNode "LibreOffice" "Office productivity suite" (spawn "libreoffice")) []
+                     , Node (TS.TSNode "Typora" "Minimalist markdown editor" (spawn "typora")) []
+                     , Node (TS.TSNode "Vimwiki" "Personal wiki for Vim" (spawn (myEditor ++ "-c VimwikiIndex"))) []
+                     ]
+              , Node (TS.TSNode "Development" "" (return ()))
+                     [ Node (TS.TSNode "Code" "Code editor redefined" (spawn "code")) []
                      , Node (TS.TSNode "Cantor" "FOSS mathematics application" (spawn "cantor")) []
-                     , Node (TS.TSNode "Thunderbird" "Email client" (spawn "thunderbird")) []
-                     , Node (TS.TSNode "Discord" "Chat client for uni and work" (spawn "discord")) []
-                     , Node (TS.TSNode "Telegram" "Messaging client for personal" (spawn "telegram-desktop")) []
-                     , Node (TS.TSNode "Idagio" "Idagio classical music player" (spawn "idagio")) []
-                     , Node (TS.TSNode "QuodLibet" "Music player" (spawn "quodlibet")) []
+                     , Node (TS.TSNode "Spyder" "Scientific Python IDE" (spawn "spyder")) []
+                     , Node (TS.TSNode "RStudio" "R IDE" (spawn "rstudio-bin")) []
                      ]
-              , Node (TS.TSNode "Settings" "Graphical settings configuration" (return ()))
+              , Node (TS.TSNode "Utilities" "" (return ()))
+                     [ Node (TS.TSNode "FFF" "Fucking fast filemanager" (spawn (myTerminal ++ " -e fff"))) []
+                     , Node (TS.TSNode "PCManFM" "Graphical filemanager" (spawn "pcmanfm")) []
+                     , Node (TS.TSNode "htop" "Simple, interactive process viewer" (spawn (myTerminal ++ " -e htop"))) []
+                     , Node (TS.TSNode "VirtualBox" "Oracle VM VirtualBox" (spawn "virtualbox")) []
+                     ]
+              , Node (TS.TSNode "Settings" "" (return ()))
                      [ Node (TS.TSNode "LxAppearance" "Desktop independent theme switcher" (spawn "lxappearance")) []
                      , Node (TS.TSNode "ARandR" "XRandR GUI" (spawn "arandr")) []
                      , Node (TS.TSNode "Xscreensaver" "Xscreensaver settings" (spawn "xscreensaver-settings")) []
@@ -455,19 +472,29 @@ treeActions = [ Node (TS.TSNode "Session" "Session management" (return ()))
                      , Node (TS.TSNode "Font manager" "Font manager and organizer" (spawn "font-manager")) []
                      , Node (TS.TSNode "GColor2" "Color picker" (spawn "gcolor2")) []
                      ]
-              , Node (TS.TSNode "Applications" "Installed applications" (return ()))
-                     [ Node (TS.TSNode "Anki" "Study flashcards" (spawn "anki")) []
-                     , Node (TS.TSNode "Emacs" "Doom emacs" (spawn "emacs")) []
-                     , Node (TS.TSNode "Firefox" "Firefox browser" (spawn "firefox")) []
-                     , Node (TS.TSNode "Spotify" "Digital music service" (spawn "spotify")) []
-                     , Node (TS.TSNode "VirtualBox" "Oracle VM VirtualBox" (spawn "virtualbox")) []
-                     ]
-              , Node (TS.TSNode "Dots" "Open configuration files" (return ()))
+              , Node (TS.TSNode "Dots" "" (return ()))
                      [ Node (TS.TSNode "vim" "The true text editor" (spawn (myEditor ++ "~/.config/vim/vimrc"))) []
                      , Node (TS.TSNode "bashrc" "The bourne again shell" (spawn (myEditor ++ "~/.config/bash/bashrc"))) []
                      , Node (TS.TSNode "xmonad" "XMonad configuration" (spawn (myEditor ++ "~/.config/xmonad/xmonad.hs"))) []
                      , Node (TS.TSNode "xmobar" "XMobar configuration" (spawn (myEditor ++ "~/.config/xmonad/xmobarrc"))) []
                      , Node (TS.TSNode "kitty" "Kitty terminal emulator" (spawn (myEditor ++ "~/.config/kitty/kitty.conf"))) []
+                     ]
+              , Node (TS.TSNode "Internet" "" (return ()))
+                     [ Node (TS.TSNode "Qutebrowser" "Minimal, keyboard-focused browser" (spawn "qutebrowser")) []
+                     , Node (TS.TSNode "Firefox" "Firefox browser" (spawn "firefox")) []
+                     ]
+              , Node (TS.TSNode "Multimedia" "" (return ()))
+                     [ Node (TS.TSNode "Idagio" "Classical music player" (spawn "idagio")) []
+                     , Node (TS.TSNode "QuodLibet" "Music player" (spawn "quodlibet")) []
+                     , Node (TS.TSNode "Spotify" "Digital music service" (spawn "spotify")) []
+                     , Node (TS.TSNode "Cava" "Music visualizer" (spawn (myTerminal ++ " -e cava"))) []
+                     ]
+              , Node (TS.TSNode "Communication" "" (return ()))
+                     [ Node (TS.TSNode "Telegram" "Messaging client for personal" (spawn "telegram-desktop")) []
+                     , Node (TS.TSNode "Thunderbird" "Email client" (spawn "thunderbird")) []
+                     , Node (TS.TSNode "Discord" "Chat client for uni and work" (spawn "discord")) []
+                     , Node (TS.TSNode "Weechat" "IRC client" (spawn (myTerminal ++ " -e weechat"))) []
+                     , Node (TS.TSNode "Zoom" "Video conferencing tool" (spawn "zoom")) []
                      ]
           ]
 
@@ -476,9 +503,9 @@ tsConfig = TS.TSConfig
     { TS.ts_hidechildren   = True
     , TS.ts_background     = 0xc0c0c0c0
     , TS.ts_font           = myFont
-    , TS.ts_node           = (0xffa59daf, 0xfff2f1f4)
-    , TS.ts_nodealt        = (0xffa59daf, 0xfff2f1f4)
-    , TS.ts_highlight      = (0xfffbf1f2, 0xffbb99b4)
+    , TS.ts_node           = (0xfff2f1f4, 0xffbfb9c6)
+    , TS.ts_nodealt        = (0xfff2f1f4, 0xffa59daf)
+    , TS.ts_highlight      = (0xfffbf1f2, 0xffd57e85)
     , TS.ts_extra          = 0xffd57e85
     , TS.ts_node_width     = 200
     , TS.ts_node_height    = 30
@@ -491,7 +518,7 @@ tsConfig = TS.TSConfig
 tsNavigation = M.fromList
     [ ((0, xK_Escape), TS.cancel)
     , ((0, xK_Return), TS.select)
-    , ((0, xK_space), TS.select)
+    , ((0, xK_space),  TS.select)
     , ((0, xK_Up),     TS.movePrev)
     , ((0, xK_Down),   TS.moveNext)
     , ((0, xK_Left),   TS.moveParent)

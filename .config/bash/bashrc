@@ -91,9 +91,28 @@ jdfun() {
 # Misc
 ########################################################
 # Base16 Shell
-BASE16_SHELL="$HOME/.config/base16-shell/"
+BASE16_SHELL="$HOME/.config/base16/"
 [ -n "$PS1" ] && \
     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
         eval "$("$BASE16_SHELL/profile_helper.sh")"
+
+# FFF
+# Directory color [0-9]
+export FFF_COL1=4
+# Status background color [0-9]
+export FFF_COL2=5
+# Selection color [0-9] (copied/moved files)
+export FFF_COL3=1
+# Cursor color [0-9]
+export FFF_COL4=6
+# Status foreground color [0-9]
+export FFF_COL5=0
+# Favorites (Bookmarks) (keys 1-9) (dir or file)
+export FFF_FAV1=/media/nas/home
+export FFF_FAV2=/media/nas/home/10-19_Education/
+export FFF_FAV3=/media/nas/home/20-29_Work/
+export FFF_FAV4=/media/nas/home/30-39_Home/
+export FFF_FAV5=~/.config/
+export FFF_FAV6=~/Downloads/
 
 pfetch

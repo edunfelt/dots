@@ -18,6 +18,8 @@ Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=tru
 
                     , Run Com "/bin/bash" ["-c", "~/.local/bin/get_volume"] "vol" 1
 
+                    , Run Com "/bin/bash" ["-c",  "~/.local/bin/current_weather"] "tmp" 6000
+
                     , Run Battery [ "--template"  , "<leftipat>  <acstatus>"
                              , "--Low"       , "30"      -- units: %
                              , "--High"      , "70"      -- units: %
@@ -40,6 +42,6 @@ Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=tru
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "        %StdinReader% } ♪ %song% ♪ {  %ESSB%     %vol%    %battery%    |    %date%        "
+       , template = "        %StdinReader% } ♪ %song% ♪ {  %tmp%     %vol%    %battery%    |    %date%        "
        }
 
