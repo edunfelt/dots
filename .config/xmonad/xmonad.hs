@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-27
+-- Edited: 2021-04-29
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -87,6 +87,7 @@ import XMonad.Actions.SpawnOn
 import XMonad.Actions.DynamicProjects
 import XMonad.Actions.GridSelect                         -- experiment with GridSelect
 import XMonad.Actions.TreeSelect as TS
+import XMonad.Actions.CopyWindow
 
 -- 1.5 Utilities -----------------------------------------------------------------------------
 import XMonad.Util.Run                                   -- spawnPipe and hPutStrLn
@@ -334,11 +335,13 @@ myManageHook = composeAll
     , className =? "TelegramDesktop"            --> doFloat
     , className =? "mpv"                        --> doFloat
     , className =? "libreoffice-startcenter"    --> doFloat
-    , className =? "lxappearance"               --> doFloat
-    , className =? "arandr"                     --> doFloat
-    , className =? "xscreensaver-settings"      --> doFloat
-    , className =? "blueman-manager"            --> doFloat
+    , className =? "Lxappearance"               --> doFloat
+    , className =? "Arandr"                     --> doFloat
+    , className =? "Xscreensaver-settings"      --> doFloat
+    , className =? "Blueman-manager"            --> doFloat
     , className =? "zoom"                       --> doFloat
+    , title     =? "Msgcompose"                 --> doFloat
+    , title     =? "Picture-in-Picture"         --> doFloat
     ]
     <+> composeOne
     [ currentWs =? "msc"               -?> doCenterFloat
@@ -350,17 +353,23 @@ myManageHook = composeAll
 
 -- 5.2 Scratchpads ----------------------------------------------------------------------------
 myScratchPads :: [NamedScratchpad]
-myScratchPads = [ NS "calendar" spawnCal findCal manageCal
-                , NS "diary" spawnDiary findDiary manageDiary
+myScratchPads = [ NS "htop"     "xterm -e htop"
+                                (title =? "htop")
+                                (customFloating $ W.RationalRect 0.7 0.1 0.25 0.2)
+                , NS "fff"      "xterm -e fff"
+                                (title =? "fff")
+                                (customFloating $ centeredRect 0.15 0.25)
+                , NS "pcmanfm"  "pcmanfm"
+                                (className =? "Pcmanfm")
+                                (customFloating $ W.RationalRect 0.35 0.35 0.3 0.3)
+                , NS "emacs"    "emacs"
+                                (className =? "Emacs")
+                                (customFloating $ centeredRect 0.3 0.6)
+                , NS "telegram" "telegram-desktop"
+                                (className =? "TelegramDesktop")
+                                (customFloating $ W.RationalRect 0.8 0.3 0.2 0.3)
                 ]
   where
-    spawnCal  = myTerminal ++ " -e calcurse"
-    findCal   = resource =? "calcurse"
-    manageCal = customFloating $ W.RationalRect (1/6) (1/6) (1/4) (1/4)
-
-    spawnDiary  = myTerminal ++ " -e vim -c VimwikiMakeDiaryNote"
-    findDiary   = title =? "diary"
-    manageDiary = customFloating $ W.RationalRect (1/6) (1/6) (1/4) (1/4)
 
 -- 5.3 Float cycling -------------------------------------------------------------------------
 cycleFloat :: [W.RationalRect] -> Window -> WindowSet -> WindowSet
@@ -441,7 +450,7 @@ treeActions :: [Tree (TS.TSNode (X ()))]
 treeActions = [ Node (TS.TSNode "Session" "" (return ()))
                      [ Node (TS.TSNode "Shutdown" "Good night!" (spawn "poweroff")) []
                      , Node (TS.TSNode "Restart" "See you soon!" (spawn "reboot")) []
-                     , Node (TS.TSNode "Suspend" "Breack time!" (spawn "sLockscreenctl suspend")) []
+                     , Node (TS.TSNode "Suspend" "Break time!" (spawn "sLockscreenctl suspend")) []
                      , Node (TS.TSNode "Lock" "brb." (spawn "sLockscreenctl lock")) []
                      ]
              , Node (TS.TSNode "Productivity" "" (return ()))
@@ -549,14 +558,16 @@ myKeys =
     , ("M-m", windows W.focusMaster)                                            -- focus master
     , ("M-q", kill)                                                             -- kill focused
     , ("M-S-q", killAll)                                                        -- kill workspace
-    , ("M-<Tab>", CWS.moveTo Next NonEmptyWS)                                       -- move to next workspace
-    , ("M-S-<Tab>", CWS.moveTo Prev NonEmptyWS)                                     -- move to previous workspace
-    , ("M-0", CWS.moveTo Next EmptyWS)                                              -- move focused to next empty workspace
+    , ("M-<Tab>", CWS.moveTo Next NonEmptyWS)                                   -- move to next workspace
+    , ("M-S-<Tab>", CWS.moveTo Prev NonEmptyWS)                                 -- move to previous workspace
+    , ("M-0", CWS.moveTo Next EmptyWS)                                          -- move focused to next empty workspace
     , ("M-w", switchProjectPrompt myPromptTheme)                                -- switch project
     , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
+    , ("M-S-r", renameProjectPrompt myPromptTheme)                              -- rename current project
     , ("M-g", goToSelected $ gsWnSelConfig myGoColorizer)                       -- go to window
     , ("M-b", bringSelected $ gsWnBringConfig myBringColorizer)                 -- bring window
     , ("M-a", treeselectAction tsConfig treeActions)
+    , ("M-S-c", killAllOtherCopies)                                             -- kill all copies of window
 
 -- 6.3 Keypad navigation --------------------------------------------------------------------
 -- this part is not relevant anymore, after updating workspaces and new keyboard, but leaving it for now
@@ -620,9 +631,14 @@ myKeys =
     , ("M-<Print>", spawn "flameshot gui ~/Pictures/scrots")                    -- interactive screenshot
 
 -- 6.8 Productivity ---------------------------------------------------------------------------
-    , ("M-C-c", namedScratchpadAction myScratchPads "calendar")                 -- open calcurse (unless already open)
-    , ("M-C-d", namedScratchpadAction myScratchPads "diary")                    -- open today's diary
+    , ("M-C-f", namedScratchpadAction myScratchPads "fff")
+    , ("M-C-g", namedScratchpadAction myScratchPads "pcmanfm")
+    , ("M-C-d", namedScratchpadAction myScratchPads "emacs")
+    , ("M-C-p", namedScratchpadAction myScratchPads "htop")
+    , ("M-C-c", namedScratchpadAction myScratchPads "telegram")
     ]
+    ++
+    [("M-c " ++ (show i), windows $ copy ws) | (i,ws) <- zip [1..9] myWorkspaces]   -- copy window to workspace
 
 myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
     -- mod-button1, Set the window to floating mode and move by dragging
