@@ -227,9 +227,11 @@
 (use-package org-journal
   :init
   (setq org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/"
-        org-journal-date-prefix "#+TITLE: "
-        org-journal-file-format "%Y-%m-%d.org"
-        org-journal-date-format "%A, %d %B %Y")
+        org-journal-file-header "#+STARTUP: folded\n#+TITLE: Weekly Journal\n"
+        org-journal-file-format "%Y-%V-%m%d.org"
+        org-journal-file-type 'weekly
+        org-journal-date-prefix "* "
+        org-journal-date-format "%A, %d")
   :config
   (setq org-journal-find-file #'find-file-other-window )
   (map! :map org-journal-mode-map

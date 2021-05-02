@@ -78,6 +78,8 @@ import XMonad.Layout.MultiToggle as MT
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 import XMonad.Layout.Renamed
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.IndependentScreens
+import XMonad.Layout.Minimize
 
 -- 1.4 Actions -------------------------------------------------------------------------------
 import XMonad.Actions.Promote                            -- to move focued window to master
@@ -88,11 +90,13 @@ import XMonad.Actions.DynamicProjects
 import XMonad.Actions.GridSelect                         -- experiment with GridSelect
 import XMonad.Actions.TreeSelect as TS
 import XMonad.Actions.CopyWindow
+import XMonad.Actions.Minimize
 
 -- 1.5 Utilities -----------------------------------------------------------------------------
 import XMonad.Util.Run                                   -- spawnPipe and hPutStrLn
 import XMonad.Util.EZConfig (additionalKeysP)            -- Emacs-style keybindings
 import XMonad.Util.NamedScratchpad
+import XMonad.Util.WorkspaceCompare
 
 -- 1.6 Data ----------------------------------------------------------------------------------
 import qualified Data.Map as M
@@ -146,8 +150,8 @@ myNormalBorderColor :: [Char]
 myNormalBorderColor         = color11
 
 -- 2.3 Xmobar ---------------------------------------------------------------------------------
-myLogHook :: Handle -> X ()
-myLogHook h                 = dynamicLogWithPP $ wsPP { ppOutput = hPutStrLn h }
+myLogHook :: [Handle] -> X ()
+myLogHook h    = mapM_ (\handle -> dynamicLogWithPP $ wsPP { ppOutput = hPutStrLn handle }) h
 
 myWsBar :: [Char]
 myWsBar        = "xmobar ~/.config/xmonad/xmobarrc"
@@ -309,6 +313,7 @@ myLayoutHook = avoidStruts
              $ subLayout [0] (Simplest) 
              $ spacingRaw True (Border 5 5 5 5) True (Border 5 5 5 5) True
              $ mkToggle (NBFULL ?? NOBORDERS ?? EOT)
+             $ minimize
              myDefaultLayout
 
 -- 4.3 Floating layouts -----------------------------------------------------------------------
@@ -555,12 +560,11 @@ myKeys =
     , ("M-S-j", windows W.swapDown)                                             -- swap focused with next
     , ("M-S-k", windows W.swapUp)                                               -- swap focused with previous
     , ("M-<Backspace>", promote)                                                -- promote focused to master
-    , ("M-m", windows W.focusMaster)                                            -- focus master
     , ("M-q", kill)                                                             -- kill focused
     , ("M-S-q", killAll)                                                        -- kill workspace
-    , ("M-<Tab>", CWS.moveTo Next NonEmptyWS)                                   -- move to next workspace
-    , ("M-S-<Tab>", CWS.moveTo Prev NonEmptyWS)                                 -- move to previous workspace
-    , ("M-0", CWS.moveTo Next EmptyWS)                                          -- move focused to next empty workspace
+    , ("M-<Tab>", nextNonEmptyWS)                                   -- move to next workspace
+    , ("M-S-<Tab>", prevNonEmptyWS)                                 -- move to previous workspace
+    , ("M-0", nextNonEmptyWS)                                          -- move focused to next empty workspace
     , ("M-w", switchProjectPrompt myPromptTheme)                                -- switch project
     , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
     , ("M-S-r", renameProjectPrompt myPromptTheme)                              -- rename current project
@@ -568,6 +572,8 @@ myKeys =
     , ("M-b", bringSelected $ gsWnBringConfig myBringColorizer)                 -- bring window
     , ("M-a", treeselectAction tsConfig treeActions)
     , ("M-S-c", killAllOtherCopies)                                             -- kill all copies of window
+    , ("M-s", prevScreen)                                                       -- focus next monitor
+    , ("M-d", nextScreen)                                                       -- focus previous monitor
 
 -- 6.3 Keypad navigation --------------------------------------------------------------------
 -- this part is not relevant anymore, after updating workspaces and new keyboard, but leaving it for now
@@ -590,6 +596,8 @@ myKeys =
     , ("M-<Space>", sendMessage NextLayout)                                     -- next layout
     , ("M-S-<Space>", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)   -- fullscreen view
     , ("M-f", withFocused $ windows . cycleFloat myFloatLayouts)
+    , ("M-m", withFocused minimizeWindow)                                       -- minimize window
+    , ("M-S-m", withLastMinimized maximizeWindowAndFocus)                       -- un-minimize last minimized
 
 -- 6.5 Resizing ------------------------------------------------------------------------------
     , ("M-h", sendMessage Shrink)                                               -- shrink horizontally
@@ -651,17 +659,31 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
                                        >> windows W.shiftMaster))
     ]
 
+-- Functions for avoiding empty workspaces (from https://github.com/altercation/dotfiles-tilingwm/)
+notSP = (return $ ("NSP" /=) . W.tag) :: X (WindowSpace -> Bool)
+shiftAndView dir = findWorkspace getSortByIndex dir (WSIs notSP) 1
+        >>= \t -> (windows . W.shift $ t) >> (windows . W.greedyView $ t)
+shiftAndView' dir = findWorkspace getSortByIndexNoSP dir HiddenNonEmptyWS 1
+        >>= \t -> (windows . W.shift $ t) >> (windows . W.greedyView $ t)
+nextNonEmptyWS = findWorkspace getSortByIndexNoSP Next HiddenNonEmptyWS 1
+        >>= \t -> (windows . W.view $ t)
+prevNonEmptyWS = findWorkspace getSortByIndexNoSP Prev HiddenNonEmptyWS 1
+        >>= \t -> (windows . W.view $ t)
+getSortByIndexNoSP =
+        fmap (.namedScratchpadFilterOutWorkspace) getSortByIndex
+
 
 -----------------------------------------------------------------------------------------------
 -- 7. Main
 -----------------------------------------------------------------------------------------------
 
 main = do
-    xmproc <- spawnPipe myWsBar
+    n <- countScreens
+    xmprocs <- mapM (\i -> spawnPipe $ myWsBar ++ " -x " ++ show i) [0..n-1]
     xmonad 
         $ docks 
         $ dynamicProjects myProjects 
-        $ myConfig xmproc
+        $ myConfig xmprocs
 myConfig p = def
     { borderWidth               = myBorderWidth
     , startupHook               = myStartupHook
