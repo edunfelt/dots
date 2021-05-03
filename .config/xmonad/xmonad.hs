@@ -229,7 +229,6 @@ myProjects = [Project
                  , projectStartHook = Just $ do
                      spawnOn (myWorkspaces !! 4) "discord"
                      spawnOn (myWorkspaces !! 4) "thunderbird"
-                     spawnOn (myWorkspaces !! 4) "telegram-desktop"
                  }
              , Project
                  { projectName = myWorkspaces !! 5
@@ -471,6 +470,7 @@ treeActions = [ Node (TS.TSNode "Session" "" (return ()))
                      , Node (TS.TSNode "Cantor" "FOSS mathematics application" (spawn "cantor")) []
                      , Node (TS.TSNode "Spyder" "Scientific Python IDE" (spawn "spyder")) []
                      , Node (TS.TSNode "RStudio" "R IDE" (spawn "rstudio-bin")) []
+                     , Node (TS.TSNode "Geogebra" "Create mathematical figures" (spawn "geogebra")) []
                      ]
               , Node (TS.TSNode "Utilities" "" (return ()))
                      [ Node (TS.TSNode "FFF" "Fucking fast filemanager" (spawn (myTerminal ++ " -e fff"))) []
