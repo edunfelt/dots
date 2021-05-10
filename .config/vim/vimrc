@@ -123,6 +123,9 @@ Plugin 'sheerun/vim-polyglot'
 " recognize colors
 Plugin 'gko/vim-coloresque'
 
+" distraction-free writing
+Plugin 'junegunn/goyo.vim'
+
 " 3.2 Coding
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 3.2.1 Linting

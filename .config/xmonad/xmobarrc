@@ -1,4 +1,4 @@
-Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=true,FontAwesome:pixelsize=16"
+Config { font = "xft:scientifica:pixelsize=16:antialias=true:hinting=true,FontAwesome:pixelsize=16"
        , bgColor = "#fbf1f2"
        , fgColor = "#bb99b4"
        , position  = TopW L 100
@@ -20,7 +20,7 @@ Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=tru
 
                     , Run Com "/bin/bash" ["-c",  "~/.local/bin/current_weather"] "tmp" 6000
 
-                    , Run Battery [ "--template"  , "<leftipat>  <acstatus>"
+                    , Run Battery [ "--template"  , "<leftipat> <acstatus>"
                              , "--Low"       , "30"      -- units: %
                              , "--High"      , "70"      -- units: %
                              , "--low"       , "#d57e85"
@@ -36,12 +36,12 @@ Config { font = "xft:WenQuanYi Micro Hei:pixelsize=14:antialias=true:hinting=tru
                                , "-i" , "<fc=#bb99b4>idle</fc>"               -- charged status
                              ] 50
 
-                    , Run Date "\xf133  %b %d - %H:%M" "date" 10
+                    , Run Date "\xf133 %b %d - %H:%M" "date" 10
 
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "        %StdinReader% } ♪ %song% ♪ {  %tmp%     %vol%    %battery%    |    %date%        "
+       , template = "  %StdinReader% } ♪%song% ♪ {  %tmp%    %vol%   %battery%  |  %date%  "
        }
 

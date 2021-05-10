@@ -110,7 +110,7 @@ import Data.Tree
 ----------------------------------------------------------------------------------------------
 
 myTerminal :: [Char]
-myTerminal                  = "kitty"
+myTerminal                  = "alacritty"
 
 myEditor :: [Char]
 myEditor                    = myTerminal ++ " -e vim "
@@ -138,7 +138,7 @@ color15                     = "#585062"
 
 -- 2.2 Theme ----------------------------------------------------------------------------------
 myFont :: [Char]
-myFont                      = "xft:Anonymice Nerd Font:pixelsize=14:antialias=true:hinting=true,FontAwesome:pixelsize=14"
+myFont                      = "xft:scientifica:pixelsize=16:antialias=true:hinting=true,FontAwesome:pixelsize=14"
 
 myBorderWidth :: Dimension
 myBorderWidth               = 3

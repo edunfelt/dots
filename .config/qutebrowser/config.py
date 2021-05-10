@@ -2,11 +2,18 @@
 config.bind('zl', 'spawn --userscript bw-dmenu-fill')
 
 # mpv picture in picture mode
-config.bind('qq', 'spawn xdotool key space ;; spawn --detach ~/.local/bin/qutebrowser-mpv.sh {url}')
-
+config.bind(
+    'qq',
+    'spawn xdotool key space ;; spawn --detach ~/.local/bin/qutebrowser-mpv.sh {url}'
+)
 
 # zotero integration
 config.bind('zt', 'spawn --userscript qute-zotero')
+
+c.fonts.default_family = 'scientifica'
+c.fonts.default_size = '11pt'
+
+config.load_autoconfig(False)
 
 # Start flavours
 # base16-qutebrowser (https://github.com/theova/base16-qutebrowser)
@@ -88,7 +95,7 @@ c.colors.contextmenu.disabled.fg = base04
 c.colors.contextmenu.menu.bg = base00
 
 # Foreground color of the context menu. If set to null, the Qt default is used.
-c.colors.contextmenu.menu.fg =  base05
+c.colors.contextmenu.menu.fg = base05
 
 # Background color of the context menu’s selected item. If set to null, the Qt default is used.
 c.colors.contextmenu.selected.bg = base02
