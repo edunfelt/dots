@@ -165,8 +165,8 @@ wsPP           = xmobarPP { ppOrder               = id
                           , ppVisible             = xmobarColor   color8 "" 
                           , ppHidden              = xmobarColor   color8 "" 
                           , ppHiddenNoWindows     = const ""
-                          , ppSep                 = "  :  "
-                          , ppWsSep               = "    "
+                          , ppSep                 = " : "
+                          , ppWsSep               = " "
                           , ppSort                = fmap
                                   (namedScratchpadFilterOutWorkspace.)
                                   (ppSort def)
@@ -552,7 +552,7 @@ myKeys =
     [ ("M-<Return>", spawn myTerminal)                                          -- open a terminal
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
-    , ("M-p", spawn "dmenu_run -nf '#FBF1F2' -nb '#8B8198' -sb '#BB99B4' -sf '#585062'")
+    , ("M-p", spawn "dmenu_run -nf '#FBF1F2' -nb '#8B8198' -sb '#BB99B4' -sf '#585062' -fn 'scientifica:pixelsize=16'")
     
 -- 6.2 Navigation ----------------------------------------------------------------------------
     , ("M-j", windows W.focusDown)                                              -- move focus up

@@ -29,7 +29,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible                                    " be iMproved
 set background=light
-set termguicolors
+"set termguicolors
 set runtimepath+=~/.config/vim,~/.config/vim/after
 set viminfo+=n~/.config/vim/viminfo
 set viewdir=~/.config/vim/view
@@ -173,7 +173,7 @@ Plugin 'SirVer/ultisnips'
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-let g:UltiSnipsSnippetDirectories = ["$HOME/.config/vim/ultisnips"]
+let g:UltiSnipsSnippetDirectories = ["~/.config/vim/UltiSnips"]
 
 " 3.4 Nerdtree
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -213,6 +213,7 @@ Plugin 'dawikur/base16-vim-airline-themes'
 " appearance
 let g:airline_theme = "base16_cupcake"
 let g:airline_stl_path_style = "short"
+let g:airline_powerline_fonts = 1
 let g:airline_detect_spell = 0
 
 " extensions
@@ -221,9 +222,8 @@ let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_buffers = 0
 let g:airline#extensions#tabline#show_splits = 0
 let g:airline#extensions#tabline#show_tab_count = 0
-let g:airline#extensions#tabline#show_close_button = 1
+let g:airline#extensions#tabline#show_close_button = 0
 let g:airline#extensions#tabline#tabs_label = ""
-let g:airline#extensions#tabline#close_symbol = "☒"
 let g:airline#extensions#tabline#formatter = "unique_tail"
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 nmap <leader>1 <Plug>AirlineSelectTab1
@@ -265,6 +265,11 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'preservim/nerdcommenter'
 
 call vundle#end()
+
+" show colors in alacritty
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48:2;%lu;%lu;%lum"
+let t_Co=256
 
 " base16 shell integration (must be after vundle section)
 if filereadable(expand("~/.config/vim/vimrc_background"))

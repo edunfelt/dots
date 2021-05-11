@@ -80,8 +80,8 @@
 ;; 2. Appearance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font
-(setq doom-font (font-spec :family "Anonymice Nerd Font" :size 16)
-      doom-big-font (font-spec :family "Anonymice Nerd Font" :size 20))
+(setq doom-font (font-spec :family "scientifica" :size 16)
+      doom-big-font (font-spec :family "scientifica Bold" :size 18))
 
 ;; Theme
 (load-theme 'base16-cupcake t)
