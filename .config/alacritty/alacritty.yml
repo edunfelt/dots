@@ -21,6 +21,7 @@ window:
     x: 15
     y: 15
 
+# Start flavours
 # Base16 Cupcake - alacritty color config
 # Chris Kempson (http://chriskempson.com)
 colors:
@@ -57,3 +58,4 @@ colors:
     white:   '0x585062'
 
 draw_bold_text_with_bright_colors: false
+# End flavours

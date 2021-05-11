@@ -31,3 +31,8 @@ end = "/* End flavours */"
 file = "~/.config/kitty/base16.conf"
 template = "kitty"
 rewrite = true
+
+[[item]]
+file = "~/.config/alacritty/alacritty.yml"
+template = "alacritty"
+rewrite = false

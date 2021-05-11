@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-04-29
+-- Edited: 2021-05-11
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -199,7 +199,6 @@ myProjects = [Project
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 0) "zotero"
                     spawnOn (myWorkspaces !! 0) (myTerminal ++ " -e vim")
-                    spawnOn (myWorkspaces !! 0) "qutebrowser ':session-load thesis' --nowindow"
                 }
             , Project
                 { projectName = myWorkspaces !! 1
@@ -221,7 +220,6 @@ myProjects = [Project
                  , projectStartHook = Just $ do
                      spawnOn (myWorkspaces !! 3) "zotero"
                      spawnOn (myWorkspaces !! 3) "qutebrowser ':session-load thesis' --nowindow"
-                     spawnOn (myWorkspaces !! 3) (myTerminal ++ " -e fff /media/nas/home")
                  }
              , Project
                  { projectName = myWorkspaces !! 4
@@ -233,8 +231,7 @@ myProjects = [Project
              , Project
                  { projectName = myWorkspaces !! 5
                  , projectDirectory = "$HOME"
-                 , projectStartHook = Just $ do
-                     spawnOn (myWorkspaces !! 5) "spotify"
+                 , projectStartHook = Nothing
                  }
              , Project
                  { projectName = myWorkspaces !! 6
@@ -344,7 +341,6 @@ myManageHook = composeAll
     , className =? "Xscreensaver-settings"      --> doFloat
     , className =? "Blueman-manager"            --> doFloat
     , className =? "zoom"                       --> doFloat
-    , title     =? "Msgcompose"                 --> doFloat
     , title     =? "Picture-in-Picture"         --> doFloat
     ]
     <+> composeOne
@@ -491,6 +487,7 @@ treeActions = [ Node (TS.TSNode "Session" "" (return ()))
                      , Node (TS.TSNode "bashrc" "The bourne again shell" (spawn (myEditor ++ "~/.config/bash/bashrc"))) []
                      , Node (TS.TSNode "xmonad" "XMonad configuration" (spawn (myEditor ++ "~/.config/xmonad/xmonad.hs"))) []
                      , Node (TS.TSNode "xmobar" "XMobar configuration" (spawn (myEditor ++ "~/.config/xmonad/xmobarrc"))) []
+                     , Node (TS.TSNode "alacritty" "Alacritty terminal emulator" (spawn (myEditor ++ "~/.config/alacritty/alacritty.yml"))) []
                      , Node (TS.TSNode "kitty" "Kitty terminal emulator" (spawn (myEditor ++ "~/.config/kitty/kitty.conf"))) []
                      ]
               , Node (TS.TSNode "Internet" "" (return ()))
@@ -562,9 +559,9 @@ myKeys =
     , ("M-<Backspace>", promote)                                                -- promote focused to master
     , ("M-q", kill)                                                             -- kill focused
     , ("M-S-q", killAll)                                                        -- kill workspace
-    , ("M-<Tab>", nextNonEmptyWS)                                   -- move to next workspace
-    , ("M-S-<Tab>", prevNonEmptyWS)                                 -- move to previous workspace
-    , ("M-0", nextNonEmptyWS)                                          -- move focused to next empty workspace
+    , ("M-<Tab>", nextNonEmptyWS)                                               -- move to next workspace
+    , ("M-S-<Tab>", prevNonEmptyWS)                                             -- move to previous workspace
+    , ("M-0", nextNonEmptyWS)                                                   -- move focused to next empty workspace
     , ("M-w", switchProjectPrompt myPromptTheme)                                -- switch project
     , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
     , ("M-S-r", renameProjectPrompt myPromptTheme)                              -- rename current project

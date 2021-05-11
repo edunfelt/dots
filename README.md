@@ -20,7 +20,7 @@ Lockscreen
 ## Current setup
 ### What I use
 * Colorscheme: [Base16](https://github.com/chriskempson/base16) Cupcake and [flavours](https://github.com/misterio77/flavours)
-* Font: [Anonymice Nerd Font](https://www.nerdfonts.com/#home)
+* Font: [scientifica](https://github.com/NerdyPepper/scientifica)
 * WM: [Xmonad](https://xmonad.org/)
 * Bar: [Xmobar](https://xmobar.org/)
 * Menu: [dmenu](https://tools.suckless.org/dmenu/), [XMonad TreeSelect](https://hackage.haskell.org/package/xmonad-contrib-0.16/docs/XMonad-Actions-TreeSelect.html), and [XMonad Prompts](https://hackage.haskell.org/package/xmonad-contrib-0.16/docs/XMonad-Prompt.html)
@@ -28,6 +28,7 @@ Lockscreen
 * Session lock: [i3lock-color](https://github.com/Raymo111/i3lock-color)
 * Editor: [Vim](https://www.vim.org/)
 * File manager:[fff](https://github.com/dylanaraps/fff)
-* Browser: [qutebrowser](https://qutebrowser.org/)
+* Browser: [qutebrowser](https://qutebrowser.org/) and Firefox
+* Terminal: [Alacritty](https://github.com/alacritty/alacritty)
 * Shell: [Bash](https://www.gnu.org/software/bash/)
 * OS: [Arch Linux](https://archlinux.org/)
