@@ -641,6 +641,9 @@ myKeys =
     , ("M-C-d", namedScratchpadAction myScratchPads "emacs")
     , ("M-C-p", namedScratchpadAction myScratchPads "htop")
     , ("M-C-c", namedScratchpadAction myScratchPads "telegram")
+    , ("M-S-p", spawn "touch ~/.cache/pomodoro_session")
+    , ("M-S-l", spawn "echo '50 10' > ~/.cache/pomodoro_session")
+    , ("M-S-x", spawn "rm ~/.cache/pomodoro_session")
     ]
     ++
     [("M-c " ++ (show i), windows $ copy ws) | (i,ws) <- zip [1..9] myWorkspaces]   -- copy window to workspace

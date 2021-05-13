@@ -5,6 +5,7 @@ Config { font = "xft:scientifica:pixelsize=16:antialias=true:hinting=true,FontAw
        , allDesktops = True
        , persistent = True
        , commands = [ Run CommandReader "while true; do current_song; sleep 2; done" "song"
+                    , Run CommandReader "pymodoro -ah -l5" "pom"
                     , Run Weather "ESSB" [ "--template", "\xf2c7 <tempC>" 
                                , "--Low"      , "10"      -- units: %
                                , "--High"     , "20"      -- units: %
@@ -42,6 +43,6 @@ Config { font = "xft:scientifica:pixelsize=16:antialias=true:hinting=true,FontAw
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "  %StdinReader% } ♪%song% ♪ {  %tmp%    %vol%   %battery%  |  %date%  "
+       , template = "  %StdinReader% } ♪%song% ♪ {  %tmp%    %vol%   %battery%  |   %pom%  %date%  "
        }
 
