@@ -5,14 +5,13 @@
 # |__.__||__||__|__||__|____|__| |____|
 #                                     
 # Emilia's xinitrc <3
-# Edited: 2021-04-22
+# Edited: 2021-05-19
 # Author: Emilia Dunfelt, edun@dunfelt.se
 # 
 
 ###########################################
 # X-stuff
 ###########################################
-setxkbmap se
 xrdb ~/.Xresources
 xsetroot -cursor_name left_ptr &
 
