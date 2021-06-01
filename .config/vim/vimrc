@@ -5,7 +5,7 @@
 "  \___/ |__||__|__|__|__| |____|                                        "
 "                                                                        "
 " Emilia's vimrc <3                                                      "
-" Edited: 2021-05-11                                                     "
+" Edited: 2021-06-01                                                     "
 " Author: Emilia Dunfelt, edun@dunfelt.se                                "
 "                                                                        "
 " Structure:                                                             "
@@ -28,8 +28,8 @@
 " 1. General settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible                                    " be iMproved
-set background=light
-"set termguicolors
+set background=dark
+set termguicolors
 set runtimepath+=~/.config/vim,~/.config/vim/after
 set viminfo+=n~/.config/vim/viminfo
 set viewdir=~/.config/vim/view
@@ -116,6 +116,10 @@ Plugin 'VundleVim/Vundle.vim'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " base16
 Plugin 'fnune/base16-vim'
+
+" everforest
+Plugin 'sainnhe/everforest'
+let g:everforest_background = "medium"
 
 " syntax highlighting
 Plugin 'sheerun/vim-polyglot'
@@ -211,7 +215,7 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'dawikur/base16-vim-airline-themes'
 
 " appearance
-let g:airline_theme = "base16_cupcake"
+let g:airline_theme = "everforest"
 let g:airline_stl_path_style = "short"
 let g:airline_powerline_fonts = 1
 let g:airline_detect_spell = 0
@@ -267,12 +271,14 @@ Plugin 'preservim/nerdcommenter'
 call vundle#end()
 
 " show colors in alacritty
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48:2;%lu;%lu;%lum"
-let t_Co=256
+"let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+"let &t_8b = "\<Esc>[48:2;%lu;%lu;%lum"
+"let t_Co=256
 
 " base16 shell integration (must be after vundle section)
-if filereadable(expand("~/.config/vim/vimrc_background"))
-  let base16colorspace=256
-  source ~/.config/vim/vimrc_background
-endif
+"if filereadable(expand("~/.config/vim/vimrc_background"))
+  "let base16colorspace=256
+  "source ~/.config/vim/vimrc_background
+"endif
+
+colorscheme everforest

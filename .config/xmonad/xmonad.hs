@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-05-11
+-- Edited: 2021-06-01
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 -- Structure:
@@ -63,6 +63,7 @@ import XMonad.Hooks.ManageDocks                          -- don't cover the bar 
 import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
 import XMonad.ManageHook
 import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.EwmhDesktops                         -- recognize windows i.e. in Zoom
 
 -- 1.3 Layout --------------------------------------------------------------------------------
 import XMonad.Layout.WindowNavigation                    -- window navigation
@@ -110,7 +111,7 @@ import Data.Tree
 ----------------------------------------------------------------------------------------------
 
 myTerminal :: [Char]
-myTerminal                  = "alacritty"
+myTerminal                  = "kitty"
 
 myEditor :: [Char]
 myEditor                    = myTerminal ++ " -e vim "
@@ -119,22 +120,29 @@ myModMask :: KeyMask
 myModMask                   = mod4Mask
 
 -- 2.1 Colors --------------------------------------------------------------------------------
-color0                      = "#fbf1f2"
-color1                      = "#d57e85"
-color2                      = "#a3b367"
-color3                      = "#dcb16c"
-color4                      = "#7297b9"
-color5                      = "#bb99b4"
-color6                      = "#69a9a7"
-color7                      = "#8b8198"
-color8                      = "#bfb9c6"
-color9                      = "#ebb790"
-color10                     = "#f2f1f4"
-color11                     = "#d8d5dd"
-color12                     = "#a59daf"
-color13                     = "#72677e"
-color14                     = "#baa58c"
-color15                     = "#585062"
+bg0                         = "#2F383E"
+bg1                         = "#374247"
+bg2                         = "#404C51"
+bg3                         = "#4A555B"
+bg4                         = "#525C62"
+bgVisual                    = "#573E4C"
+bgRed                       = "#544247"
+bgGreen                     = "#445349"
+bgBlue                      = "#3B5360"
+bgYellow                    = "#504F45"
+
+fg                          = "#D3C6AA"
+red                         = "#E67E80"
+orange                      = "#E69875"
+yellow                      = "#DBBC7F"
+green                       = "#A7C080"
+aqua                        = "#83C092"
+blue                        = "#7FBBB3"
+purple                      = "#D699B6"
+grey0                       = "#7C8377"
+grey1                       = "#868D80"
+grey2                       = "#999F93"
+
 
 -- 2.2 Theme ----------------------------------------------------------------------------------
 myFont :: [Char]
@@ -144,10 +152,10 @@ myBorderWidth :: Dimension
 myBorderWidth               = 3
 
 myFocusedBorderColor :: [Char]
-myFocusedBorderColor        = color5
+myFocusedBorderColor        = green
 
 myNormalBorderColor :: [Char]
-myNormalBorderColor         = color11
+myNormalBorderColor         = bg2
 
 -- 2.3 Xmobar ---------------------------------------------------------------------------------
 myLogHook :: [Handle] -> X ()
@@ -159,11 +167,11 @@ myWsBar        = "xmobar ~/.config/xmonad/xmobarrc"
 -- 2.4 PP settings ---------------------------------------------------------------------------------
 wsPP :: PP
 wsPP           = xmobarPP { ppOrder               = id
-                          , ppTitle               = xmobarColor   color5 "" . shorten 50
-                          , ppCurrent             = xmobarColor   color4 "" . wrap "{ " " }"
-                          , ppUrgent              = xmobarColor   color1 ""
-                          , ppVisible             = xmobarColor   color8 "" 
-                          , ppHidden              = xmobarColor   color8 "" 
+                          , ppTitle               = xmobarColor   green "" . shorten 50
+                          , ppCurrent             = xmobarColor   blue "" . wrap "[ " " ]"
+                          , ppUrgent              = xmobarColor   red ""
+                          , ppVisible             = xmobarColor   bg3 "" 
+                          , ppHidden              = xmobarColor   bg3 "" 
                           , ppHiddenNoWindows     = const ""
                           , ppSep                 = " : "
                           , ppWsSep               = " "
@@ -258,11 +266,11 @@ myProjects = [Project
 myPromptTheme :: XPConfig
 myPromptTheme = def
     { font = myFont
-    , bgColor = color7
-    , fgColor = color0
-    , fgHLight = color0
-    , bgHLight = color4
-    , borderColor = color14
+    , bgColor = bg1
+    , fgColor = fg
+    , fgHLight = fg
+    , bgHLight = bg4
+    , borderColor = bg1
     , promptBorderWidth = 0
     , height = 20
     , position = Bottom
@@ -290,12 +298,12 @@ bsp = renamed [Replace "bsp"]
 
 -- Tabbed layout theme
 myTabConfig :: Theme
-myTabConfig = def { inactiveColor           = color11
-                    , inactiveBorderColor   = color8
-                    , inactiveTextColor     = color12
-                    , activeColor           = color5
-                    , activeBorderColor     = color5
-                    , activeTextColor       = color0
+myTabConfig = def { inactiveColor           = bg1
+                    , inactiveBorderColor   = bg1
+                    , inactiveTextColor     = grey2
+                    , activeColor           = bg2
+                    , activeBorderColor     = bg2
+                    , activeTextColor       = fg
                     , fontName              = myFont
                     }
     
@@ -342,6 +350,7 @@ myManageHook = composeAll
     , className =? "Blueman-manager"            --> doFloat
     , className =? "zoom"                       --> doFloat
     , title     =? "Picture-in-Picture"         --> doFloat
+    , className =? "floatTerm"                  --> doFloat
     ]
     <+> composeOne
     [ currentWs =? "msc"               -?> doCenterFloat
@@ -353,10 +362,10 @@ myManageHook = composeAll
 
 -- 5.2 Scratchpads ----------------------------------------------------------------------------
 myScratchPads :: [NamedScratchpad]
-myScratchPads = [ NS "htop"     "xterm -e htop"
+myScratchPads = [ NS "htop"     (myTerminal ++ " --class=floatTerm -e htop")
                                 (title =? "htop")
                                 (customFloating $ W.RationalRect 0.7 0.1 0.25 0.2)
-                , NS "fff"      "xterm -e fff"
+                , NS "fff"      (myTerminal ++ " --class=floatTerm -e fff")
                                 (title =? "fff")
                                 (customFloating $ centeredRect 0.15 0.25)
                 , NS "pcmanfm"  "pcmanfm"
@@ -368,8 +377,10 @@ myScratchPads = [ NS "htop"     "xterm -e htop"
                 , NS "telegram" "telegram-desktop"
                                 (className =? "TelegramDesktop")
                                 (customFloating $ W.RationalRect 0.8 0.3 0.2 0.3)
+                , NS "irc"      (myTerminal ++ " --class=floatTerm -e weechat")
+                                (title =? "weechat")
+                                (customFloating $ centeredRect 0.5 0.4)
                 ]
-  where
 
 -- 5.3 Float cycling -------------------------------------------------------------------------
 cycleFloat :: [W.RationalRect] -> Window -> WindowSet -> WindowSet
@@ -512,12 +523,12 @@ treeActions = [ Node (TS.TSNode "Session" "" (return ()))
 tsConfig :: TS.TSConfig a
 tsConfig = TS.TSConfig
     { TS.ts_hidechildren   = True
-    , TS.ts_background     = 0xc0c0c0c0
+    , TS.ts_background     = 0xc1222222
     , TS.ts_font           = myFont
-    , TS.ts_node           = (0xfff2f1f4, 0xffbfb9c6)
-    , TS.ts_nodealt        = (0xfff2f1f4, 0xffa59daf)
-    , TS.ts_highlight      = (0xfffbf1f2, 0xffd57e85)
-    , TS.ts_extra          = 0xffd57e85
+    , TS.ts_node           = (0xff999F93, 0xff4A555B)
+    , TS.ts_nodealt        = (0xff999F93, 0xff525C62)
+    , TS.ts_highlight      = (0xff999F93, 0xff573E4C)
+    , TS.ts_extra          = 0xff7FBBB3
     , TS.ts_node_width     = 200
     , TS.ts_node_height    = 30
     , TS.ts_originX        = 0
@@ -549,7 +560,7 @@ myKeys =
     [ ("M-<Return>", spawn myTerminal)                                          -- open a terminal
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
-    , ("M-p", spawn "dmenu_run -nf '#FBF1F2' -nb '#8B8198' -sb '#BB99B4' -sf '#585062' -fn 'scientifica:pixelsize=16'")
+    , ("M-p", spawn "dmenu_run -nf '#D3C6AA' -nb '#2F383E' -sb '#573E4C' -sf '#D3C6AA' -fn 'scientifica:pixelsize=16'")
     
 -- 6.2 Navigation ----------------------------------------------------------------------------
     , ("M-j", windows W.focusDown)                                              -- move focus up
@@ -641,6 +652,7 @@ myKeys =
     , ("M-C-d", namedScratchpadAction myScratchPads "emacs")
     , ("M-C-p", namedScratchpadAction myScratchPads "htop")
     , ("M-C-c", namedScratchpadAction myScratchPads "telegram")
+    , ("M-C-i", namedScratchpadAction myScratchPads "irc")
     , ("M-S-p", spawn "echo '25 5' > ~/.cache/pomodoro_session")
     , ("M-S-l", spawn "echo '50 10' > ~/.cache/pomodoro_session")
     , ("M-S-x", spawn "rm ~/.cache/pomodoro_session")
@@ -681,6 +693,7 @@ main = do
     n <- countScreens
     xmprocs <- mapM (\i -> spawnPipe $ myWsBar ++ " -x " ++ show i) [0..n-1]
     xmonad 
+        $ ewmh
         $ docks 
         $ dynamicProjects myProjects 
         $ myConfig xmprocs

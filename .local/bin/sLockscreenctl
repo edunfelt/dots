@@ -14,12 +14,12 @@
 
 ###########################################
 
-textColor=fffbf1f2
-font="DM Mono"
+textColor=#D3C6AA
+font=scientifica
 
 #Backgrounds available: image, blur (i3lock-color blur method), blurAndDim (uses scrot and imagemagick, slower)
 backgroundType=image
-image=$HOME/Pictures/Wallpapers/dragon.png
+image=$HOME/Pictures/Wallpapers/solar-system.jpg
 blurStrength=5
 blur2Strength=0x10
 dimStrength=60%
@@ -36,8 +36,8 @@ dateSize=30
 verifyText=""
 wrongText=""
 noInputText="___"
-inputTypeColor=ffbb99b4
-inputDeleteColor=ffd57e85
+inputTypeColor=#A7C080
+inputDeleteColor=#E67E80
 greeterSize=20
 
 # Stop all players on suspend
@@ -54,9 +54,9 @@ insideColor=00000000
 insideVerifyingColor=00000000
 insideWrongColor=00000000
 ringColor=00000055
-ringVerifyingColor=ffbb99b4
-ringWrongColor=ffd57e85
-separatorColor=ff8b8198
+ringVerifyingColor=#83C092
+ringWrongColor=#E69875
+separatorColor=00000000
 
 # Settings for the bars
 # 0 = down, 1 = up, 2 = both
@@ -81,25 +81,25 @@ lock() {
 	case "$indicatorType" in
 	circle)
 		args="--pass-media-keys --redraw-thread --force-clock \
---veriftext=$verifyText --wrongtext=$wrongText --noinputtext=$noInputText \
+--verif-text=$verifyText --wrong-text=$wrongText --noinput-text=$noInputText \
 --radius=$radius --ring-width=$ringWidth \
---insidecolor=$insideColor --insidevercolor=$insideVerifyingColor --insidewrongcolor=$insideWrongColor --ringcolor=$ringColor --ringvercolor=$ringVerifyingColor --ringwrongcolor=$ringWrongColor --line-uses-ring \
---keyhlcolor=$inputTypeColor --bshlcolor=$inputDeleteColor --separatorcolor=$separatorColor \
---verifcolor=$textColor --wrongcolor=$textColor \
---timecolor=$textColor --timestr=$timeString --time-font=$font --timesize=$timeSize \
---datecolor=$textColor --datestr=$dateString  --date-font=$font --datesize=$dateSize \
---greetertext=$greeterText --greetercolor=$textColor --greeter-font=$font --greetersize=$greeterSize"
+--inside-color=$insideColor --insidever-color=$insideVerifyingColor --insidewrong-color=$insideWrongColor --ring-color=$ringColor --ringver-color=$ringVerifyingColor --ringwrong-color=$ringWrongColor --line-uses-ring \
+--keyhl-color=$inputTypeColor --bshl-color=$inputDeleteColor --separator-color=$separatorColor \
+--verif-color=$textColor --wrong-color=$textColor \
+--time-color=$textColor --time-str=$timeString --time-font=$font --time-size=$timeSize \
+--date-color=$textColor --date-str=$dateString  --date-font=$font --date-size=$dateSize \
+--greeter-text=$greeterText --greeter-color=$textColor --greeter-font=$font --greeter-size=$greeterSize"
 		;;
 	bars)
 		args="--pass-media-keys --redraw-thread --force-clock \
 --bar-indicator --bar-direction=$barDirection --bar-max-height=$barMaxHeight --bar-count=$barCount --bar-base-width=$barBaseWidth --bar-color=$barBaseColor --bar-step=$barStep --bar-periodic-step=$barPeriodicStep --bar-position=$barPosition \
---veriftext=$verifyText --wrongtext=$wrongText --noinputtext=$noInputText \
---insidecolor=$insideColor --insidevercolor=$insideVerifyingColor --insidewrongcolor=$insideWrongColor --ringcolor=$ringColor --ringvercolor=$ringVerifyingColor --ringwrongcolor=$ringWrongColor --line-uses-ring \
---keyhlcolor=$inputTypeColor --bshlcolor=$inputDeleteColor --separatorcolor=$separatorColor \
---verifcolor=$textColor --wrongcolor=$textColor \
---timecolor=$textColor --timestr=$timeString --time-font=$font --timesize=$timeSize \
---datecolor=$textColor --datestr=$dateString  --date-font=$font --datesize=$dateSize \
---greetertext=$greeterText --greetercolor=$textColor --greeter-font=$font --greetersize=$greeterSize"
+--verif-text=$verifyText --wrong-text=$wrongText --noinput-text=$noInputText \
+--inside-color=$insideColor --insidever-color=$insideVerifyingColor --insidewrong-color=$insideWrongColor --ring-color=$ringColor --ringver-color=$ringVerifyingColor --ringwrong-color=$ringWrongColor --line-uses-ring \
+--keyhl-color=$inputTypeColor --bshl-color=$inputDeleteColor --separator-color=$separatorColor \
+--verif-color=$textColor --wrong-color=$textColor \
+--time-color=$textColor --time-str=$timeString --time-font=$font --time-size=$timeSize \
+--date-color=$textColor --date-str=$dateString  --date-font=$font --date-size=$dateSize \
+--greeter-text=$greeterText --greeter-color=$textColor --greeter-font=$font --greeter-size=$greeterSize"
 		;;
 	*)
 		args=""
@@ -108,7 +108,7 @@ lock() {
 
 	case "$backgroundType" in
 	image)
-		background="-i $image"
+		background="-i $image -C"
 		;;
 	blur)
 		background="--blur=$blurStrength"
@@ -123,7 +123,7 @@ lock() {
 	esac
 
 	echo ${dateString[@]}
-	pgrep i3lock || i3lock $args --datestr="%A,%d %B" --greetertext="$greeterText" $background $extraArgs
+	pgrep i3lock || i3lock $args --date-str="%A,%d %B" --greeter-text="$greeterText" $background $extraArgs
 
 }
 

@@ -2,35 +2,35 @@
 # Base16 Cupcake
 # Author: Chris Kempson (http://chriskempson.com)
 
-set default-bg                  "#fbf1f2"
-set default-fg                  "#f2f1f4"
+set default-bg                  "#2F383E"
+set default-fg                  "#D3C6AA"
 
-set statusbar-fg                "#a59daf"
-set statusbar-bg                "#d8d5dd"
+set statusbar-fg                "#D3C6AA"
+set statusbar-bg                "#374247"
 
-set inputbar-bg                 "#fbf1f2"
-set inputbar-fg                 "#585062"
+set inputbar-bg                 "#3B5360"
+set inputbar-fg                 "#D3C6AA"
 
-set notification-bg             "#fbf1f2"
-set notification-fg             "#585062"
+set notification-bg             "#404C51"
+set notification-fg             "#D3C6AA"
 
-set notification-error-bg       "#fbf1f2"
-set notification-error-fg       "#D57E85"
+set notification-error-bg       "#573E4C"
+set notification-error-fg       "#D3C6AA"
 
-set notification-warning-bg     "#fbf1f2"
-set notification-warning-fg     "#D57E85"
+set notification-warning-bg     "#445349"
+set notification-warning-fg     "#D3C6AA"
 
-set highlight-color             "#DCB16C"
-set highlight-active-color      "#7297B9"
+set highlight-color             "#E69875"
+set highlight-active-color      "#DBBC7F"
 
-set completion-bg               "#f2f1f4"
-set completion-fg               "#7297B9"
+set completion-bg               "#374247"
+set completion-fg               "#D3C6AA"
 
-set completion-highlight-fg     "#585062"
-set completion-highlight-bg     "#7297B9"
+set completion-highlight-fg     "#D3C6AA"
+set completion-highlight-bg     "#A7C080"
 
-set recolor-lightcolor          "#fbf1f2"
-set recolor-darkcolor           "#72677E"
+set recolor-lightcolor          "#2F383E"
+set recolor-darkcolor           "#D3C6AA"
 
 set recolor                     "true"
 set recolor-keephue             "true"

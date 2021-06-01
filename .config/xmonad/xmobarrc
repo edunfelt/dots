@@ -1,48 +1,32 @@
 Config { font = "xft:scientifica:pixelsize=16:antialias=true:hinting=true,FontAwesome:pixelsize=16"
-       , bgColor = "#fbf1f2"
-       , fgColor = "#bb99b4"
+       , bgColor = "#2F383E"
+       , fgColor = "#D3C6AA"
        , position  = TopW L 100
        , allDesktops = True
        , persistent = True
        , commands = [ Run CommandReader "while true; do current_song; sleep 2; done" "song"
                     , Run CommandReader "pymodoro -ah -l5" "pom"
-                    , Run Weather "ESSB" [ "--template", "\xf2c7 <tempC>" 
-                               , "--Low"      , "10"      -- units: %
-                               , "--High"     , "20"      -- units: %
-                               , "--low"      , "#7297b9"
-                               , "--normal"   , "#bb99b4"
-                               , "--high"     , "#d57e85"
-                               , "--ppad"      , "3"
-                               , "--width"     , "3"
-                               , "--maxtwidth" , "18"
-                               ] 6000
-
                     , Run Com "/bin/bash" ["-c", "~/.local/bin/get_volume"] "vol" 1
-
                     , Run Com "/bin/bash" ["-c",  "~/.local/bin/current_weather"] "tmp" 6000
-
                     , Run Battery [ "--template"  , "<leftipat> <acstatus>"
                              , "--Low"       , "30"      -- units: %
                              , "--High"      , "70"      -- units: %
-                             , "--low"       , "#d57e85"
-                             , "--normal"    , "#bb99b4"
-                             , "--high"      , "#69a9a7"
+                             , "--low"       , "#E67E80"
+                             , "--normal"    , "#D3C6AA"
+                             , "--high"      , "#A7C080"
                              , "--maxtwidth" , "10"
                              , "--"
                                , "--on-icon-pattern"   , "\xf0e7"
                                , "--off-icon-pattern"  , "\xf241"
                                , "--idle-icon-pattern" , "\xf240"
-                               , "-o" , "<left><fc=#bb99b4>%</fc>"            -- discharging status
-                               , "-O" , "<left><fc=#bb99b4>%</fc>"            -- plugged in status
-                               , "-i" , "<fc=#bb99b4>idle</fc>"               -- charged status
+                               , "-o" , "<left><fc=#D3C6AA>%</fc>"            -- discharging status
+                               , "-O" , "<left><fc=#D3C6AA>%</fc>"            -- plugged in status
+                               , "-i" , "<fc=#D3C6AA>idle</fc>"               -- charged status
                              ] 50
-
                     , Run Date "\xf133 %b %d - %H:%M" "date" 10
-
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
        , template = "  %StdinReader% } ♪%song% ♪ {  %tmp%    %vol%   %battery%  |   %pom%  %date%  "
        }
-
