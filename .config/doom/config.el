@@ -6,7 +6,7 @@
 ;; |____|_____|__|__|__| |__||___  |__|_____||__|                             ;;
 ;;                           |_____|                                          ;;
 ;; Emilia's config.el <3                                                      ;;
-;; Edited: 2021-04-19                                                         ;;
+;; Edited: 2021-06-30                                                         ;;
 ;; Author: Emilia Dunfelt, edun@dunfelt.se                                    ;;
 ;;                                                                            ;;
 ;; Structure:                                                                 ;;
@@ -72,19 +72,15 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; Keybindings
-(map! :leader "f a"#'helm-bibtex)  ; "find article" : opens up helm bibtex for search.
-(map! :leader "o n"#'org-noter)    ; "org noter"  : opens up org noter in a headline
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 2. Appearance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font
-(setq doom-font (font-spec :family "scientifica" :size 16)
-      doom-big-font (font-spec :family "scientifica Bold" :size 18))
+(setq doom-font (font-spec :family "Iosevka" :size 14)
+      doom-big-font (font-spec :family "Iosevka Bold" :size 14))
 
 ;; Theme
-(load-theme 'base16-cupcake t)
+(setq doom-theme 'doom-solarized-light)
 
 ;; Line numbers
 (setq display-line-numbers-type t)
@@ -152,77 +148,6 @@
 (setq org-agenda-files (list "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/uni.org"
                              "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/home.org"))
 
-;; Helm-Bibtex
-(use-package! helm-bibtex
-  :after org
-  :init
-  :config
-  )
-
-(setq bibtex-format-citation-functions
-      '((org-mode . (lambda (x) (insert (concat
-                                         "\\cite{"
-                                         (mapconcat 'identity x ",")
-                                         "}")) ""))))
-(setq
-      bibtex-completion-pdf-field "file"
-      bibtex-completion-bibliography
-      '("/media/nas/home/00-09_Meta/03_Zotero/export.bib")
-      bibtex-completion-library-path '("/media/nas/home/00-09_Meta/03_Zotero/")
-      )
-
-;; Org-Roam-Bibtex
-(use-package! org-roam-bibtex
-  :load-path "/media/nas/home/00-09_Meta/03_Zotero/export.bib" ;Modify with your own path
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :bind (:map org-mode-map
-         (("C-c n a" . orb-note-actions))))
-(setq orb-templates
-      '(("r" "ref" plain (function org-roam-capture--get-point) ""
-         :file-name "${citekey}"
-         :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n" ; <--
-         :unnarrowed t)))
-(setq orb-preformat-keywords   '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
-
-(setq orb-templates
-      '(("n" "ref+noter" plain (function org-roam-capture--get-point)
-         ""
-         :file-name "${slug}"
-         :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+ROAM_TAGS:
-
-- tags ::
-- keywords :: ${keywords}
-\* ${title}
-:PROPERTIES:
-:Custom_ID: ${citekey}
-:URL: ${url}
-:AUTHOR: ${author-or-editor}
-:NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
-:NOTER_PAGE:
-:END:")))
-
-;; Org Roam
-(setq org-roam-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/org-roam")
-(after! org-roam
-        (map! :leader
-            :prefix "n"
-            :desc "org-roam" "l" #'org-roam
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
-            :desc "org-roam-find-file" "f" #'org-roam-find-file
-            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-capture" "c" #'org-roam-capture))
-(after! org-roam
-      (setq org-roam-ref-capture-templates
-            '(("r" "ref" plain (function org-roam-capture--get-point)
-               "%?"
-               :file-name "websites/${slug}"
-               :head "#+TITLE: ${title}
-    #+ROAM_KEY: ${ref}
-    - source :: ${ref}"
-               :unnarrowed t))))  ; capture template to grab websites. Requires org-roam protocol.
-
 ;; Org-Journal
 (use-package org-journal
   :init
@@ -240,35 +165,6 @@
 
 (setq org-journal-enable-agenda-integration t)
 
-;; Deft
-(use-package deft
-      :after org
-      :bind
-      ("C-c n d" . deft)
-      :custom
-      (deft-recursive t)
-      (deft-use-filter-string-for-filename t)
-      (deft-default-extension "org")
-      (deft-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/org-roam/"))
-
-;; Org-Roam-Server
-(use-package! org-roam-server
-  :after org-roam
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-label-truncate t
-        org-roam-server-label-truncate-length 60
-        org-roam-server-label-wrap-length 20)
-  (defun org-roam-server-open ()
-    "Ensure the server is active, then open the roam graph."
-    (interactive)
-    (org-roam-server-mode 1)
-    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
-(after! org-roam
-  (org-roam-server-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 4. Yasnippet

@@ -1,32 +1,30 @@
-Config { font = "xft:scientifica:pixelsize=16:antialias=true:hinting=true,FontAwesome:pixelsize=16"
-       , bgColor = "#2F383E"
-       , fgColor = "#D3C6AA"
+Config { font = "xft:Iosevka:pixelsize=12:antialias=true:hinting=true"
+       , bgColor = "#eee8d5"
+       , fgColor = "#657b83"
        , position  = TopW L 100
        , allDesktops = True
        , persistent = True
-       , commands = [ Run CommandReader "while true; do current_song; sleep 2; done" "song"
-                    , Run CommandReader "pymodoro -ah -l5" "pom"
-                    , Run Com "/bin/bash" ["-c", "~/.local/bin/get_volume"] "vol" 1
-                    , Run Com "/bin/bash" ["-c",  "~/.local/bin/current_weather"] "tmp" 6000
-                    , Run Battery [ "--template"  , "<leftipat> <acstatus>"
-                             , "--Low"       , "30"      -- units: %
-                             , "--High"      , "70"      -- units: %
-                             , "--low"       , "#E67E80"
-                             , "--normal"    , "#D3C6AA"
-                             , "--high"      , "#A7C080"
-                             , "--maxtwidth" , "10"
-                             , "--"
-                               , "--on-icon-pattern"   , "\xf0e7"
-                               , "--off-icon-pattern"  , "\xf241"
-                               , "--idle-icon-pattern" , "\xf240"
-                               , "-o" , "<left><fc=#D3C6AA>%</fc>"            -- discharging status
-                               , "-O" , "<left><fc=#D3C6AA>%</fc>"            -- plugged in status
-                               , "-i" , "<fc=#D3C6AA>idle</fc>"               -- charged status
-                             ] 50
-                    , Run Date "\xf133 %b %d - %H:%M" "date" 10
+       , commands = [ Run Date "%b %d %Y  %H:%M:%S" "date" 10
+                    , Run Volume "default" "Master" [ "-t", "vol <volumebar> (<volume>%)" ] 10
+                    , Run Mpris2 "spotify" [ "-t", "<artist> - <title>" ] 10
+                    , Run Cpu [ "-t", "cpu <bar> (<total>%)"
+                              , "-H", "50"
+                              , "--high", "#dc322f"
+                              ] 10
+                    , Run Memory [ "-t", "mem <usedbar> (<usedratio>%)" ] 10
+                    , Run DiskU [ ("/", "hdd <usedbar> (<used>)") ] [] 3600
+                    , Run Battery [ "-t", "bat <leftbar> (<left>%)"
+                                  , "--Low", "20"
+                                  , "--High", "70"
+                                  , "--low", "#dc322f"
+                                  , "--"
+                                  , "-O", "<left><fc=#b58900>%</fc>"  -- plugged in status
+                                  , "-i", "<fc=#268bd2>%</fc>"        -- charged status
+                                  ] 50
                     , Run StdinReader
+                    , Run CommandReader "pymodoro -l10 -e '::' -bp 'brk ' -pp 'pom '" "pom"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "  %StdinReader% } ♪%song% ♪ {  %tmp%    %vol%   %battery%  |   %pom%  %date%  "
+       , template = "  %StdinReader% } ♪ %mpris2% ♪ {<fc=#d33682>%cpu%</fc>  <fc=#6c71c4>%memory%</fc>  <fc=#268bd2>%battery%</fc>  <fc=#2aa198>%default:Master%</fc>  <fc=#859900>%pom%</fc>  %date% "
        }

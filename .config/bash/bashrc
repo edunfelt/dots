@@ -5,7 +5,7 @@
 # |_____|___._|_____||__|__|__| |____|
 #
 # Emilia's bashrc <3
-# Edited: 2021-06-01
+# Edited: 2021-06-30
 # Author: Emilia Dunfelt, edun@dunfelt.se
 #
 
@@ -25,11 +25,16 @@ export VISUAL=vim;
 export EDITOR=vim;
 
 # ps1
-export PS1="\[\e[31m\]✨ \[\e[m\]\W\[\e[31;40m\] >>\[\e[m\] "
+export PS1="\[\e[31m\]✨ \[\e[m\]\W\[\e[31m\] >>\[\e[m\] "
+
+# integrate gtk theme with qt apps
+export QT_QPA_PLATFORMTHEME="gtk2"
+export QT_STYLE_OVERRIDE="gtk2"
 
 # other
 export WEECHAT_HOME="~/.config/weechat"
 export DOOMDIR="~/.config/doom"
+export PF_COL2=0
 
 ########################################################
 # Aliases
@@ -53,8 +58,15 @@ alias cjd='jdfun'
 
 # common directories
 alias uni="cd /media/nas/home/10-19_Education/13_Bachelors_Degree"
-alias num="cd /media/nas/home/20-29_Work/22.03_Numerical_Analysis"
 alias home="cd /media/nas/home"
+
+# todoist aliases
+alias today="todoist --indent l --filter '(overdue | today)'"
+alias tomorrow="todoist --indent l --filter '(tomorrow)'"
+alias upcoming="todoist --indent l --filter '(due after: yesterday)'"
+alias deadline="todoist --indent l --filter '(p1)'"
+alias 22="todoist --indent l --filter '(#TA)'"
+alias 13.28="todoist --indent l --filter '(#BSc)'"
 
 ########################################################
 # Functions
@@ -101,15 +113,15 @@ LS_COLORS=$LS_COLORS:'tw=00;33:ow=01;33:'; export LS_COLORS
 
 # FFF
 # Directory color [0-9]
-export FFF_COL1=4
+export FFF_COL1=6
 # Status background color [0-9]
-export FFF_COL2=5
+export FFF_COL2=2
 # Selection color [0-9] (copied/moved files)
-export FFF_COL3=1
+export FFF_COL3=3
 # Cursor color [0-9]
-export FFF_COL4=6
+export FFF_COL4=5
 # Status foreground color [0-9]
-export FFF_COL5=0
+export FFF_COL5=7
 # Favorites (Bookmarks) (keys 1-9) (dir or file)
 export FFF_FAV1=/media/nas/home
 export FFF_FAV2=/media/nas/home/10-19_Education/

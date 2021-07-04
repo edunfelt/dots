@@ -23,7 +23,7 @@ view       = "default"
 
 # An array with a single value has the same effect as a simple value.
 primary   = ["default"]
-secondary = "cyan" # secondary style is used for code hightlighting
+secondary = "blue" # secondary style is used for code hightlighting
 tertiary  = "green"
 
 # Hex values can use lower or uppercase.
@@ -34,7 +34,7 @@ title_primary   = ["BLUE", "red"] # `BLUE` will be skipped.
 title_secondary = "yellow"
 
 # Lower precision values can use only 3 digits.
-highlight          = "yellow"
+highlight          = "green"
 highlight_inactive = "light yellow"
 # Note: you may want to change hightlight_text for darker terminal themes.
-highlight_text     = "default" # or "black"
+highlight_text     = "white" # or "black"

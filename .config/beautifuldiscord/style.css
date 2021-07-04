@@ -2,22 +2,22 @@
 /* {Cupcake} by {Chris Kempson (http://chriskempson.com)} */
 
 :root {
-  --base00: #2F383E;
-  --base01: #374247;
-  --base02: #404C51;
-  --base03: #4A555B;
-  --base04: #525C62;
-  --base05: #D3C6AA;
-  --base06: #573E4C;
-  --base07: #445349;
-  --base08: #E67E80;
-  --base09: #E69875;
-  --base0A: #DBBC7F;
-  --base0B: #A7C080;
-  --base0C: #83C092;
-  --base0D: #7FBBB3;
-  --base0E: #D699B6;
-  --base0F: #3B5360;
+  --base00: #fdf6e3;
+  --base01: #eee8d5;
+  --base02: #93a1a1;
+  --base03: #839496;
+  --base04: #657b83;
+  --base05: #586e75;
+  --base06: #073642;
+  --base07: #002b36;
+  --base08: #b58900;
+  --base09: #cb4b16;
+  --base0A: #dc322f;
+  --base0B: #d33682;
+  --base0C: #6c71c4;
+  --base0D: #268bd2;
+  --base0E: #2aa198;
+  --base0F: #859900;
 }
 /* End flavours */
 
@@ -32,7 +32,7 @@
     --header-secondary: var(--base04);
     --text-normal: var(--base05);
     --text-muted: var(--base04);
-    --text-link: var(--base08);
+    --text-link: var(--base0D);
     --channels-default: var(--base05);
     --interactive-normal: var(--base04);
     --interactive-hover: var(--base05);
@@ -62,7 +62,7 @@
     --activity-card-background: var(--background-secondary);
 }
 body {
-    font-family: scientifica;
+    font-family: Iosevka;
 }
 .scroller-2FKFPG {
     background-color: var(--background-primary);
@@ -195,7 +195,7 @@ body {
     background-color: var(--header-secondary);
 }
 .panels-j1Uci_ {
-    background-color: var(--background-primary);
+    background-color: var(--background-secondary);
 }
 .navButton-2gQCx- {
     color: var(--interactive-normal);

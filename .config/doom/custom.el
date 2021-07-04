@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
-   '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/2021-18-0503.org"))
+   '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/2021-26-0628.org"))
  '(org-journal-date-format "%A, %d")
  '(org-journal-date-prefix "* ")
  '(org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/")

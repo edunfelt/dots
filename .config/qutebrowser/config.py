@@ -18,24 +18,24 @@ config.load_autoconfig(False)
 # Start flavours
 # base16-qutebrowser (https://github.com/theova/base16-qutebrowser)
 # Base16 qutebrowser template by theova
-# Cupcake scheme by Chris Kempson (http://chriskempson.com)
+# Solarized Light scheme by Ethan Schoonover (modified by aramisgithub)
 
-base00 = "#2F383E"
-base01 = "#374247"
-base02 = "#404C51"
-base03 = "#4A555B"
-base04 = "#525C62"
-base05 = "#D3C6AA"
-base06 = "#E67E80"
-base07 = "#E69875"
-base08 = "#DBBC7F"
-base09 = "#A7C080"
-base0A = "#83C092"
-base0B = "#7FBBB3"
-base0C = "#D699B6"
-base0D = "#573E4C"
-base0E = "#445349"
-base0F = "#3B5360"
+base00 = "#fdf6e3"
+base01 = "#eee8d5"
+base02 = "#93a1a1"
+base03 = "#839496"
+base04 = "#657b83"
+base05 = "#586e75"
+base06 = "#073642"
+base07 = "#002b36"
+base08 = "#dc322f"
+base09 = "#cb4b16"
+base0A = "#b58900"
+base0B = "#859900"
+base0C = "#2aa198"
+base0D = "#268bd2"
+base0E = "#6c71c4"
+base0F = "#d33682"
 
 # set qutebrowser colors
 
@@ -95,7 +95,7 @@ c.colors.contextmenu.disabled.fg = base04
 c.colors.contextmenu.menu.bg = base00
 
 # Foreground color of the context menu. If set to null, the Qt default is used.
-c.colors.contextmenu.menu.fg = base05
+c.colors.contextmenu.menu.fg =  base05
 
 # Background color of the context menu’s selected item. If set to null, the Qt default is used.
 c.colors.contextmenu.selected.bg = base02

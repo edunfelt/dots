@@ -1,2 +1,2 @@
 #!/bin/bash
-echo " $(forecast -l 'Sweden/Stockholm/Stockholm' | grep Outlook | cut -d':' -f2)"
+echo "$(forecast -l 'Sweden/Stockholm/Stockholm' | grep Outlook | cut -d':' -f2)"

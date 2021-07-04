@@ -14,8 +14,8 @@
 
 ###########################################
 
-textColor=#D3C6AA
-font=scientifica
+textColor=#fdf6e3
+font=Iosevka
 
 #Backgrounds available: image, blur (i3lock-color blur method), blurAndDim (uses scrot and imagemagick, slower)
 backgroundType=image
@@ -36,8 +36,8 @@ dateSize=30
 verifyText=""
 wrongText=""
 noInputText="___"
-inputTypeColor=#A7C080
-inputDeleteColor=#E67E80
+inputTypeColor=#859900
+inputDeleteColor=#b58900
 greeterSize=20
 
 # Stop all players on suspend
@@ -54,8 +54,8 @@ insideColor=00000000
 insideVerifyingColor=00000000
 insideWrongColor=00000000
 ringColor=00000055
-ringVerifyingColor=#83C092
-ringWrongColor=#E69875
+ringVerifyingColor=#2aa198
+ringWrongColor=#dc322f
 separatorColor=00000000
 
 # Settings for the bars
