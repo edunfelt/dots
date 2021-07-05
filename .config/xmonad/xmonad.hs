@@ -17,14 +17,13 @@
 -- Basics --------------------------------------------------------------------------------
 import XMonad                                            -- core libraries
 import qualified XMonad.StackSet as W                    -- window stack manipulation
-import XMonad.Prompt                                     -- graphical prompts
 import System.IO                                         -- for xmobar
 
 -- Hooks ---------------------------------------------------------------------------------
+import XMonad.ManageHook
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks                          -- don't cover the bar with windows
 import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
-import XMonad.ManageHook
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.EwmhDesktops                         -- recognize windows i.e. in Zoom
 
@@ -40,10 +39,12 @@ import XMonad.Layout.SubLayouts
 import XMonad.Layout.Simplest
 import XMonad.Layout.MultiToggle as MT
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
+import XMonad.Layout.NoBorders
 import XMonad.Layout.Renamed
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.IndependentScreens
 import XMonad.Layout.Minimize
+import XMonad.Layout.Maximize
 
 -- Actions -------------------------------------------------------------------------------
 import XMonad.Actions.Promote                            -- to move focused window to master
@@ -52,6 +53,7 @@ import XMonad.Actions.WithAll                            -- killAll
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.DynamicProjects
 import XMonad.Actions.GridSelect                         -- experiment with GridSelect
+import XMonad.Actions.WindowMenu                         -- use GridSelect to display window menu
 import XMonad.Actions.TreeSelect as TS
 import XMonad.Actions.CopyWindow
 import XMonad.Actions.Minimize
@@ -63,6 +65,10 @@ import XMonad.Util.EZConfig (additionalKeysP)            -- Emacs-style keybindi
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.SpawnOnce
+
+-- Prompt --------------------------------------------------------------------------------
+import XMonad.Prompt                                     -- graphical prompts
+import XMonad.Prompt.AppendFile                          -- launch prompt to write to file
 
 -- Data ----------------------------------------------------------------------------------
 import qualified Data.Map as M
@@ -282,8 +288,10 @@ myLayoutHook = avoidStruts
              $ addTabs shrinkText myTabConfig 
              $ subLayout [0] (Simplest) 
              $ spacingRaw True (Border 5 5 5 5) True (Border 5 5 5 5) True
+             $ smartBorders
              $ mkToggle (NBFULL ?? NOBORDERS ?? EOT)
              $ minimize
+             $ maximize
              myDefaultLayout
 
 -- Floating layouts -----------------------------------------------------------------------
@@ -607,6 +615,7 @@ myKeys =
     , ("M-f", withFocused $ windows . cycleFloat myFloatLayouts)                -- float cycle window
     , ("M-m", withFocused minimizeWindow)                                       -- minimize window
     , ("M-S-m", withLastMinimized maximizeWindowAndFocus)                       -- un-minimize last minimized
+    , ("M-o", windowMenu)                                                       -- open window menu
 
 -- Resizing ------------------------------------------------------------------------------
     , ("M-h", sendMessage Shrink)                                               -- shrink horizontally
@@ -660,6 +669,7 @@ myKeys =
     , ("M-d g", promptSearchBrowser myPromptTheme mySearchBrowser google)
     , ("M-d m", promptSearchBrowser myPromptTheme mySearchBrowser mathworld)
     , ("M-d s", promptSearchBrowser myPromptTheme mySearchBrowser scholar)
+    , ("M-S-n", appendFilePrompt myPromptTheme "/home/edun/LOG")
     , ("M-S-p", spawn "echo '25 5' > ~/.cache/pomodoro_session")
     , ("M-S-l", spawn "echo '50 10' > ~/.cache/pomodoro_session")
     , ("M-S-x", spawn "rm ~/.cache/pomodoro_session")

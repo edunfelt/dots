@@ -68,6 +68,9 @@ alias deadline="todoist --indent l --filter '(p1)'"
 alias 22="todoist --indent l --filter '(#TA)'"
 alias 13.28="todoist --indent l --filter '(#BSc)'"
 
+# print log
+alias l="cat ~/LOG"
+
 ########################################################
 # Functions
 ########################################################

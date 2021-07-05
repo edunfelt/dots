@@ -22,7 +22,7 @@ Config { font = "xft:Iosevka:pixelsize=12:antialias=true:hinting=true"
                                   , "-i", "<fc=#268bd2>%</fc>"        -- charged status
                                   ] 50
                     , Run StdinReader
-                    , Run CommandReader "pymodoro -l10 -e '::' -bp 'brk ' -pp 'pom '" "pom"
+                    , Run CommandReader "pymodoro -l10 -e ':' -bp 'brk ' -pp 'pom '" "pom"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
