@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-07-04
+-- Edited: 2021-07-06
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 ----------------------------------------------------------------------------------------------
@@ -16,55 +16,54 @@
 
 -- Basics --------------------------------------------------------------------------------
 import XMonad                                            -- core libraries
-import qualified XMonad.StackSet as W                    -- window stack manipulation
 import System.IO                                         -- for xmobar
+import qualified XMonad.StackSet as W                    -- window stack manipulation
 
 -- Hooks ---------------------------------------------------------------------------------
 import XMonad.ManageHook
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ManageDocks                          -- don't cover the bar with windows
 import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
-import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.EwmhDesktops                         -- recognize windows i.e. in Zoom
 
 -- Layout --------------------------------------------------------------------------------
-import XMonad.Layout.WindowNavigation                    -- window navigation
-import XMonad.Layout.BinarySpacePartition
-import XMonad.Layout.ThreeColumns
-import XMonad.Layout.Spacing
-import XMonad.Layout.ResizableTile                       -- change window width/height
-import XMonad.Layout.LimitWindows                        -- increase/decrease number of windows that can be seen
-import XMonad.Layout.Tabbed                              -- tabbed layout
-import XMonad.Layout.SubLayouts
 import XMonad.Layout.Simplest
-import XMonad.Layout.MultiToggle as MT
-import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Renamed
-import XMonad.Layout.PerWorkspace
-import XMonad.Layout.IndependentScreens
 import XMonad.Layout.Minimize
 import XMonad.Layout.Maximize
+import XMonad.Layout.Accordion
+import XMonad.Layout.BinarySpacePartition
+import XMonad.Layout.WindowNavigation                    -- window navigation (needed for tabs)
+import XMonad.Layout.Spacing                             -- window gaps
+import XMonad.Layout.ResizableTile                       -- change window width/height
+import XMonad.Layout.Tabbed                              -- tabbed layout
+import XMonad.Layout.SubLayouts                          -- nested layouts (tabs everywhere)
+import qualified XMonad.Layout.Groups as G               -- create layout groups
+import XMonad.Layout.Groups.Helpers                      -- rearrange and move windows and groups
+import XMonad.Layout.NoBorders                           -- remove borders
+import XMonad.Layout.IndependentScreens                  -- find the number of screens (for xmobar)
+import XMonad.Layout.MultiToggle as MT                   -- apply layout transformers
+import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 
 -- Actions -------------------------------------------------------------------------------
-import XMonad.Actions.Promote                            -- to move focused window to master
 import XMonad.Actions.CycleWS as CWS                     -- cycle through workspaces
 import XMonad.Actions.WithAll                            -- killAll
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.DynamicProjects
-import XMonad.Actions.GridSelect                         -- experiment with GridSelect
-import XMonad.Actions.WindowMenu                         -- use GridSelect to display window menu
 import XMonad.Actions.TreeSelect as TS
-import XMonad.Actions.CopyWindow
-import XMonad.Actions.Minimize
-import XMonad.Actions.Search
+import XMonad.Actions.GridSelect
+import XMonad.Actions.WindowMenu                         -- use GridSelect to display window options
+import XMonad.Actions.CopyWindow                         -- copy windows
+import XMonad.Actions.Minimize                           -- minimize windows
+import XMonad.Actions.Search                             -- search via prompt
+import XMonad.Actions.TagWindows                         -- tags to quickly move focus
 
 -- Utilities -----------------------------------------------------------------------------
 import XMonad.Util.Run                                   -- spawnPipe and hPutStrLn
 import XMonad.Util.EZConfig (additionalKeysP)            -- Emacs-style keybindings
 import XMonad.Util.NamedScratchpad
-import XMonad.Util.WorkspaceCompare
-import XMonad.Util.SpawnOnce
+import XMonad.Util.WorkspaceCompare                      -- sort workspaces
+import XMonad.Util.SpawnOnce                             -- spawn stuff on initial launch
 
 -- Prompt --------------------------------------------------------------------------------
 import XMonad.Prompt                                     -- graphical prompts
@@ -240,6 +239,7 @@ myPromptTheme = def
     , position = Top
     }
 
+
 -----------------------------------------------------------------------------------------------
 -- Layouts
 -----------------------------------------------------------------------------------------------
@@ -259,14 +259,9 @@ myStartupHook = do
     setWMName "LG3D"
 
 -- Layouts --------------------------------------------------------------------------------
-tall = renamed [Replace "tall"]
-     $ ResizableTall 1 (3/100) (6/10) []
-
-threecol = renamed [Replace "threecol"]
-         $ ThreeCol 1 (3/100) (1/2)
-
-bsp = renamed [Replace "bsp"]
-    $ emptyBSP
+tall = ResizableTall 1 (3/100) (6/10) []
+tallAccordion = G.group Accordion (Tall 1 (3/100) (66/100))
+bsp = emptyBSP
 
 -- Tabbed layout theme
 myTabConfig :: Theme
@@ -280,7 +275,7 @@ myTabConfig = def { inactiveColor           = bg1
                     }
     
 myDefaultLayout = tall
-              ||| threecol
+              ||| tallAccordion
               ||| bsp
 
 myLayoutHook = avoidStruts 
@@ -573,44 +568,32 @@ myKeys =
     , ("M-p", spawn "dmenu_run -nf '#839496' -nb '#eee8d5' -sb '#859900' -sf '#fdf6e3' -fn 'Iosevka:pixelsize=13'")
     
 -- Navigation ----------------------------------------------------------------------------
-    , ("M-j", windows W.focusDown)                                              -- move focus up
-    , ("M-k", windows W.focusUp)                                                -- move focus down
-    , ("M-S-j", windows W.swapDown)                                             -- swap focused with next
-    , ("M-S-k", windows W.swapUp)                                               -- swap focused with previous
-    , ("M-<Backspace>", promote)                                                -- promote focused to master
-    , ("M-q", kill)                                                             -- kill focused
-    , ("M-S-q", killAll)                                                        -- kill workspace
-    , ("M-<Tab>", nextNonEmptyWS)                                               -- move to next workspace
-    , ("M-S-<Tab>", prevNonEmptyWS)                                             -- move to previous workspace
-    , ("M-0", nextNonEmptyWS)                                                   -- move focused to next empty workspace
-    , ("M-w", switchProjectPrompt myPromptTheme)                                -- switch project
-    , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
-    , ("M-S-r", renameProjectPrompt myPromptTheme)                              -- rename current project
-    , ("M-g", goToSelected $ gsWnSelConfig myGoColorizer)                       -- go to window
-    , ("M-b", bringSelected $ gsWnBringConfig myBringColorizer)                 -- bring window
-    , ("M-a", treeselectAction tsConfig treeActions)                            -- open TS menu
-    , ("M-S-c", killAllOtherCopies)                                             -- kill all copies of window
-
--- Keypad navigation --------------------------------------------------------------------
--- this part is not relevant anymore, after updating workspaces and new keyboard, but leaving it for now
-    , ("M-<KP_End>", windows $ W.greedyView " \xf120 ")
-    , ("M-S-<KP_End>", windows $ W.shift " \xf120 ")
-    , ("M-<KP_Down>", windows $ W.greedyView " \xf269 ")
-    , ("M-S-<KP_Down>", windows $ W.shift " \xf269 ")
-    , ("M-<KP_Page_Down>", windows $ W.greedyView " \xf001 ")
-    , ("M-S-<KP_Page_Down>", windows $ W.shift " \xf001 ")
-    , ("M-<KP_Left>", windows $ W.greedyView " \xf0e6 ")
-    , ("M-S-<KP_Left>", windows $ W.shift " \xf0e6 ")
-    , ("M-<KP_Begin>", windows $ W.greedyView " \xf085 ")
-    , ("M-S-<KP_Begin>", windows $ W.shift " \xf085 ")
-    , ("M-<KP_Right>", windows $ W.greedyView " \xf19c ")
-    , ("M-S-<KP_Right>", windows $ W.shift " \xf19c ")
-    , ("M-<Page_Up>", prevWS)
-    , ("M-<Page_Down>", nextWS)
+    , ("M-j", focusDown)                                              -- move focus up
+    , ("M-k", focusUp)                                                -- move focus down
+    , ("M-S-j", swapDown)                                             -- swap focused with next
+    , ("M-S-k", swapUp)                                               -- swap focused with previous
+    , ("M-g j", focusGroupDown)                                       -- move group focus up
+    , ("M-g k", focusGroupUp)                                         -- move group focus down
+    , ("M-g h", moveToGroupDown True)                                 -- move window to next group
+    , ("M-g l", moveToGroupUp True)                                   -- move window to previous group
+    , ("M-g g", splitGroup)                                           -- create new group
+    , ("M-<Backspace>", swapMaster)                                   -- promote focused to master
+    , ("M-q", kill)                                                   -- kill focused
+    , ("M-S-q", killAll)                                              -- kill workspace
+    , ("M-<Tab>", nextNonEmptyWS)                                     -- move to next workspace
+    , ("M-S-<Tab>", prevNonEmptyWS)                                   -- move to previous workspace
+    , ("M-w", switchProjectPrompt myPromptTheme)                      -- switch project
+    , ("M-S-w", shiftToProjectPrompt myPromptTheme)                   -- move window to project
+    , ("M-S-r", renameProjectPrompt myPromptTheme)                    -- rename current project
+    , ("M-S-d", changeProjectDirPrompt myPromptTheme)                 -- change project home directory
+    , ("M-S-g", goToSelected $ gsWnSelConfig myGoColorizer)           -- go to window
+    , ("M-S-b", bringSelected $ gsWnBringConfig myBringColorizer)     -- bring window
+    , ("M-a", treeselectAction tsConfig treeActions)                  -- open TS menu
+    , ("M-S-c", killAllOtherCopies)                                   -- kill all copies of window
 
 -- Layout --------------------------------------------------------------------------------
     , ("M-<Space>", sendMessage NextLayout)                                     -- next layout
-    , ("M-S-f", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)   -- fullscreen view
+    , ("M-S-f", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)     -- fullscreen view
     , ("M-S-s", toggleWindowSpacingEnabled >> toggleScreenSpacingEnabled)       -- toggle gaps
     , ("M-f", withFocused $ windows . cycleFloat myFloatLayouts)                -- float cycle window
     , ("M-m", withFocused minimizeWindow)                                       -- minimize window
@@ -622,10 +605,6 @@ myKeys =
     , ("M-l", sendMessage Expand)                                               -- expand horizontally
     , ("M-n", sendMessage MirrorShrink)                                         -- shrink vertically
     , ("M-u", sendMessage MirrorExpand)                                         -- expand vertically
-    , ("M-<KP_Add>", sendMessage (IncMasterN 1))                                -- increase master "size"
-    , ("M-<KP_Subtract>", sendMessage (IncMasterN (-1)))                        -- decrease master "size"
-    , ("M-S-<KP_Add>", increaseLimit)                                           -- increase workspace limit
-    , ("M-S-<KP_Subtract>", decreaseLimit)                                      -- decrease workspace limit
     , ("M-<Left>",    sendMessage $ ExpandTowards L)
     , ("M-<Right>",   sendMessage $ ExpandTowards R)
     , ("M-<Up>",      sendMessage $ ExpandTowards U)
@@ -636,8 +615,6 @@ myKeys =
     , ("M-C-j", sendMessage $ pullGroup D)                                      -- merge with below
     , ("M-C-k", sendMessage $ pullGroup U)                                      -- merge with above
     , ("M-C-l", sendMessage $ pullGroup R)                                      -- merge with right
-    , ("M-C-S-j", onGroup W.focusDown')                                         -- cycle through tabs
-    , ("M-C-S-k", onGroup W.focusUp')                                           -- cycle through tabs
     , ("M-C-m", withFocused (sendMessage . MergeAll))                           -- merge all windows on ws into tabbed
     , ("M-C-u", withFocused (sendMessage . UnMerge))                            -- unmerge tabbed
 
@@ -653,22 +630,37 @@ myKeys =
     , ("<XF86AudioRaiseVolume>",   spawn "amixer set Master 5%+ unmute")        -- lower volume by 5%
     , ("<xf86MonBrightnessDown>", spawn "brightnessctl s 10%-")                 -- decrease brightness by 10%
     , ("<XF86MonBrightnessUp>", spawn "brightnessctl s +10%")                   -- increase brightness by 10%
-    , ("<Print>", spawn "flameshot full -p ~/Pictures/scrots -c")             -- full screenshot
+    , ("<Print>", spawn "flameshot full -p ~/Pictures/scrots -c")               -- full screenshot
     , ("M-<Print>", spawn "flameshot gui ~/Pictures/scrots")                    -- interactive screenshot
 
--- Productivity ---------------------------------------------------------------------------
+-- Scratchpads ---------------------------------------------------------------------------
     , ("M-s f", namedScratchpadAction myScratchPads "fff")
     , ("M-s v", namedScratchpadAction myScratchPads "vimwiki")
     , ("M-s p", namedScratchpadAction myScratchPads "htop")
     , ("M-s t", namedScratchpadAction myScratchPads "telegram")
     , ("M-s i", namedScratchpadAction myScratchPads "irc")
     , ("M-s s", namedScratchpadAction myScratchPads "sp")
+
+-- Tag navigation ------------------------------------------------------------------------
+    , ("M-t 1", withFocused (addTag "!"))
+    , ("M-t 2", withFocused (addTag "!!"))
+    , ("M-t 3", withFocused (addTag "!!!"))
+    , ("M-t j", focusUpTaggedGlobal "!")
+    , ("M-t k", focusUpTaggedGlobal "!!")
+    , ("M-t l", focusUpTaggedGlobal "!!!")
+    , ("M-t a", tagPrompt myPromptTheme (\s -> withFocused (addTag s)))
+    , ("M-t t", tagPrompt myPromptTheme (\s -> focusUpTaggedGlobal s))
+    , ("M-t d", tagDelPrompt myPromptTheme)
+
+-- Search prompts ------------------------------------------------------------------------
     , ("M-d w", promptSearchBrowser myPromptTheme mySearchBrowser wikipedia)
     , ("M-d d", promptSearchBrowser myPromptTheme mySearchBrowser duckduckgo)
     , ("M-d a", promptSearchBrowser myPromptTheme mySearchBrowser alpha)
     , ("M-d g", promptSearchBrowser myPromptTheme mySearchBrowser google)
     , ("M-d m", promptSearchBrowser myPromptTheme mySearchBrowser mathworld)
     , ("M-d s", promptSearchBrowser myPromptTheme mySearchBrowser scholar)
+
+-- Productivity --------------------------------------------------------------------------
     , ("M-S-n", appendFilePrompt myPromptTheme "/home/edun/LOG")
     , ("M-S-p", spawn "echo '25 5' > ~/.cache/pomodoro_session")
     , ("M-S-l", spawn "echo '50 10' > ~/.cache/pomodoro_session")
