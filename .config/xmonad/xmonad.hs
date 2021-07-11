@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-07-06
+-- Edited: 2021-07-11
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 ----------------------------------------------------------------------------------------------
@@ -34,7 +34,6 @@ import XMonad.Layout.Maximize
 import XMonad.Layout.Accordion
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.WindowNavigation                    -- window navigation (needed for tabs)
-import XMonad.Layout.Spacing                             -- window gaps
 import XMonad.Layout.ResizableTile                       -- change window width/height
 import XMonad.Layout.Tabbed                              -- tabbed layout
 import XMonad.Layout.SubLayouts                          -- nested layouts (tabs everywhere)
@@ -120,7 +119,7 @@ myBorderWidth :: Dimension
 myBorderWidth               = 3
 
 myFocusedBorderColor :: [Char]
-myFocusedBorderColor        = green
+myFocusedBorderColor        = cyan
 
 myNormalBorderColor :: [Char]
 myNormalBorderColor         = bg1
@@ -135,7 +134,7 @@ myWsBar        = "xmobar ~/.config/xmonad/xmobarrc"
 -- PP settings ---------------------------------------------------------------------------------
 wsPP :: PP
 wsPP           = xmobarPP { ppOrder               = id
-                          , ppTitle               = xmobarColor   green ""  . shorten 50
+                          , ppTitle               = xmobarColor   cyan ""  . shorten 50
                           , ppCurrent             = xmobarColor   orange "" . wrap "@" ""
                           , ppUrgent              = xmobarColor   red ""    . wrap "+" ""
                           , ppVisible             = xmobarColor   bg2 ""    . wrap ":" ""
@@ -199,7 +198,7 @@ myProjects = [Project -- uni
                  , projectDirectory = "/media/nas/home"
                  , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 4) "discord"
-                    spawnOn (myWorkspaces !! 4) "thunderbird"
+                    spawnOn (myWorkspaces !! 4) "sylpheed"
                  }
              , Project -- mul
                  { projectName = myWorkspaces !! 5
@@ -232,7 +231,7 @@ myPromptTheme = def
     , bgColor = bg1
     , fgColor = fg
     , fgHLight = bg0
-    , bgHLight = green
+    , bgHLight = cyan
     , borderColor = bg1
     , promptBorderWidth = 0
     , height = 20
@@ -250,17 +249,17 @@ myStartupHook = do
     spawnOnce "xsetroot -cursor_name left_ptr &"
     spawnOnce "xrdb ~/.Xresources &"
     spawnOnce "blueman-applet &"
-    spawnOnce "batsignal -b -W 'Did you bring my charger? Currently at 15%.' -C 'Hey, I need charging ASAP! Currently at 5%' -D '....2%....' -F 'All good, you can unplug me. Currently at 100%.' &"
+    spawnOnce "cbatticon &"
     spawnOnce "udiskie &"
     spawnOnce "dunst &"
     spawnOnce "flameshot &"
     spawnOnce "tlp start &"
-    spawnOnce "feh --bg-fill ~/.config/walls/living-room.jpg &"
+    spawn     "feh --bg-fill ~/.config/walls/little_bird.jpg &"
     setWMName "LG3D"
 
 -- Layouts --------------------------------------------------------------------------------
 tall = ResizableTall 1 (3/100) (6/10) []
-tallAccordion = G.group Accordion (Tall 1 (3/100) (66/100))
+tallAccordion = G.group Accordion (Tall 1 (3/100) (6/10))
 bsp = emptyBSP
 
 -- Tabbed layout theme
@@ -282,7 +281,6 @@ myLayoutHook = avoidStruts
              $ configurableNavigation noNavigateBorders 
              $ addTabs shrinkText myTabConfig 
              $ subLayout [0] (Simplest) 
-             $ spacingRaw True (Border 5 5 5 5) True (Border 5 5 5 5) True
              $ smartBorders
              $ mkToggle (NBFULL ?? NOBORDERS ?? EOT)
              $ minimize
@@ -386,7 +384,7 @@ myGoColorizer :: Window -> Bool -> X (String, String)
 myGoColorizer = colorRangeFromClassName
         (0x00, 0x2b, 0x36)      -- lowest inactive bg
         (0x93, 0xa1, 0xa1)      -- highest inactive bg
-        (0x85, 0x99, 0x00)      -- active bg        
+        (0x2a, 0xa1, 0x98)      -- active bg        
         (0xee, 0xe8, 0xd5)      -- inactive fg
         (0xfd, 0xf6, 0xe3)      -- active fg
 
@@ -394,7 +392,7 @@ myBringColorizer :: Window -> Bool -> X (String, String)
 myBringColorizer = colorRangeFromClassName
         (0x00, 0x2b, 0x36)      -- lowest inactive bg
         (0x93, 0xa1, 0xa1)      -- highest inactive bg
-        (0x85, 0x99, 0x00)      -- active bg        
+        (0x2a, 0xa1, 0x98)      -- active bg        
         (0xee, 0xe8, 0xd5)      -- inactive fg
         (0xfd, 0xf6, 0xe3)      -- active fg
 
@@ -441,6 +439,7 @@ treeActions = [ Node (TS.TSNode "Session" "" (return ()))
                      [ Node (TS.TSNode "Zotero" "Your personal research assistant" (spawn "zotero")) []
                      , Node (TS.TSNode "Calibre" "Ebook management" (spawn "calibre")) []
                      , Node (TS.TSNode "Anki" "Study flashcards" (spawn "anki")) []
+                     , Node (TS.TSNode "Vim" "" (spawn myEditor)) []
                      , Node (TS.TSNode "GVim" "Vim gui" (spawn "gvim")) []
                      , Node (TS.TSNode "Emacs" "Doom emacs" (spawn "emacs")) []
                      , Node (TS.TSNode "LibreOffice" "Office productivity suite" (spawn "libreoffice")) []
@@ -565,11 +564,12 @@ myKeys =
     [ ("M-<Return>", spawn myTerminal)                                          -- open a terminal
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
-    , ("M-p", spawn "dmenu_run -nf '#839496' -nb '#eee8d5' -sb '#859900' -sf '#fdf6e3' -fn 'Iosevka:pixelsize=13'")
+    , ("M-p", spawn "dmenu_run -nf '#839496' -nb '#eee8d5' -sb '#2aa198' -sf '#fdf6e3' -fn 'Iosevka:pixelsize=13'")
     
 -- Navigation ----------------------------------------------------------------------------
     , ("M-j", focusDown)                                              -- move focus up
     , ("M-k", focusUp)                                                -- move focus down
+    , ("M-r", nextScreen)                                             -- move focus to next screen
     , ("M-S-j", swapDown)                                             -- swap focused with next
     , ("M-S-k", swapUp)                                               -- swap focused with previous
     , ("M-g j", focusGroupDown)                                       -- move group focus up
@@ -594,8 +594,7 @@ myKeys =
 -- Layout --------------------------------------------------------------------------------
     , ("M-<Space>", sendMessage NextLayout)                                     -- next layout
     , ("M-S-f", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)     -- fullscreen view
-    , ("M-S-s", toggleWindowSpacingEnabled >> toggleScreenSpacingEnabled)       -- toggle gaps
-    , ("M-f", withFocused $ windows . cycleFloat myFloatLayouts)                -- float cycle window
+    , ("M-S-<Space>", withFocused $ windows . cycleFloat myFloatLayouts)        -- float cycle window
     , ("M-m", withFocused minimizeWindow)                                       -- minimize window
     , ("M-S-m", withLastMinimized maximizeWindowAndFocus)                       -- un-minimize last minimized
     , ("M-o", windowMenu)                                                       -- open window menu
@@ -642,15 +641,15 @@ myKeys =
     , ("M-s s", namedScratchpadAction myScratchPads "sp")
 
 -- Tag navigation ------------------------------------------------------------------------
-    , ("M-t 1", withFocused (addTag "!"))
-    , ("M-t 2", withFocused (addTag "!!"))
-    , ("M-t 3", withFocused (addTag "!!!"))
-    , ("M-t j", focusUpTaggedGlobal "!")
-    , ("M-t k", focusUpTaggedGlobal "!!")
-    , ("M-t l", focusUpTaggedGlobal "!!!")
-    , ("M-t a", tagPrompt myPromptTheme (\s -> withFocused (addTag s)))
-    , ("M-t t", tagPrompt myPromptTheme (\s -> focusUpTaggedGlobal s))
-    , ("M-t d", tagDelPrompt myPromptTheme)
+    , ("M-f 1", withFocused (addTag "!"))
+    , ("M-f 2", withFocused (addTag "!!"))
+    , ("M-f 3", withFocused (addTag "!!!"))
+    , ("M-f j", focusUpTaggedGlobal "!")
+    , ("M-f k", focusUpTaggedGlobal "!!")
+    , ("M-f l", focusUpTaggedGlobal "!!!")
+    , ("M-f a", tagPrompt myPromptTheme (\s -> withFocused (addTag s)))
+    , ("M-f t", tagPrompt myPromptTheme (\s -> focusUpTaggedGlobal s))
+    , ("M-f d", tagDelPrompt myPromptTheme)
 
 -- Search prompts ------------------------------------------------------------------------
     , ("M-d w", promptSearchBrowser myPromptTheme mySearchBrowser wikipedia)
