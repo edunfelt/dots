@@ -1,5 +1,5 @@
 [global]
-    font = Iosevka 10
+    font = Iosevka 11
     markup = full
     format = "<b>%s</b>\n%b"
     sort = yes
@@ -11,8 +11,7 @@
     ignore_newline = no
     geometry = "300x5-10+30"
     shrink = yes
-    transparency = 10
-    idle_threshold = 120
+    idle_threshold = 0
     monitor = 0
     follow = mouse
     sticky_history = yes
@@ -23,13 +22,13 @@
     padding = 8
     horizontal_padding = 8
     separator_color = frame
-    frame_width = 1
+    frame_width = 2
     startup_notification = true
     dmenu = /usr/bin/dmenu -p dunst:
     browser = /usr/bin/firefox -new-tab
     icon_position = left
     max_icon_size = 80
-    icon_path = /home/edun/.icons/Newaita/apps/16/:/home/edun/.icons/Newaita/devices/16/:/home/edun/Newaita/:/home/edun/.icons/Newaita/status/16/
+    icon_path = ~/.icons/oomox-xresources/48x48/status/:~/.icons/oomox-xresources/48x48/devices/:~/.icons/oomox-xresources/48x48/apps/
 
 [shortcuts]
     close = ctrl+space
@@ -39,19 +38,20 @@
 
 [urgency_low]
     background = "#eee8d5"
-    foreground = "#839496"
+    foreground = "#657B83"
+    frame_color = "#2AA198"
     timeout = 10
 
 [urgency_normal]
    background = "#eee8d5"
-    foreground = "#839496"
+    foreground = "#657B83"
+    frame_color = "#2AA198"
     timeout = 10
+
 [urgency_critical]
     background = "#eee8d5"
-    foreground = "#cb4b16"
+    foreground = "#657B83"
+    frame_color = "#D33682"
+    frame_width = 3
     timeout = 10
-    frame_color = "#cb4b16"
-
-# vim: ft=cfg
-
 

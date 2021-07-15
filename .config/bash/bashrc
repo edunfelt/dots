@@ -5,7 +5,7 @@
 # |_____|___._|_____||__|__|__| |____|
 #
 # Emilia's bashrc <3
-# Edited: 2021-06-30
+# Edited: 2021-07-13
 # Author: Emilia Dunfelt, edun@dunfelt.se
 #
 
@@ -25,7 +25,7 @@ export VISUAL=vim;
 export EDITOR=vim;
 
 # ps1
-export PS1="\[\e[31m\]✨ \[\e[m\]\W\[\e[31m\] >>\[\e[m\] "
+export PS1="\[\e[36m\]✨ \[\e[m\]\W\[\e[36m\] >>\[\e[m\] "
 
 # integrate gtk theme with qt apps
 export QT_QPA_PLATFORMTHEME="gtk2"

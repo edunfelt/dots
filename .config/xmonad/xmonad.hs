@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-07-11
+-- Edited: 2021-07-14
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 ----------------------------------------------------------------------------------------------
@@ -247,14 +247,14 @@ myPromptTheme = def
 myStartupHook :: X ()
 myStartupHook = do
     spawnOnce "xsetroot -cursor_name left_ptr &"
-    spawnOnce "xrdb ~/.Xresources &"
     spawnOnce "blueman-applet &"
     spawnOnce "cbatticon &"
     spawnOnce "udiskie &"
     spawnOnce "dunst &"
     spawnOnce "flameshot &"
     spawnOnce "tlp start &"
-    spawn     "feh --bg-fill ~/.config/walls/little_bird.jpg &"
+    spawn     "xrdb ~/.Xresources &"
+    spawn     "feh --bg-fill ~/.config/walls/birb.jpg &"
     setWMName "LG3D"
 
 -- Layouts --------------------------------------------------------------------------------
@@ -316,6 +316,7 @@ myManageHook = composeAll
     , className =? "Xscreensaver-settings"      --> doFloat
     , className =? "Blueman-manager"            --> doFloat
     , className =? "zoom"                       --> doFloat
+    , className =? "Quodlibet"                  --> doFloat
     , title     =? "Picture-in-Picture"         --> doFloat
     , className =? "qutebrowser"                --> doRectFloat (W.RationalRect 0.4 0.2 0.5 0.7)
     ]
@@ -351,6 +352,9 @@ myScratchPads = [ NS "htop"     (myTerminal ++ " --name=htop -e htop")
                 , NS "sp"       (myTerminal ++ " --name=scratchpad")
                                 (resource =? "scratchpad")
                                 (customFloating $ W.RationalRect 0.59 0.68 0.4 0.3)
+                , NS "ql"       "quodlibet"
+                                (className =? "Quodlibet")
+                                (customFloating $ centeredRect 0.25 0.3)
                 ]
 
 -- Float cycling -------------------------------------------------------------------------
@@ -617,6 +621,23 @@ myKeys =
     , ("M-C-m", withFocused (sendMessage . MergeAll))                           -- merge all windows on ws into tabbed
     , ("M-C-u", withFocused (sendMessage . UnMerge))                            -- unmerge tabbed
 
+-- Keypad ---------------------------------------------------------------------------------
+    , ("<KP_Right>", nextNonEmptyWS)
+    , ("<KP_Left>", prevNonEmptyWS)
+    , ("<KP_Up>", focusUp)
+    , ("<KP_Down>", focusDown)
+    , ("<KP_Begin>", nextScreen)
+    , ("<KP_Enter>", spawn "dmenu_run -nf '#839496' -nb '#eee8d5' -sb '#2aa198' -sf '#fdf6e3' -fn 'Iosevka:pixelsize=13'")
+    , ("<KP_Home>", switchProjectPrompt myPromptTheme)
+    , ("<KP_Prior>", shiftToProjectPrompt myPromptTheme)
+    , ("<KP_Delete>", sendMessage NextLayout)
+    , ("<KP_Insert>", withFocused $ windows . cycleFloat myFloatLayouts)
+    , ("<KP_Divide>", focusUpTaggedGlobal "!")
+    , ("<KP_Multiply>", focusUpTaggedGlobal "!!")
+    , ("<KP_Subtract>", focusUpTaggedGlobal "!!!")
+    , ("<KP_End>", windowMenu)
+    , ("<KP_Next>", bringSelected $ gsWnBringConfig myBringColorizer)
+
 -- Media keys -----------------------------------------------------------------------------
     , ("M-<XF86AudioMute>", spawn "playerctl -i Bose_QC35_II play-pause")       -- play/pause (no external kb)
     , ("<XF86AudioPlay", spawn "playerctl -i Bose_QC35_II play-pause")          -- play/pause                        
@@ -639,6 +660,7 @@ myKeys =
     , ("M-s t", namedScratchpadAction myScratchPads "telegram")
     , ("M-s i", namedScratchpadAction myScratchPads "irc")
     , ("M-s s", namedScratchpadAction myScratchPads "sp")
+    , ("M-s m", namedScratchpadAction myScratchPads "ql")
 
 -- Tag navigation ------------------------------------------------------------------------
     , ("M-f 1", withFocused (addTag "!"))
