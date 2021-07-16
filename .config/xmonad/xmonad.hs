@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-07-14
+-- Edited: 2021-07-16
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 ----------------------------------------------------------------------------------------------
@@ -26,6 +26,7 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ManageDocks                          -- don't cover the bar with windows
 import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
 import XMonad.Hooks.EwmhDesktops                         -- recognize windows i.e. in Zoom
+import XMonad.Hooks.UrgencyHook                          -- highlight urgent windows
 
 -- Layout --------------------------------------------------------------------------------
 import XMonad.Layout.Simplest
@@ -60,7 +61,7 @@ import XMonad.Actions.TagWindows                         -- tags to quickly move
 -- Utilities -----------------------------------------------------------------------------
 import XMonad.Util.Run                                   -- spawnPipe and hPutStrLn
 import XMonad.Util.EZConfig (additionalKeysP)            -- Emacs-style keybindings
-import XMonad.Util.NamedScratchpad
+import XMonad.Util.NamedScratchpad                       -- scratchpad apps
 import XMonad.Util.WorkspaceCompare                      -- sort workspaces
 import XMonad.Util.SpawnOnce                             -- spawn stuff on initial launch
 
@@ -138,7 +139,6 @@ wsPP           = xmobarPP { ppOrder               = id
                           , ppCurrent             = xmobarColor   orange "" . wrap "@" ""
                           , ppUrgent              = xmobarColor   red ""    . wrap "+" ""
                           , ppVisible             = xmobarColor   bg2 ""    . wrap ":" ""
-                          , ppHidden              = xmobarColor   bg2 ""    . wrap ":" ""
                           , ppHiddenNoWindows     = const ""
                           , ppSep                 = " | "
                           , ppWsSep               = " "
@@ -723,6 +723,7 @@ main = do
     n <- countScreens
     xmprocs <- mapM (\i -> spawnPipe $ myWsBar ++ " -x " ++ show i) [0..n-1]
     xmonad 
+        $ withUrgencyHook NoUrgencyHook
         $ ewmh
         $ docks 
         $ dynamicProjects myProjects 

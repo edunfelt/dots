@@ -1,14 +1,14 @@
 # Emilia's dots
-My new dotfile collection!
+My dotfile collection!
 
 ## Screenshots
-WS1 - with Spotify, cava, and anki
+WS1 - with Spotify, cava, and anki (floating)
 ![mul](.config/scrots/mul.png)
 
-WS2 - with vim, zathura, and scratchpads fff and vimwiki
+WS2 - with vim, zathura, and scratchpads fff and vimwiki (with gaps)
 ![the](.config/scrots/uni.png)
 
-WS3 - with firefox, so, and fff
+WS3 - with firefox, so, and fff (no gaps)
 ![net](.config/scrots/net.png)
 
 Lockscreen
@@ -29,3 +29,4 @@ Lockscreen
 * Terminal: [Kitty](https://github.com/kovidgoyal/kitty/tree/604458810e5248fd2869131d4b440f38541a1d95)
 * Shell: [Bash](https://www.gnu.org/software/bash/)
 * OS: [Arch Linux](https://archlinux.org/)
+
