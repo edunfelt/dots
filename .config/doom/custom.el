@@ -4,11 +4,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
-   '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/2021-26-0628.org"))
- '(org-journal-date-format "%A, %d")
- '(org-journal-date-prefix "* ")
+   '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/work.org" "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/projects.org" "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/home.org" "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/uni.org" "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/2021-07-19.org"))
+ '(org-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org")
+ '(org-journal-date-format "%A, %d %B %Y")
+ '(org-journal-date-prefix "#+TITLE: ")
  '(org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/")
- '(org-journal-file-format "%Y-%V-%m%d.org")
+ '(org-journal-file-format "%Y-%m-%d.org")
  '(package-selected-packages '(base16-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -11,7 +11,7 @@
     ignore_newline = no
     geometry = "300x5-10+30"
     shrink = yes
-    idle_threshold = 0
+    idle_threshold = 180
     monitor = 0
     follow = mouse
     sticky_history = yes

@@ -6,7 +6,7 @@
 ;; |____|_____|__|__|__| |__||___  |__|_____||__|                             ;;
 ;;                           |_____|                                          ;;
 ;; Emilia's config.el <3                                                      ;;
-;; Edited: 2021-06-30                                                         ;;
+;; Edited: 2021-07-18                                                         ;;
 ;; Author: Emilia Dunfelt, edun@dunfelt.se                                    ;;
 ;;                                                                            ;;
 ;; Structure:                                                                 ;;
@@ -24,7 +24,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; User configuration
 (setq user-full-name "Emilia Dunfelt"
-      user-mail-address "edun@dunfelt.se")
+      user-mail-address "edun@dunfelt.se"
+      display-line-numbers-type nil)
 
 ;; Settings
 (setq-default 
@@ -39,7 +40,8 @@
 
 (setq undo-limit 80000000                             ; increase undo limit
                  evil-want-fine-undo t                ; granular undo
-                 auto-save-default t)                 ; autosaving
+                 auto-save-default t                  ; autosaving
+                 auto-save-timeout 180)
 
 ;; Mappings
 (map! :map evil-window-map                            ; arrow key window navigation
@@ -64,7 +66,9 @@
  '(org-journal-date-format "%A, %d %B %Y" t)
  '(org-journal-date-prefix "#+TITLE: " t)
  '(org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/" t)
- '(org-journal-file-format "%Y-%m-%d.org" t))
+ '(org-journal-file-format "%Y-%m-%d.org" t)
+ '(org-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org")
+ '(org-agenda-files (list org-directory)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -81,9 +85,6 @@
 
 ;; Theme
 (setq doom-theme 'doom-solarized-light)
-
-;; Line numbers
-(setq display-line-numbers-type t)
 
 ;; Buffer names
 (setq doom-fallback-buffer-name "✻ doom"
@@ -144,26 +145,108 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 3. Org-stuff
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq org-directory "/media/nas/home/org/")
-(setq org-agenda-files (list "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/uni.org"
-                             "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/home.org"))
+(setq org-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org"
+      org-ellipsis " ▼ "
+      org-adapt-indentation nil)
+
+(use-package org-agenda
+  :after org
+  :custom
+  (org-agenda-prefix-format '((agenda . " %i %-20:c%?-12t%-6e% s")
+			      (todo   . " %i %-20:c %-6e")
+			      (tags   . " %i %-20:c")
+			      (search . " %i %-20:c"))))
+
+(setq org-agenda-custom-commands
+      '(("d" "Today's Tasks"
+	 ((agenda "" ((org-agenda-span 1)
+		      (org-agenda-overriding-header "Today's Tasks")))))))
+
+;; Always change the task to IN-PROGRESS.
+(setq org-clock-in-switch-to-state "STRT")
+
+;; Use a function to decide what to change the state to.
+(setq org-clock-in-switch-to-state #'edun/switch-task-on-clock-start)
+
+(defun edun/switch-task-on-clock-start (task-state)
+  "Change a task to 'STRT' when TASK-STATE is 'TODO'."
+  (if (string= task-state "TODO")
+      "STRT"
+      task-state))
 
 ;; Org-Journal
+(require 'org-id)
 (use-package org-journal
   :init
   (setq org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/"
-        org-journal-file-header "#+STARTUP: folded\n#+TITLE: Weekly Journal\n"
-        org-journal-file-format "%Y-%V-%m%d.org"
-        org-journal-file-type 'weekly
-        org-journal-date-prefix "* "
-        org-journal-date-format "%A, %d")
+        org-journal-file-header "#+STARTUP: folded\n#+TITLE: "
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-date-format "%A, %d %B %Y")
   :config
   (setq org-journal-find-file #'find-file-other-window )
+  (setq org-journal-enable-agenda-integration t)
   (map! :map org-journal-mode-map
         "C-c n s" #'evil-save-modified-and-close )
   )
 
-(setq org-journal-enable-agenda-integration t)
+
+(defvar org-journal--date-location-scheduled-time nil)
+
+(org-id-update-id-locations)
+
+(set-file-template! 'org-mode :ignore t)
+(use-package deft
+  :bind
+  (("C-c d" . deft))
+  :custom
+  ;; Set deft path to full path so that zetteldeft works.
+  (deft-directory         zetteldirectory)
+  (deft-extensions        '("org"))
+  (deft-default-extension "org")
+  (deft-recursive         t))
+
+(setq deft-strip-summary-regexp
+ (concat "\\("
+         "[\n\t]" ;; blank
+         "\\|^#\\+[a-zA-Z_]+:.*$" ;;org-mode metadata
+         "\\)"))
+
+(use-package! zetteldeft
+             :init
+             (map! :leader
+                   :prefix "d"
+                   :desc "deft" "d" #'deft
+                   :desc "deft-refresh" "R" #'deft-refresh
+                   :desc "zetteldeft-deft-new-search" "D" #'zetteldeft-deft-new-search
+                   :desc "zetteldeft-search-at-point" "s" #'zetteldeft-search-at-point
+                   :desc "zetteldeft-search-current-id" "c" #'zetteldeft-search-current-id
+                   :desc "zetteldeft-follow-link" "f" #'zetteldeft-follow-link
+                   :desc "zetteldeft-avy-file-search-ace-window" "F" #'zetteldeft-avy-file-search-ace-window
+                   :desc "zetteldeft-avy-link-search" "l" #'zetteldeft-avy-link-search
+                   :desc "zetteldeft-avy-tag-search" "t" #'zetteldeft-avy-tag-search
+                   :desc "zetteldeft-tag-buffer" "T" #'zetteldeft-tag-buffer
+                   :desc "zetteldeft-find-file-id-insert" "i" #'zetteldeft-find-file-id-insert
+                   :desc "zetteldeft-find-file-full-title-insert" "I" #'zetteldeft-find-file-full-title-insert
+                   :desc "zetteldeft-find-file" "o" #'zetteldeft-find-file
+                   :desc "zetteldeft-new-file" "n" #'zetteldeft-new-file
+                   :desc "zetteldeft-new-file-and-link" "N" #'zetteldeft-new-file-and-link
+                   :desc "edun/deft-open-preview" "p" #'edun/deft-open-preview
+                   :desc "edun/deft-open-other" "v" #'edun/deft-open-other
+                   :desc "zetteldeft-file-rename" "r" #'zetteldeft-file-rename
+                   :desc "zetteldeft-count-words" "x" #'zetteldeft-count-words)
+             (setq zetteldirectory "/media/nas/home/00-09_Meta/01_Emacs/01.04_Zettelkasten")
+             :config
+             (defun edun/deft-open-preview ()
+               (interactive)
+               (deft-open-file-other-window))
+             (defun edun/deft-open-other ()
+               (interactive)
+               (deft-open-file-other-window t))
+
+             (font-lock-add-keywords
+               'org-mode
+               `((,zetteldeft-id-regex  . font-lock-warning-face)
+                 (,zetteldeft-tag-regex . font-lock-warning-face))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

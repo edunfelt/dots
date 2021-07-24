@@ -6,7 +6,7 @@ Config { font = "xft:Iosevka:pixelsize=12:antialias=true:hinting=true"
        , persistent = True
        , commands = [ Run Date "%b %d %Y  %H:%M:%S" "date" 10
                     , Run Volume "default" "Master" [ "-t", "vol <volumebar> (<volume>%)" ] 10
-                    , Run Mpris2 "quodlibet" [ "-t", "<artist> - <title>" ] 10
+                    , Run Mpris2 "spotify" [ "-t", "<artist> - <title>" ] 10
                     , Run Cpu [ "-t", "cpu <bar> (<total>%)"
                               , "-H", "50"
                               , "--high", "#dc322f"

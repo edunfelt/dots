@@ -32,6 +32,7 @@ import XMonad.Hooks.UrgencyHook                          -- highlight urgent win
 import XMonad.Layout.Simplest
 import XMonad.Layout.Minimize
 import XMonad.Layout.Maximize
+import XMonad.Layout.Circle
 import XMonad.Layout.Accordion
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.WindowNavigation                    -- window navigation (needed for tabs)
@@ -275,6 +276,7 @@ myTabConfig = def { inactiveColor           = bg1
     
 myDefaultLayout = tall
               ||| tallAccordion
+              ||| Circle
               ||| bsp
 
 myLayoutHook = avoidStruts 
@@ -650,8 +652,8 @@ myKeys =
     , ("<XF86AudioRaiseVolume>",   spawn "amixer set Master 5%+ unmute")        -- lower volume by 5%
     , ("<xf86MonBrightnessDown>", spawn "brightnessctl s 10%-")                 -- decrease brightness by 10%
     , ("<XF86MonBrightnessUp>", spawn "brightnessctl s +10%")                   -- increase brightness by 10%
-    , ("<Print>", spawn "flameshot full -p ~/Pictures/scrots -c")               -- full screenshot
-    , ("M-<Print>", spawn "flameshot gui ~/Pictures/scrots")                    -- interactive screenshot
+    , ("<Print>", spawn "flameshot screen -p ~/Pictures/scrots -c")             -- full screenshot
+    , ("M-<Print>", spawn "flameshot gui -p ~/Pictures/scrots")                 -- interactive screenshot
 
 -- Scratchpads ---------------------------------------------------------------------------
     , ("M-s f", namedScratchpadAction myScratchPads "fff")
