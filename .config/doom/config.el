@@ -153,14 +153,34 @@
   :after org
   :custom
   (org-agenda-prefix-format '((agenda . " %i %-20:c%?-12t%-6e% s")
-			      (todo   . " %i %-20:c %-6e")
-			      (tags   . " %i %-20:c")
-			      (search . " %i %-20:c"))))
+                              (todo   . " %i %-20:c %-6e")
+                              (tags   . " %i %-20:c")
+                              (search . " %i %-20:c"))))
 
 (setq org-agenda-custom-commands
-      '(("d" "Today's Tasks"
-	 ((agenda "" ((org-agenda-span 1)
-		      (org-agenda-overriding-header "Today's Tasks")))))))
+    '(("d" "Today's Tasks"
+       ((tags-todo
+          "GHD+ACTIVE+PRIORITY=\"A\""
+          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+           (org-agenda-overriding-header "Primary goals this month")))
+        (tags-todo
+          "GHD+ACTIVE+PRIORITY=\"C\""
+          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+           (org-agenda-overriding-header "Secondary goals this month")))
+        (agenda "" ((org-agenda-span 1)
+                    (org-agenda-overriding-header "Today's tasks")))))
+
+      ("w" "This Week's Tasks"
+       ((tags-todo
+          "GHD+ACTIVE+PRIORITY=\"A\""
+          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+           (org-agenda-overriding-header "Primary goals this month")))
+        (tags-todo
+          "GHD+ACTIVE+PRIORITY=\"C\""
+          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+           (org-agenda-overriding-header "Secondary goals this month")))
+        (agenda))))
+)
 
 ;; Always change the task to IN-PROGRESS.
 (setq org-clock-in-switch-to-state "STRT")
