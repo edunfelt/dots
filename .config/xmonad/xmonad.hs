@@ -217,6 +217,7 @@ myProjects = [Project -- uni
                  , projectDirectory = "$HOME"
                  , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 7) "emacs"
+                    spawnOn (myWorkspaces !! 7) "scrivener"
                  }
              , Project -- tmp
                  { projectName = myWorkspaces !! 8
@@ -319,6 +320,7 @@ myManageHook = composeAll
     , className =? "Blueman-manager"            --> doFloat
     , className =? "zoom"                       --> doFloat
     , className =? "Quodlibet"                  --> doFloat
+    , className =? "scrivener.exe"              --> doRectFloat (W.RationalRect 0.5 0.2 0.42 0.65)
     , title     =? "Picture-in-Picture"         --> doFloat
     , className =? "qutebrowser"                --> doRectFloat (W.RationalRect 0.4 0.2 0.5 0.7)
     ]
@@ -341,7 +343,7 @@ myScratchPads = [ NS "htop"     (myTerminal ++ " --name=htop -e htop")
                                 (customFloating $ W.RationalRect 0.35 0.35 0.3 0.3)
                 , NS "emacs"    "emacs"
                                 (className =? "Emacs")
-                                (customFloating $ centeredRect 0.3 0.6)
+                                (customFloating $ W.RationalRect 0.02 0.05 0.25 0.45)
                 , NS "telegram" "telegram-desktop"
                                 (className =? "TelegramDesktop")
                                 (customFloating $ W.RationalRect 0.8 0.3 0.2 0.3)
@@ -357,6 +359,9 @@ myScratchPads = [ NS "htop"     (myTerminal ++ " --name=htop -e htop")
                 , NS "ql"       "quodlibet"
                                 (className =? "Quodlibet")
                                 (customFloating $ centeredRect 0.25 0.3)
+                , NS "radio"    (myTerminal ++ " --name=pyradio -e pyradio")
+                                (resource =? "pyradio")
+                                (customFloating $ W.RationalRect 0.02 0.03 0.15 0.2)
                 ]
 
 -- Float cycling -------------------------------------------------------------------------
@@ -443,6 +448,7 @@ treeActions = [ Node (TS.TSNode "Session" "" (return ()))
                      ]
              , Node (TS.TSNode "Productivity" "" (return ()))
                      [ Node (TS.TSNode "Zotero" "Your personal research assistant" (spawn "zotero")) []
+                     , Node (TS.TSNode "Scrivener" "Creative writing assistant" (spawn "scrivener")) []
                      , Node (TS.TSNode "Calibre" "Ebook management" (spawn "calibre")) []
                      , Node (TS.TSNode "Anki" "Study flashcards" (spawn "anki")) []
                      , Node (TS.TSNode "Vim" "" (spawn myEditor)) []
@@ -571,6 +577,7 @@ myKeys =
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
     , ("M-p", spawn "dmenu_run -nf '#839496' -nb '#eee8d5' -sb '#2aa198' -sf '#fdf6e3' -fn 'Iosevka:pixelsize=13'")
+    , ("M-S-p", spawn "unicode_dmenu")                                          -- select unicode symbol
     
 -- Navigation ----------------------------------------------------------------------------
     , ("M-j", focusDown)                                              -- move focus up
@@ -658,11 +665,13 @@ myKeys =
 -- Scratchpads ---------------------------------------------------------------------------
     , ("M-s f", namedScratchpadAction myScratchPads "fff")
     , ("M-s v", namedScratchpadAction myScratchPads "vimwiki")
+    , ("M-s e", namedScratchpadAction myScratchPads "emacs")
     , ("M-s p", namedScratchpadAction myScratchPads "htop")
     , ("M-s t", namedScratchpadAction myScratchPads "telegram")
     , ("M-s i", namedScratchpadAction myScratchPads "irc")
     , ("M-s s", namedScratchpadAction myScratchPads "sp")
     , ("M-s m", namedScratchpadAction myScratchPads "ql")
+    , ("M-s r", namedScratchpadAction myScratchPads "radio")
 
 -- Tag navigation ------------------------------------------------------------------------
     , ("M-f 1", withFocused (addTag "!"))
@@ -685,7 +694,7 @@ myKeys =
 
 -- Productivity --------------------------------------------------------------------------
     , ("M-S-n", appendFilePrompt myPromptTheme "/home/edun/LOG")
-    , ("M-S-p", spawn "echo '25 5' > ~/.cache/pomodoro_session")
+    , ("M-S-s", spawn "echo '25 5' > ~/.cache/pomodoro_session")
     , ("M-S-l", spawn "echo '50 10' > ~/.cache/pomodoro_session")
     , ("M-S-x", spawn "rm ~/.cache/pomodoro_session")
     ]

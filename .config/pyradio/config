@@ -7,21 +7,21 @@
 #   player = vlc
 # or
 #   player = vlc,mpv, mplayer
-player = mpv, mplayer, vlc
+player = mpv, vlc
 
 # Default playlist
 # This is the playlist to open if none is specified
 # You can scecify full path to CSV file, or if the playlist is in the
 # config directory, playlist name (filename without extension or
 # playlist number (as reported by -ls command line option)
-default_playlist = stations
+default_playlist = work
 
 # Default station
 # This is the equivalent to the -p , --play command line parameter
 # The station number within the default playlist to play
 # Value is 1..number of stations, "-1" or "False" means no auto play,
 # "0" or "Random" means play a random station
-default_station = 0
+default_station = -1
 
 # Default encoding
 # This is the encoding used by default when reading data provided by
