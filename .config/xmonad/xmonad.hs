@@ -5,7 +5,7 @@
 -- |__.__|__|__|__|_____|__|__|___._|_____|
 --
 -- Emilia's xmonad config
--- Edited: 2021-07-16
+-- Edited: 2021-10-22
 -- Author: Emilia Dunfelt, edun@dunfelt.se
 --
 ----------------------------------------------------------------------------------------------
@@ -180,11 +180,10 @@ myProjects = [Project -- uni
                 , projectDirectory = "/media/nas/home/10-19_Education/14_Masters_Degree"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 1) "zotero"
-                    spawnOn (myWorkspaces !! 1) "calibre"
                 }
             , Project -- wrk
                 { projectName = myWorkspaces !! 2
-                , projectDirectory = "/media/nas/home/20-29_Work/22_TA"
+                , projectDirectory = "/media/nas/home/20-29_Work/22_TA/22.06_Algorithms_Complexity"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 2) (myTerminal ++ " -e fff /media/nas/home/20-29_Work/22_TA")
                 }
@@ -192,13 +191,13 @@ myProjects = [Project -- uni
                 { projectName = myWorkspaces !! 3
                 , projectDirectory = "$HOME"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 3) "firefox"
+                    spawnOn (myWorkspaces !! 3) "icecat"
                 }
              , Project -- com
                  { projectName = myWorkspaces !! 4
                  , projectDirectory = "/media/nas/home"
                  , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 4) "discord"
+                    spawnOn (myWorkspaces !! 4) "pidgin"
                     spawnOn (myWorkspaces !! 4) "sylpheed"
                  }
              , Project -- mul
@@ -217,7 +216,6 @@ myProjects = [Project -- uni
                  , projectDirectory = "$HOME"
                  , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 7) "emacs"
-                    spawnOn (myWorkspaces !! 7) "scrivener"
                  }
              , Project -- tmp
                  { projectName = myWorkspaces !! 8
@@ -248,15 +246,14 @@ myPromptTheme = def
 -- Startup --------------------------------------------------------------------------------
 myStartupHook :: X ()
 myStartupHook = do
+    spawnOnce "feh --bg-fill /home/edun/Pictures/Wallpapers/ghosts.jpg &"
+    spawnOnce "dex -ae xmonad &"
     spawnOnce "xsetroot -cursor_name left_ptr &"
-    spawnOnce "blueman-applet &"
-    spawnOnce "cbatticon &"
+    spawn     "xrdb ~/.Xresources &"
     spawnOnce "udiskie &"
     spawnOnce "dunst &"
     spawnOnce "flameshot &"
     spawnOnce "tlp start &"
-    spawn     "xrdb ~/.Xresources &"
-    spawn     "feh --bg-fill ~/.config/walls/birb.jpg &"
     setWMName "LG3D"
 
 -- Layouts --------------------------------------------------------------------------------
@@ -320,6 +317,7 @@ myManageHook = composeAll
     , className =? "Blueman-manager"            --> doFloat
     , className =? "zoom"                       --> doFloat
     , className =? "Quodlibet"                  --> doFloat
+    , className =? "xpad"                       --> doFloat
     , className =? "scrivener.exe"              --> doRectFloat (W.RationalRect 0.5 0.2 0.42 0.65)
     , title     =? "Picture-in-Picture"         --> doFloat
     , className =? "qutebrowser"                --> doRectFloat (W.RationalRect 0.4 0.2 0.5 0.7)
@@ -395,7 +393,7 @@ myGoColorizer :: Window -> Bool -> X (String, String)
 myGoColorizer = colorRangeFromClassName
         (0x00, 0x2b, 0x36)      -- lowest inactive bg
         (0x93, 0xa1, 0xa1)      -- highest inactive bg
-        (0x2a, 0xa1, 0x98)      -- active bg        
+        (0x2a, 0xa1, 0x98)      -- active bg
         (0xee, 0xe8, 0xd5)      -- inactive fg
         (0xfd, 0xf6, 0xe3)      -- active fg
 
@@ -403,7 +401,7 @@ myBringColorizer :: Window -> Bool -> X (String, String)
 myBringColorizer = colorRangeFromClassName
         (0x00, 0x2b, 0x36)      -- lowest inactive bg
         (0x93, 0xa1, 0xa1)      -- highest inactive bg
-        (0x2a, 0xa1, 0x98)      -- active bg        
+        (0x2a, 0xa1, 0x98)      -- active bg
         (0xee, 0xe8, 0xd5)      -- inactive fg
         (0xfd, 0xf6, 0xe3)      -- active fg
 

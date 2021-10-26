@@ -1,27 +1,30 @@
 # PyRadio Configuration File
 
 # Player selection
-# This is the eqivelant to the -u , --use-player command line parameter
+# This is the equivalent to the -u , --use-player command line parameter
 # Specify the player to use with PyRadio, or the player detection order
 # Example:
 #   player = vlc
 # or
 #   player = vlc,mpv, mplayer
-player = mpv, vlc
+# Default value: mpv,mplayer,vlc
+player = mpv,vlc
 
 # Default playlist
 # This is the playlist to open if none is specified
 # You can scecify full path to CSV file, or if the playlist is in the
-# config directory, playlist name (filename without extension or
+# config directory, playlist name (filename without extension) or
 # playlist number (as reported by -ls command line option)
+# Default value: stations
 default_playlist = work
 
 # Default station
 # This is the equivalent to the -p , --play command line parameter
 # The station number within the default playlist to play
-# Value is 1..number of stations, "-1" or "False" means no auto play,
+# Value is 1..number of stations, "-1" or "False" means no auto play
 # "0" or "Random" means play a random station
-default_station = -1
+# Default value: False
+default_station = False
 
 # Default encoding
 # This is the encoding used by default when reading data provided by
@@ -38,7 +41,7 @@ default_encoding = utf-8
 
 # Enable mouse
 # If this options is enabled, the mouse can be used to scroll the
-# playlist, start playback, etc.
+# playlist, start, stop and mute the player, adjust its volume etc.
 # Mouse integration is highly terminal dependent, that's why it
 # is disabled by default.
 #
@@ -75,7 +78,7 @@ force_http = False
 #   black_on_white (bow) (256 colors)
 #   white_on_black (wob) (256 colors)
 # Default value = 'dark'
-theme = light_16_colors
+theme = base16
 
 # Transparency setting
 # If False, theme colors will be used.
@@ -92,26 +95,19 @@ use_transparency = False
 # Specify whether you will be asked to confirm
 # every station deletion action
 # Valid values: True, true, False, false
+# Default value: True
 confirm_station_deletion = True
 
 # Specify whether you will be asked to confirm
 # playlist reloading, when the playlist has not
 # been modified within Pyradio
 # Valid values: True, true, False, false
+# Default value: True
 confirm_playlist_reload = True
 
 # Specify whether you will be asked to save a
 # modified playlist whenever it needs saving
 # Valid values: True, true, False, false
+# Default value: False
 auto_save_playlist = False
-
-# The name of the distribution providing the package.
-# If this parameter is set to anything other than "None"
-# PyRadio will not permit updating (-U command line
-# parameter) or removing the package (-R command line
-# parameter).
-#
-# Packagers must populate this paramater as needed!
-#
-distro = Arch Linux
 

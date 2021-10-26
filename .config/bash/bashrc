@@ -5,7 +5,7 @@
 # |_____|___._|_____||__|__|__| |____|
 #
 # Emilia's bashrc <3
-# Edited: 2021-07-13
+# Edited: 2021-09-25
 # Author: Emilia Dunfelt, edun@dunfelt.se
 #
 
@@ -25,13 +25,14 @@ export VISUAL=vim;
 export EDITOR=vim;
 
 # ps1
-export PS1="\[\e[36m\]✨ \[\e[m\]\W\[\e[36m\] >>\[\e[m\] "
+export PS1="\[\e[33m\]✨ \[\e[m\]\W\[\e[33m\] >>\[\e[m\] "
 
 # integrate gtk theme with qt apps
 export QT_QPA_PLATFORMTHEME="gtk2"
 export QT_STYLE_OVERRIDE="gtk2"
 
 # other
+export XDG_DATA_HOME="/home/edun/.config"
 export WEECHAT_HOME="~/.config/weechat"
 export DOOMDIR="~/.config/doom"
 export PF_COL2=0
@@ -57,19 +58,16 @@ export jdfun
 alias cjd='jdfun'
 
 # common directories
-alias uni="cd /media/nas/home/10-19_Education/13_Bachelors_Degree"
+alias uni="cd ~/Documents/10-19_Education/14_Masters_Degree"
 alias home="cd /media/nas/home"
-
-# todoist aliases
-alias today="todoist --indent l --filter '(overdue | today)'"
-alias tomorrow="todoist --indent l --filter '(tomorrow)'"
-alias upcoming="todoist --indent l --filter '(due after: yesterday)'"
-alias deadline="todoist --indent l --filter '(p1)'"
-alias 22="todoist --indent l --filter '(#TA)'"
-alias 13.28="todoist --indent l --filter '(#BSc)'"
+alias mm7041="cd ~/Documents/10-19_Education/14_Masters_Degree/14.02_Topology"
+alias mm7042="cd ~/Documents/10-19_Education/14_Masters_Degree/14.01_Commutative_Algebra"
+alias sf2740="cd ~/Documents/10-19_Education/14_Masters_Degree/14.03_Graph_Theory"
+alias dd2440="cd ~/Documents/10-19_Education/14_Masters_Degree/14.04_Advanced_Algorithms"
 
 # print log
 alias l="cat ~/LOG"
+
 
 ########################################################
 # Functions
@@ -99,37 +97,36 @@ ex ()
 
 # Johnny.Decimal
 jdfun() {
-    cd /media/nas/home/*/*/${1}*
+    cd ~/Documents/*/*/${1}*
 }
 
 ########################################################
 # Misc
 ########################################################
 # Base16 Shell
-#BASE16_SHELL="$HOME/.config/base16/"
-#[ -n "$PS1" ] && \
-    #[ -s "$BASE16_SHELL/profile_helper.sh" ] && \
-        #eval "$("$BASE16_SHELL/profile_helper.sh")"
+BASE16_SHELL="$HOME/.config/base16/"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        eval "$("$BASE16_SHELL/profile_helper.sh")"
 
 # Nice ls folder colors
-LS_COLORS=$LS_COLORS:'tw=00;33:ow=01;33:'; export LS_COLORS
+LS_COLORS=$LS_COLORS:'tw=01;33:ow=01;33:'; export LS_COLORS
 
 # FFF
 # Directory color [0-9]
-export FFF_COL1=6
+export FFF_COL1=1
 # Status background color [0-9]
 export FFF_COL2=2
 # Selection color [0-9] (copied/moved files)
-export FFF_COL3=3
+export FFF_COL3=4
 # Cursor color [0-9]
-export FFF_COL4=5
+export FFF_COL4=3
 # Status foreground color [0-9]
-export FFF_COL5=7
+export FFF_COL5=0
 # Favorites (Bookmarks) (keys 1-9) (dir or file)
-export FFF_FAV1=/media/nas/home
-export FFF_FAV2=/media/nas/home/10-19_Education/
-export FFF_FAV3=/media/nas/home/20-29_Work/
-export FFF_FAV4=/media/nas/home/30-39_Home/
+export FFF_FAV1=~/Documents/10-19_Education/
+export FFF_FAV2=~/Documents/20-29_Work/
+export FFF_FAV3=~/Documents/30-39_Home/
 export FFF_FAV5=~
 export FFF_FAV6=~/.config/
 export FFF_FAV7=~/Downloads/
@@ -145,4 +142,4 @@ case ${TERM} in
     ;;
 esac
 
-pfetch
+macchina --custom-ascii=/home/edun/.config/macchina/peanuts

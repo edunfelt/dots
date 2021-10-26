@@ -22,40 +22,40 @@ window:
     y: 15
 
 # Start flavours
-# Base16 Cupcake - alacritty color config
-# Chris Kempson (http://chriskempson.com)
+# Base16 Solarized Light - alacritty color config
+# Ethan Schoonover (modified by aramisgithub)
 colors:
   # Default colors
   primary:
-    background: '0xfbf1f2'
-    foreground: '0x8b8198'
+    background: '0xfdf6e3'
+    foreground: '0x586e75'
 
   # Colors the cursor will use if `custom_cursor_colors` is true
   cursor:
-    text: '0xfbf1f2'
-    cursor: '0x8b8198'
+    text: '0xfdf6e3'
+    cursor: '0x586e75'
 
   # Normal colors
   normal:
-    black:   '0xfbf1f2'
-    red:     '0xD57E85'
-    green:   '0xA3B367'
-    yellow:  '0xDCB16C'
-    blue:    '0x7297B9'
-    magenta: '0xBB99B4'
-    cyan:    '0x69A9A7'
-    white:   '0x8b8198'
+    black:   '0xfdf6e3'
+    red:     '0xdc322f'
+    green:   '0x859900'
+    yellow:  '0xb58900'
+    blue:    '0x268bd2'
+    magenta: '0x6c71c4'
+    cyan:    '0x2aa198'
+    white:   '0x586e75'
 
   # Bright colors
   bright:
-    black:   '0xbfb9c6'
-    red:     '0xEBB790'
-    green:   '0xf2f1f4'
-    yellow:  '0xd8d5dd'
-    blue:    '0xa59daf'
-    magenta: '0x72677E'
-    cyan:    '0xBAA58C'
-    white:   '0x585062'
+    black:   '0x839496'
+    red:     '0xcb4b16'
+    green:   '0xeee8d5'
+    yellow:  '0x93a1a1'
+    blue:    '0x657b83'
+    magenta: '0x073642'
+    cyan:    '0xd33682'
+    white:   '0x002b36'
 
 draw_bold_text_with_bright_colors: false
 # End flavours

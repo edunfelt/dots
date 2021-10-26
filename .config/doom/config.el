@@ -6,7 +6,7 @@
 ;; |____|_____|__|__|__| |__||___  |__|_____||__|                             ;;
 ;;                           |_____|                                          ;;
 ;; Emilia's config.el <3                                                      ;;
-;; Edited: 2021-07-18                                                         ;;
+;; Edited: 2021-10-22                                                         ;;
 ;; Author: Emilia Dunfelt, edun@dunfelt.se                                    ;;
 ;;                                                                            ;;
 ;; Structure:                                                                 ;;
@@ -26,6 +26,10 @@
 (setq user-full-name "Emilia Dunfelt"
       user-mail-address "edun@dunfelt.se"
       display-line-numbers-type nil)
+
+(tool-bar-mode 1)
+(menu-bar-mode 1)
+;;(scroll-bar-mode 1)
 
 ;; Settings
 (setq-default 
@@ -80,29 +84,28 @@
 ;; 2. Appearance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Font
-(setq doom-font (font-spec :family "Iosevka" :size 14)
-      doom-big-font (font-spec :family "Iosevka Bold" :size 14))
+(setq doom-font (font-spec :family "Terminus" :size 16)
+      doom-big-font (font-spec :family "Terminus Bold" :size 16))
 
 ;; Theme
+;;(setq doom-theme 'doom-opera-light)
+;;(load-theme 'base16-cupcake t)
+
 (setq doom-theme 'doom-solarized-light)
 
-;; Buffer names
-(setq doom-fallback-buffer-name "✻ doom"
-      +doom-dashboard-name "✻ doom")
+(defun synchronize-theme ()
+  (let* ((light-theme 'doom-solarized-light)
+         (dark-theme 'doom-solarized-dark)
+         (start-time-light-theme 7)
+         (end-time-light-theme 18)
+         (hour (string-to-number (substring (current-time-string) 11 13)))
+         (next-theme (if (member hour (number-sequence start-time-light-theme end-time-light-theme))
+                         light-theme dark-theme)))
+    (when (not (equal doom-theme next-theme))
+      (setq doom-theme next-theme)
+      (load-theme next-theme))))
 
-;; Window title
-(setq frame-title-format
-      '(""
-        (:eval
-         (if (s-contains-p org-roam-directory (or buffer-file-name ""))
-             (replace-regexp-in-string
-              ".*/[0-9]*-?" "☰ "
-              (subst-char-in-string ?_ ?  buffer-file-name))
-           "%b"))
-        (:eval
-         (let ((project-name (projectile-project-name)))
-           (unless (string= "-" project-name)
-             (format (if (buffer-modified-p)  " ☆ %s" "  ✭  %s") project-name))))))
+(run-with-timer 0 900 'synchronize-theme)
 
 ;; Fancy splash screen
 (defvar +fl/splashcii-query ""
@@ -131,16 +134,6 @@
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 
-;; Tabs
-(after! centaur-tabs
-  (centaur-tabs-mode -1)
-  (setq centaur-tabs-height 36
-        centaur-tabs-set-icons t
-        centaur-tabs-modified-marker "o"
-        centaur-tabs-close-button "×"
-        centaur-tabs-set-bar 'above
-        centaur-tabs-gray-out-icons 'buffer))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 3. Org-stuff
@@ -148,6 +141,8 @@
 (setq org-directory "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org"
       org-ellipsis " ▼ "
       org-adapt-indentation nil)
+
+(require 'org-habit)
 
 (use-package org-agenda
   :after org
@@ -157,29 +152,37 @@
                               (tags   . " %i %-20:c")
                               (search . " %i %-20:c"))))
 
+
+(setq org-agenda-skip-deadline-prewarning-if-scheduled t)
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+
 (setq org-agenda-custom-commands
     '(("d" "Today's Tasks"
-       ((tags-todo
-          "GHD+ACTIVE+PRIORITY=\"A\""
-          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
-           (org-agenda-overriding-header "Primary goals this month")))
-        (tags-todo
-          "GHD+ACTIVE+PRIORITY=\"C\""
-          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
-           (org-agenda-overriding-header "Secondary goals this month")))
-        (agenda "" ((org-agenda-span 1)
-                    (org-agenda-overriding-header "Today's tasks")))))
+                ((agenda "" ((org-agenda-span 1)
+                        (org-agenda-overriding-header "Today's tasks")))
+                (tags-todo
+                        "GHD+ACTIVE+PRIORITY=\"A\""
+                        ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+                        (org-agenda-overriding-header "Primary goals this month")))
+                (tags-todo
+                        "GHD+ACTIVE+PRIORITY=\"C\""
+                        ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+                         (org-agenda-overriding-header "Secondary goals this month"))))
+                )
 
       ("w" "This Week's Tasks"
-       ((tags-todo
-          "GHD+ACTIVE+PRIORITY=\"A\""
-          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
-           (org-agenda-overriding-header "Primary goals this month")))
-        (tags-todo
-          "GHD+ACTIVE+PRIORITY=\"C\""
-          ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
-           (org-agenda-overriding-header "Secondary goals this month")))
-        (agenda))))
+                ((agenda)
+                (tags-todo
+                        "GHD+ACTIVE+PRIORITY=\"A\""
+                        ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+                        (org-agenda-overriding-header "Primary goals this month")))
+                (tags-todo
+                        "GHD+ACTIVE+PRIORITY=\"C\""
+                        ((org-agenda-files '("/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/ghd.org"))
+                         (org-agenda-overriding-header "Secondary goals this month"))))
+                )
+      )
 )
 
 ;; Always change the task to IN-PROGRESS.
@@ -199,7 +202,7 @@
 (use-package org-journal
   :init
   (setq org-journal-dir "/media/nas/home/00-09_Meta/01_Emacs/01.01_Org/journal/"
-        org-journal-file-header "#+STARTUP: folded\n#+TITLE: "
+        org-journal-file-header "#+STARTUP: folded\n* Notes\n"
         org-journal-file-format "%Y-%m-%d.org"
         org-journal-date-format "%A, %d %B %Y")
   :config
@@ -209,10 +212,9 @@
         "C-c n s" #'evil-save-modified-and-close )
   )
 
-
 (defvar org-journal--date-location-scheduled-time nil)
 
-(org-id-update-id-locations)
+;(org-id-update-id-locations)
 
 (set-file-template! 'org-mode :ignore t)
 (use-package deft
@@ -249,7 +251,7 @@
                    :desc "zetteldeft-find-file-full-title-insert" "I" #'zetteldeft-find-file-full-title-insert
                    :desc "zetteldeft-find-file" "o" #'zetteldeft-find-file
                    :desc "zetteldeft-new-file" "n" #'zetteldeft-new-file
-                   :desc "zetteldeft-new-file-and-link" "N" #'zetteldeft-new-file-and-link
+                   :desc "zetteldeft-new-file-and-backlink" "N" #'zetteldeft-new-file-and-backlink
                    :desc "edun/deft-open-preview" "p" #'edun/deft-open-preview
                    :desc "edun/deft-open-other" "v" #'edun/deft-open-other
                    :desc "zetteldeft-file-rename" "r" #'zetteldeft-file-rename
@@ -284,3 +286,82 @@
 (setq-default mode-require-final-newline nil)
 (setq yas-indent-line 'fixed)
 (setq yas-also-auto-indent-first-line nil)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 5. RSS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(after! elfeed
+        (setq elfeed-search-filter "@1-days-ago"))
+(add-hook! elfeed-search-mode-hook 'elfeed-update)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 6. Mail
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(after! mu4e
+        (setq! mu4e-maildir (expand-file-name "~/Documents/Mail")
+               mu4e-attachment-dir "~/Downloads"
+               mu4e-get-mail-command "mbsync --all"
+               mu4e-index-update-in-background t
+               mu4e-compose-signature-auto-include t
+               mu4e-use-fancy-chars t
+               mu4e-view-show-addresses t
+               mu4e-view-show-images t
+               mu4e-compose-format-flowed t
+               mu4e-update-interval 120
+               mu4e-sent-messages-behavior 'delete
+               mu4e-compose-dont-reply-to-self t
+               mu4e-view-show-addresses 't
+               mu4e-alert-set-default-style 'libnotify
+               mu4e-maildir-shortcuts
+               '(("/Inbox" . ?i)
+                 ("/Drafts" . ?d)
+                 ("/Trash" . ?t)
+                 ("/Sent" . ?s))
+               message-send-mail-function 'smtpmail-send-it
+               starttls-use-gnutils t
+               message-citation-line-format "On %d\n%f wrote:\n\n%Q"
+               message-kill-buffer-on-exit t
+               org-mu4e-convert-to-html t
+               ))
+;(set-email-account! "Personal"
+                    ;'((user-mail-address      . "emilia@dunfelt.se")
+                      ;(user-full-name         . "Emilia Dunfelt")
+                      ;(mu4e-sent-folder       . "/Personal/Sent")
+                      ;(mu4e-drafts-folder     . "/Personal/Drafts")
+                      ;(mu4e-trash-folder      . "/Personal/Trash")
+                      ;(mu4e-refile-folder     . "/Personal/Archives")
+                      ;(mu4e-compose-signature . "Emilia Dunfelt\n<emilia@dunfelt.se>")
+                      ;(smtpmail-smtp-user     . "emilia@dunfelt.se")
+                      ;(smtpmail-smtp-server   . "smtp01.binero.se")
+                      ;(smtpmail-smtp-service  . 587)
+                      ;(smtpmail-stream-type   . starttls)
+                      ;(smtpmail-auth-credentials . (expand-file-name "~/.authinfo2.gpg"))
+                      ;(smtpmail-debug-info . t)
+                      ;(smtpmail-debug-verbose . t)
+                      ;))
+(set-email-account! "Stockholm University"
+                   '((user-mail-address       . "emilia.dunfelt@math.su.se")
+                     (user-full-name          . "Emilia Dunfelt")
+                     (mu4e-sent-folder        . "/SU/Sent Items")
+                     (mu4e-drafts-folder      . "/SU/Drafts")
+                     (mu4e-trash-folder       . "/SU/Trash")
+                     (mu4e-compose-signature  . "Emilia Dunfelt\n<emilia.dunfelt@math.su.se>")
+                     (smtpmail-smtp-user      . "emdu7940")
+                     (smtpmail-smtp-server    . "ebox.su.se")
+                     (smtpmail-smtp-service   . 587)
+                     (smtpmail-stream-type    . starttls)
+                     (smtpmail-auth-credentials . (expand-file-name "~/.authinfo.gpg"))
+                     ))
+;(setq mu4e-context-policy 'ask-if-none
+      ;mu4e-compose-context-policy 'always-ask)
+;(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+;(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Other
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package wolfram
+             :custom
+             (wolfram-alpha-app-id "ETP8UJ-8JQPG7G7KU"))

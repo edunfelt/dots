@@ -5,7 +5,7 @@
 "  \___/ |__||__|__|__|__| |____|                                        
 "                                                                        
 " Emilia's vimrc <3                                                      
-" Edited: 2021-07-14
+" Edited: 2021-09-15
 " Author: Emilia Dunfelt, edun@dunfelt.se                                
 "                                                                        
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -20,7 +20,7 @@ set viewdir=~/.config/vim/view
 
 set encoding=UTF-8                              	" encoding, please
 syntax enable					                    " syntax highlighting
-set background=light                                " light theme
+set background=light                                 " dark theme
 set autoindent			                            " autoindent new lines
 filetype plugin indent on			                " filetype detection
 
@@ -36,13 +36,14 @@ set number				                            " show line numbers
 set showcmd		    	                            " show command in bottom bar
 set wildmenu				                        " visual autocomplete for command menu
 set showmatch					                    " highlight matching parentheses
+set laststatus=2                                    " lightline
 
 set incsearch					                    " search as characters are entered
 set hlsearch				                        " highlight matches
 
 setlocal spell                          	        " spellcheck on
 set spelllang=en_us                             	" I write mostly in English anyway
-set guifont=Iosevka\ Regular\ 11                    " nice font while in gvim
+set guifont=Terminus\ 11                            " nice font while in gvim
 
 " some things needed for well behaved coc
 set hidden
@@ -88,6 +89,10 @@ nnoremap <leader>cd :cd %:p:h<CR>
 " toggle nerdtree
 map <C-n> :NERDTreeToggle<CR>
 
+" uuid insert
+inoremap <c-u> <c-r>=trim(system('uuidgen'))<cr>
+nnoremap <c-u> i<c-r>=trim(system('uuidgen'))<cr><esc>
+
 
 " Run code
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -131,6 +136,14 @@ Plugin 'VundleVim/Vundle.vim'
 " solarized
 Plugin 'lifepillar/vim-solarized8'
 
+" earthbound themes
+Plugin 'benbusby/vim-earthbound-themes'
+
+" other themes
+Plugin 'mcchrish/zenbones.nvim'
+Plugin 'olivertaylor/vacme'
+Plugin 'chriskempson/base16-vim'
+
 " syntax highlighting
 Plugin 'sheerun/vim-polyglot'
 
@@ -152,8 +165,7 @@ let g:ale_set_highlights = 0
 let g:ale_sign_warning = "~"
 let g:ale_sign_error = "*"
 let g:ale_linters = {
-        \'python': ['flake8', 'pylint'],
-        \'javascript' : ['eslint']
+        \'python': ['flake8', 'pylint']
         \}
 let g:ale_fixers = {
         \'python': ['yapf'],
@@ -334,6 +346,11 @@ let g:NERDTreeGitStatusConcealBrackets = 1
 let g:NERDTreeShowBookmarks = 1
 let g:NERDTreeBookmarksFile = $HOME."/.config/vim/NERDTreeBookmarks"
 
+" Git
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-fugitive'
+
 " Vimwiki
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Plugin 'vimwiki/vimwiki'
@@ -344,18 +361,25 @@ let g:vimwiki_use_calendar = 1
 let g:vimwiki_auto_diary_index = 1
 let g:vimwiki_folding = "expr"
 let g:vimwiki_list = [{
-      \'path': '/media/nas/home/00-09_Meta/02_Vimwiki',
+      \'path': '~/Documents/00-09_Meta/02_Vimwiki',
       \'ext': '.wiki',
-      \'path_html': '/media/nas/home/00-09_Meta/02_Vimwiki/docs/',
-      \'template_path': '/media/nas/home/00-09_Meta/02_Vimwiki/templates/',
+      \'path_html': '~/Documents/00-09_Meta/02_Vimwiki/docs/',
+      \'template_path': '~/Documents/00-09_Meta/02_Vimwiki/templates/',
       \'template_default': 'default',
       \'template_ext': '.html'
       \}]
 
-" Airline
+" Statusline
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'dawikur/base16-vim-airline--themes'
+"Plugin 'itchyny/lightline.vim'
+"Plugin 'mike-hearn/base16-vim-lightline'
+
+"let g:lightline = {
+      "\ 'colorscheme': 'base16_cupcake',
+      "\ }
 
 " appearance
 let g:airline_theme = "solarized"
@@ -396,7 +420,7 @@ let g:airline#extensions#branch#empty_message = ""
 
 let g:airline#extensions#default#layout = [
       \ [ 'a', 'b', 'c' ],
-      \ [ 'x', 'z' ]
+      \ [ 'x', 'y', 'z' ]
       \ ]
 
 let g:airline#extensions#nerdtree_statusline = 1
@@ -413,3 +437,10 @@ Plugin 'easymotion/vim-easymotion'
 call vundle#end()
 
 colorscheme solarized8
+" change by time of day
+let hr = (strftime('%H'))
+if hr >= 19
+  set background=dark
+elseif hr >= 7
+  set background=light
+endif

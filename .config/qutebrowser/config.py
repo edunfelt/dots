@@ -36,4 +36,4 @@ config.bind('zl', 'spawn --userscript bw-dmenu-fill')
 config.bind('zt', 'spawn --userscript qute-zotero')
 
 # Mpv picture in picture mode
-config.bind(',m', 'hint links spawn --detach mpv {hint-url}')
+config.bind('zm', 'hint links spawn --detach mpv {hint-url}')

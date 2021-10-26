@@ -1,5 +1,5 @@
 [global]
-    font = Iosevka 11
+    font = Iosevka, "WenQuanYi Micro Hei" 11
     markup = full
     format = "<b>%s</b>\n%b"
     sort = yes
@@ -9,7 +9,7 @@
     show_age_threshold = 60
     word_wrap = yes
     ignore_newline = no
-    geometry = "300x5-10+30"
+    geometry = "400x5-10+30"
     shrink = yes
     idle_threshold = 180
     monitor = 0
@@ -54,4 +54,3 @@
     frame_color = "#D33682"
     frame_width = 3
     timeout = 10
-

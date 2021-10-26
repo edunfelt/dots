@@ -33,4 +33,7 @@
 ;; 3. Research
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (package! org-journal)
+(package! org-noter)
 (package! zetteldeft)
+(package! pdf-tools)
+(package! wolfram)
