@@ -1,0 +1,18 @@
+{
+    "name": "archemis",
+    "bar": {
+        "Custom": {
+            "glyph": "●",
+            "symbol_open": "[",
+            "symbol_close": "]"
+        }
+    },
+    "separator": "~",
+    "separator_color": {
+        "Rgb": [158, 208, 114]
+     },
+    "spacing": 2,
+    "padding": 0,
+    "block_title": "┤ archemis ├",
+    "abbreviation": "Classic"
+}

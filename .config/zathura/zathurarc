@@ -1,0 +1,41 @@
+# Start flavours
+# Solarized Light
+
+set default-bg                  "#fdf6e3"
+set default-fg                  "#586e75"
+
+set statusbar-fg                "#839496"
+set statusbar-bg                "#eee8d5"
+
+set inputbar-bg                 "#586e75"
+set inputbar-fg                 "#fdf6e3"
+
+set notification-bg             "#2aa198"
+set notification-fg             "#fdf6e3"
+
+set notification-error-bg       "#dc322f"
+set notification-error-fg       "#fdf6e3"
+
+set notification-warning-bg     "#b58900"
+set notification-warning-fg     "#fdf6e3"
+
+set highlight-color             "#859900"
+set highlight-active-color      "#b58900"
+
+set completion-bg               "#2aa198"
+set completion-fg               "#fdf6e3"
+
+set completion-highlight-fg     "#268bd2"
+set completion-highlight-bg     "#fdf6e3"
+
+set index-bg                    "#eee8d5"
+set index-fg                    "#839496"
+set index-active-bg             "#859900"
+set index-active-fg             "#fdf6e3"
+
+set recolor-lightcolor "#fdf6e3"
+set recolor-darkcolor "#586e75"
+
+set recolor                     "true"
+set recolor-keephue             "true"
+# End flavours

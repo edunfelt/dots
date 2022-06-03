@@ -1,0 +1,145 @@
+#
+#  __                 __              
+# |  |--.---.-.-----.|  |--.----.----.
+# |  _  |  _  |__ --||     |   _|  __|
+# |_____|___._|_____||__|__|__| |____|
+#
+# Emilia's bashrc <3
+# Edited: 2021-09-25
+# Author: Emilia Dunfelt, edun@dunfelt.se
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+########################################################
+# Variables
+########################################################
+# path
+export PATH=$PATH:$HOME/.local/bin
+
+# vim
+export MYVIMRC="~/.config/vim/vimrc"
+export VIMINIT="source $MYVIMRC"
+export VISUAL=vim;
+export EDITOR=vim;
+
+# ps1
+export PS1="\[\e[33m\]✨ \[\e[m\]\W\[\e[33m\] >>\[\e[m\] "
+
+# integrate gtk theme with qt apps
+export QT_QPA_PLATFORMTHEME="gtk2"
+export QT_STYLE_OVERRIDE="gtk2"
+
+# other
+export XDG_DATA_HOME="/home/edun/.config"
+export WEECHAT_HOME="~/.config/weechat"
+export DOOMDIR="~/.config/doom"
+export PF_COL2=0
+
+########################################################
+# Aliases
+########################################################
+# common commands
+alias ll='ls -alF'              # easy long listing
+alias ls='ls --color=auto'      # nice ls coloring
+alias grep='grep --color=auto'  # nice grep coloring
+alias diff='colordiff'          # nice diff coloring
+alias cp="cp -i"                # confirm before overwriting something
+alias df='df -h'                # human-readable sizes
+alias free='free -m'            # show sizes in MB
+alias v="vim"                   # vim, of course :)
+alias h='history'               # I'm lazy
+alias j='jobs -l'               # faster, better jobs
+alias ..='cd ..'                # up a dir
+alias ...='cd ../../..'         # up two dirs
+
+export jdfun
+alias cjd='jdfun'
+
+# common directories
+alias uni="cd ~/Documents/10-19_Education/14_Masters_Degree"
+alias home="cd /media/nas/home"
+alias mm7041="cd ~/Documents/10-19_Education/14_Masters_Degree/14.02_Topology"
+alias mm7042="cd ~/Documents/10-19_Education/14_Masters_Degree/14.01_Commutative_Algebra"
+alias sf2740="cd ~/Documents/10-19_Education/14_Masters_Degree/14.03_Graph_Theory"
+alias dd2440="cd ~/Documents/10-19_Education/14_Masters_Degree/14.04_Advanced_Algorithms"
+
+# print log
+alias l="cat ~/LOG"
+
+
+########################################################
+# Functions
+########################################################
+# convenient extraction
+ex ()
+{
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar x $1     ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *)           echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# Johnny.Decimal
+jdfun() {
+    cd ~/Documents/*/*/${1}*
+}
+
+########################################################
+# Misc
+########################################################
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16/"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        eval "$("$BASE16_SHELL/profile_helper.sh")"
+
+# Nice ls folder colors
+LS_COLORS=$LS_COLORS:'tw=01;33:ow=01;33:'; export LS_COLORS
+
+# FFF
+# Directory color [0-9]
+export FFF_COL1=1
+# Status background color [0-9]
+export FFF_COL2=2
+# Selection color [0-9] (copied/moved files)
+export FFF_COL3=4
+# Cursor color [0-9]
+export FFF_COL4=3
+# Status foreground color [0-9]
+export FFF_COL5=0
+# Favorites (Bookmarks) (keys 1-9) (dir or file)
+export FFF_FAV1=~/Documents/10-19_Education/
+export FFF_FAV2=~/Documents/20-29_Work/
+export FFF_FAV3=~/Documents/30-39_Home/
+export FFF_FAV5=~
+export FFF_FAV6=~/.config/
+export FFF_FAV7=~/Downloads/
+
+# Alacritty user@host:cwd fix
+case ${TERM} in
+  xterm*|rxvt*|Eterm|alacritty|aterm|kterm|gnome*)
+    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
+    ;;
+
+  screen*)
+    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033_%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
+    ;;
+esac
+
+macchina --custom-ascii=/home/edun/.config/macchina/peanuts
