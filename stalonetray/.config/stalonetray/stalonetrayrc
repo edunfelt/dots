@@ -1,0 +1,10 @@
+geometry 5x1+2480
+icon_size 20
+sticky 1
+background "#e0e0e0"
+window_type dock
+skip_taskbar 1
+#icon_gravity NE
+kludges force_icons_size
+scrollbars horizontal
+scrollbars_size 1

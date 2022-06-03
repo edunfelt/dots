@@ -1,0 +1,241 @@
+"         __                                                             
+" .--.--.|__|.--------.----.----.                                        
+" |  |  ||  ||        |   _|  __|                                        
+"  \___/ |__||__|__|__|__| |____|                                        
+"                                                                        
+" Emilia's vimrc <3                                                      
+" Author: Emilia Dunfelt, edun@dunfelt.se                                
+"                                                                        
+" GENERAL --------------------------------------------------------------- {{{
+
+" misc stuff 
+set nocompatible                          " no vi compatibility
+filetype plugin indent on			      " filetype detection
+set encoding=UTF-8                        " encoding, please
+set spelllang=en_us                       " I write mostly in English anyway
+set history=500                           " more command history
+
+" paths
+set runtimepath+=~/.config/vim,~/.config/vim/after
+set viminfo+=n~/.config/vim/viminfo
+set viewdir=~/.config/vim/view
+
+" tabs and spacing
+set autoindent			                  " autoindent new lines
+set expandtab					          " tabs are spaces
+set shiftwidth=4                          " shift are spaces
+set tabstop=4				              " number of visual spaces per TAB
+set softtabstop=4		                  " number of spaces per tab when editing
+set wrap linebreak nolist                 " wrap things nicely
+
+" appearance
+"set termguicolors
+set background=light
+"colorscheme disco                         " colorscheme
+syntax enable					          " syntax highlighting
+set number				                  " show line numbers
+set cursorline                            " highlight current line
+set showmatch					          " highlight matching parentheses
+
+set showcmd		    	                  " show command in bottom bar
+set showmode                              " show current mode in bottom bar
+set wildmenu				              " visual autocomplete for command menu
+"set wildmode=list:longest                 " better wildmenu
+set wildignore=*.aux,*.*fls,*.gz,*.bbl,*.bcf,*.blg,*.fdb_latexmk,*.pdf
+
+" searching
+set incsearch					          " search as characters are entered
+set ignorecase                            " not case sensitive
+set smartcase                             " unless I want it to be
+set hlsearch				              " highlight matches
+
+" }}}
+
+" MAPPINGS --------------------------------------------------------------- {{{
+
+" remap escape
+inoremap jk <esc>
+
+" space is leader
+let mapleader=" "
+
+" turn off search highlight with escape
+nnoremap <leader><Esc> :nohlsearch<CR>
+
+" replace misspelled word on C-l
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
+" system clipboard access
+nnoremap <C-C> "+y
+nnoremap <C-V> "+p
+inoremap <C-V> <ESC>"+pa
+
+" navigate splits better
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" resize splits better
+noremap <C-up> <C-W>+
+noremap <C-down> <C-W>-
+noremap <C-left> <C-W>>
+noremap <C-right> <C-W><
+
+" tab switching
+nnoremap <leader>- :tabprevious<CR>
+nnoremap <leader>+ :tabnext<CR>
+nnoremap <leader>t :tabnew 
+
+" better yanking
+nnoremap Y y$
+
+" line wrapping
+command! -nargs=* Wrap set wrap linebreak nolist
+
+" toggle nerdtree
+map <C-n> :NERDTreeToggle<CR>
+
+" uuid insert
+inoremap <C-U> <C-R>=trim(system('uuidgen'))<CR>
+nnoremap <C-U> i<C-R>=trim(system('uuidgen'))<CR><ESC>
+
+" printing
+nnoremap <silent> <leader>p :%w !lp<CR>
+
+" run python
+imap <F5> <Esc>:w<CR>:!clear;python3 %<CR>
+nmap <F5> <Esc>:w<CR>:!clear;python3 %<CR>
+
+" debugging
+packadd termdebug
+let g:termdebug_wide=1
+noremap <silent> <leader>dr :Termdebug<cr>
+noremap <silent> <leader>rr :Run<cr>
+noremap <silent> <leader>b :Break<cr>
+noremap <silent> <leader>c :Clear<cr>
+noremap <silent> <leader>s :Step<cr>
+noremap <silent> <leader>o :Over<cr>
+noremap <silent> <leader>e :Evaluate<cr>
+noremap <silent> <leader>x :Continue<cr>
+
+" }}}
+
+" SCRIPTS -------------------------------------------------------------- {{{
+
+" folding
+augroup filetype_vim
+  autocmd!
+  autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" enable undofile
+if version > 703
+  set undodir=~/.config/vim/backup
+  set undofile
+  set undoreload=10000
+endif
+
+" gui settings
+if has('gui_running')
+  colorscheme vacme
+  set guifont=Iosevka\ 11
+  set guioptions-=L                       " no scrollbar
+  set guioptions-=T                       " no toolbar
+  set guioptions-=m                       " no menubar
+  nnoremap <F12> :if &guioptions=~#'mT'<Bar>
+    \set guioptions-=mT<Bar>
+    \else<Bar>
+    \set guioptions=+=mT<Bar>
+    \endif<Cr>
+endif
+
+" change by time of day
+"let hr = (strftime('%H'))
+"if hr >= 17
+  "set background=dark
+"elseif hr >= 7
+  "set background=dark
+"endif
+
+" statusline mode
+function! StatuslineMode() abort
+  return { 'n': 'NORMAL', 'v': 'VISUAL',   'i': 'INSERT',  'R': 'REPLACE',
+         \ 's': 'SELECT', 't': 'TERMINAL', 'c': 'COMMAND', '!': 'SHELL',
+    \ }[mode()]
+endfunction
+
+" cursor only in active
+augroup cursor_off
+    autocmd!
+    autocmd WinLeave * set nocursorline nocursorcolumn
+    autocmd WinEnter * set cursorline cursorcolumn
+augroup END
+
+" }}}
+
+" STATUS LINE ----------------------------------------------------------- {{{
+
+set laststatus=2
+set statusline=%#cursorlinenr#%{StatuslineMode()}%*
+set statusline+=\ [\%n\]\ %f\%m\ %Y\ %r
+set statusline+=%=
+set statusline+=(%l,%c%V)\ %P
+
+" }}}
+
+" PLUGINS ---------------------------------------------------------------- {{{
+
+set rtp+=$HOME/.config/vim/bundle/Vundle.vim/
+call vundle#begin('$HOME/.config/vim/bundle/')
+Plugin 'VundleVim/Vundle.vim'
+
+" distraction-free writing
+Plugin 'junegunn/goyo.vim'
+
+" easy commenting
+Plugin 'preservim/nerdcommenter'
+
+" C support
+Plugin 'WolfgangMehner/c-support'
+
+" LaTeX
+Plugin 'lervag/vimtex'
+Plugin 'honza/vim-snippets'
+let g:tex_flavor = "latex"
+let g:vimtex_view_method = "zathura"
+let g:vimtex_quickfix_mode = 0
+set conceallevel=1
+let g:tex_conceal="abdmg"
+
+" Ultisnips
+Plugin 'SirVer/ultisnips'
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsSnippetDirectories = ["~/.config/vim/UltiSnips"]
+
+" Nerdtree
+Plugin 'preservim/nerdtree'
+Plugin 'PhilRunninger/nerdtree-visual-selection'
+let g:NERDTreeGitStatusConcealBrackets = 1
+
+" Vimwiki
+Plugin 'vimwiki/vimwiki'
+Plugin 'itchyny/calendar.vim'
+let g:vimwiki_hl_cb_checked = 1
+let g:vimwiki_use_calendar = 1
+let g:vimwiki_auto_diary_index = 1
+let g:vimwiki_folding = "expr"
+let g:vimwiki_list = [{
+      \'path': '~/archive/00-09-meta/02-vimwiki/',
+      \'ext': '.wiki',
+      \'path_html': '~/archive/00-09-meta/02-vimwiki/docs/',
+      \'template_path': '~/archive/00-09-meta/02-vimwiki/templates/',
+      \'template_default': 'default',
+      \'template_ext': '.html'
+      \}]
+
+call vundle#end()
+
+" }}}

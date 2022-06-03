@@ -1,0 +1,27 @@
+Config { font = "xft:Iosevka:size=10,WenQuanYi Micro Hei:size=10:antialias=true:hinting=true"
+       , bgColor = "#323537"
+       , fgColor = "#a7a7a7"
+       , position  = TopW L 100
+       , allDesktops = True
+       , persistent = True
+       , commands = [ Run Date "%b %d %Y  %H:%M:%S" "date" 10
+                    , Run Volume "default" "Master" [ "-t", "vol <volumebar> (<volume>%)" ] 10
+                    , Run Mpris2 "spotify" [ "-t", "<artist> - <title>" ] 10
+                    , Run Cpu [ "-t", "cpu <bar> (<total>%)"
+                              , "-H", "50"
+                              , "--high", "#cf6a4c"
+                              ] 10
+                    , Run Memory [ "-t", "mem <usedbar> (<usedratio>%)" ] 10
+                    , Run DiskU [ ("/", "hdd <usedbar> (<used>)") ] [] 3600
+                    , Run Battery [ "-t", "bat <leftbar> (<left>%)"
+                                  , "--Low", "20"
+                                  , "--High", "70"
+                                  , "--low", "#cf6a4c"
+                                  , "--"
+                                  ] 50
+                    , Run StdinReader
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "  %StdinReader% } {<fc=#9b859d>%cpu%</fc>  <fc=#7587a6>%memory%</fc>  <fc=#8f9d6a>%battery%</fc>  %date% "
+       }

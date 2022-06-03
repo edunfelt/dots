@@ -1,0 +1,40 @@
+set font                        "BlexMono Nerd Font 10"
+set page-padding                0
+set scroll-step                 30
+set window-title-basename       true
+set statusbar-basename          true
+set selection-clipboard         "clipboard"
+
+
+set default-bg                  "#fafafa"
+set default-fg                  "#2a2a2a"
+
+set statusbar-fg                "#454545"
+set statusbar-bg                "#eeeeee"
+
+set inputbar-bg                 "#454545"
+set inputbar-fg                 "#eeeeee"
+
+set notification-bg             "#eeeeee"
+set notification-fg             "#3b6ea8"
+
+set notification-error-bg       "#99324b"
+set notification-error-fg       "#eeeeee"
+
+set notification-warning-bg     "#9a7500"
+set notification-warning-fg     "#eeeeee"
+
+set highlight-color             "#3b6ea8"
+set highlight-active-color      "#398eac"
+
+set completion-bg               "#eeeeee"
+set completion-fg               "#4f894c"
+
+set completion-highlight-fg     "#eeeeee"
+set completion-highlight-bg     "#4f894c"
+
+set recolor-lightcolor          "#fafafa"
+set recolor-darkcolor           "#2a2a2a"
+
+set recolor                     "true"
+set recolor-keephue             "true"
