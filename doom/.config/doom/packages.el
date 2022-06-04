@@ -8,40 +8,29 @@
 ;; |__|                          |_____|                                      ;;
 ;;                                                                            ;;
 ;; Emilia's packages.el                                                       ;;
-;; Edited: 2021-04-09                                                         ;;
 ;; Author: Emilia Dunfelt, edun@dunfelt.se                                    ;;
-;;                                                                            ;;
-;; Structure:                                                                 ;;
-;; 1. Appearance                                                              ;;
-;; 2. Utilities                                                               ;;
-;; 3. Research                                                                ;;
-;;                                                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 1. Appearance
+;; Appearance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (package! base16-theme)
+(package! olivetti)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 2. Utilities
+
+;; Utilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (package! evil-easymotion)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 3. Research
+
+;; LaTeX
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (package! auctex)
 (package! cdlatex)
 (package! org-fragtog)
-(package! org-journal)
-(package! org-noter)
-(package! pdf-tools)
-(package! elfeed-protocol)
-(package! elfeed-goodies)
-(package! olivetti)
 
+
+;; Other org things
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(package! org-noter)
 (package! org-roam-bibtex
   :recipe (:host github :repo "org-roam/org-roam-bibtex"))
 
@@ -49,4 +38,12 @@
 (unpin! org-roam)
 (package! org-roam-ui)
 
+
+;; Other tools
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (package! anki-editor)
+
+(package! pdf-tools)
+
+(package! elfeed-protocol)
+(package! elfeed-goodies)

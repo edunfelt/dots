@@ -319,6 +319,7 @@ myManageHook = composeAll
     , className =? "zoom"                       --> doFloat
     , className =? "Quodlibet"                  --> doFloat
     , className =? "xpad"                       --> doFloat
+    , className =? "R_x11"                      --> doFloat
     , title     =? "Picture-in-Picture"         --> doFloat
     , title     =? "Terminal - "                --> doCenterFloat
     , className =? "qutebrowser"                --> doRectFloat (W.RationalRect 0.4 0.2 0.5 0.7)
