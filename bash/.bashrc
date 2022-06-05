@@ -6,7 +6,7 @@
 #
 # Emilia's bashrc <3
 # Author: Emilia Dunfelt, edun@dunfelt.se
-#
+
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -45,6 +45,8 @@ export GPODDER_HOME="/home/e/media/mus/pods"
 
 # path
 export PATH=$PATH:$HOME/.local/bin:$HOME/usr/bin:$PLAN9/bin:$HOME/usr/bin
+
+
 ########################################################
 # Aliases
 ########################################################
@@ -73,6 +75,7 @@ alias cast="scrcpy --tcpip=192.168.1.57:5555"
 
 alias claws-mail="claws-mail --alternate-config-dir $HOME/.config/claws-mail"
 alias pidgin="pidgin -c $HOME/.config/purple"
+
 
 ########################################################
 # Functions
@@ -104,6 +107,7 @@ ex ()
 jdfun() {
     cd ~/Documents/*/*/${1}*
 }
+
 
 ########################################################
 # Misc

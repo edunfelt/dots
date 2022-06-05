@@ -193,8 +193,7 @@ myProjects = [ Project -- net
             , Project -- mul
                 { projectName = myWorkspaces !! 4
                 , projectDirectory = "~/media"
-                , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 4) "spotify"
+                , projectStartHook = Nothing
                 }
             , Project -- tmp
                 { projectName = myWorkspaces !! 0
@@ -319,7 +318,7 @@ myManageHook = composeAll
     , className =? "zoom"                       --> doFloat
     , className =? "Quodlibet"                  --> doFloat
     , className =? "xpad"                       --> doFloat
-    , className =? "R_x11"                      --> doFloat
+    , className =? "R_x11"                      --> doCenterFloat
     , title     =? "Picture-in-Picture"         --> doFloat
     , title     =? "Terminal - "                --> doCenterFloat
     , className =? "qutebrowser"                --> doRectFloat (W.RationalRect 0.4 0.2 0.5 0.7)
@@ -444,6 +443,7 @@ treeActions = [ Node (TS.TSNode "Session" "" (return ()))
                      [ Node (TS.TSNode "Shutdown" "Good night!" (spawn "poweroff")) []
                      , Node (TS.TSNode "Restart" "See you soon!" (spawn "reboot")) []
                      ]
+
              , Node (TS.TSNode "Productivity" "" (return ()))
                      [ Node (TS.TSNode "Zotero" "Your personal research assistant" (spawn "zotero")) []
                      , Node (TS.TSNode "Emacs" "Doom emacs" (spawn "emacs")) []
@@ -474,13 +474,6 @@ treeActions = [ Node (TS.TSNode "Session" "" (return ()))
                      , Node (TS.TSNode "Blueman manager" "Bluetooth settings" (spawn "blueman-manager")) []
                      , Node (TS.TSNode "Font manager" "Font manager and organizer" (spawn "gnome-font-viewer")) []
                      , Node (TS.TSNode "GColor3" "Color picker" (spawn "gcolor3")) []
-                     ]
-              , Node (TS.TSNode "Dots" "" (return ()))
-                     [ Node (TS.TSNode "vim" "The true text editor" (spawn (myEditor ++ "~/.config/vim/vimrc"))) []
-                     , Node (TS.TSNode "kitty" "Kitty terminal emulator" (spawn (myEditor ++ "~/.config/kitty/kitty.conf"))) []
-                     , Node (TS.TSNode "xmonad" "XMonad configuration" (spawn (myEditor ++ "~/.config/xmonad/xmonad.hs"))) []
-                     , Node (TS.TSNode "xmobar" "XMobar configuration" (spawn (myEditor ++ "~/.config/xmonad/xmobarrc"))) []
-                     , Node (TS.TSNode "bashrc" "The bourne again shell" (spawn (myEditor ++ "~/.bashrc"))) []
                      ]
               , Node (TS.TSNode "Internet" "" (return ()))
                      [ Node (TS.TSNode "Qutebrowser" "Minimal, keyboard-focused browser" (spawn "qutebrowser")) []
@@ -558,7 +551,7 @@ myKeys =
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
     , ("M-r", spawn "dmenu_run -nf '#616161' -nb '#eeeeee' -sb '#3b6ea8' -sf '#fafafa' -fn 'Iosevka Curly:pixelsize=14'")
-    , ("M-f", spawn "edm")
+    , ("M-f", spawn "edm")                                                      -- file select
     , ("M-S-p", spawn "unicode_dmenu")                                          -- select unicode symbol
     
 -- Navigation ----------------------------------------------------------------------------
@@ -642,8 +635,8 @@ myKeys =
     , ("<XF86AudioRaiseVolume>",   spawn "amixer set Master 5%+ unmute")        -- lower volume by 5%
     , ("<xf86MonBrightnessDown>", spawn "brightnessctl s 10%-")                 -- decrease brightness by 10%
     , ("<XF86MonBrightnessUp>", spawn "brightnessctl s +10%")                   -- increase brightness by 10%
-    , ("<Print>", spawn "flameshot screen -p ~/Pictures/scrots -c")             -- full screenshot
-    , ("M-<Print>", spawn "flameshot gui -p ~/Pictures/scrots")                 -- interactive screenshot
+    , ("<Print>", spawn "xfce4-screenshooter -s ~/media/pic/scrots -f")         -- full screenshot
+    , ("M-<Print>", spawn "xfce4-screenshooter -s ~/media/pic/scrots -r")       -- interactive screenshot
 
 -- Scratchpads ---------------------------------------------------------------------------
     , ("M-s f", namedScratchpadAction myScratchPads "fff")
