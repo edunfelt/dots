@@ -2,13 +2,13 @@
 This is my collection of dotfiles, for easy setup I use [GNU Stow](https://www.gnu.org/software/stow/).
 
 ## screenshots
-WS1 - with emacs and firefox
-![res](scrots/media/pic/scrots/res.png)
-
-WS2 - with zathura, pyradio, and thunar
+WS1 - with zathura, pyradio, and thunar
 ![alg-top](scrots/media/pic/scrots/alg-top.png)
 
-WS3 - with emacs, kitty, and discord (themed using beautiful discord)
+WS2 - with emacs and firefox
+![res](scrots/media/pic/scrots/res.png)
+
+WS3 - with emacs, kitty, and discord (themed using beautifuldiscord)
 ![mul](scrots/media/pic/scrots/tmp.png)
 
 ## notes on the setup
