@@ -93,31 +93,31 @@ mySearchBrowser :: FilePath
 mySearchBrowser             = "/bin/firefox"
 
 -- Colors --------------------------------------------------------------------------------
-fg      = "#2a2a2a"
-bg      = "#fafafa"
+fg      = "#f8f8f0"
+bg      = "#5a5475"
 
-bg00    = "#fafafa"
-bg01    = "#f5f5f5"
-bg02    = "#eeeeee"
-bg03    = "#e0e0e0"
-bg04    = "#bdbdbd"
-bg05    = "#9e9e9e"
-bg06    = "#757575"
-bg07    = "#616161"
-bg08    = "#454545"
+bg00    = "#343145"
+bg01    = "#514c66"
+bg02    = "#6a6483"
+bg03    = "#9673d3"
+bg04    = "#a0a0c0"
+bg05    = "#b8a2ce"
+bg06    = "#726c8a"
+bg07    = "#5b576c"
+bg08    = "#716799"
 
-red     = "#99324b"
-orange  = "#ac4426"
-yellow  = "#9a7500"
-green   = "#4f894c"
-cyan    = "#398eac"
-blue    = "#3b6ea8"
-purple  = "#842879"
-teal    = "#29838d"
+red     = "#cc6666"
+orange  = "#e6c000"
+yellow  = "#ffea00"
+green   = "#c2ffdf"
+cyan    = "#96cbfe"
+blue    = "#55b3cc"
+purple  = "#c5a3ff"
+teal    = "#8295d6"
 
 -- Theme ----------------------------------------------------------------------------------
 myFont :: [Char]
-myFont                      = "xft:Iosevka Curly:pixelsize=13:antialias=true:hinting=true,FontAwesome:pixelsize=14"
+myFont                      = "xft:Latin Modern Mono:pixelsize=15:antialias=true:hinting=true,FontAwesome:pixelsize=14"
 
 myBorderWidth :: Dimension
 myBorderWidth               = 3
@@ -138,9 +138,9 @@ myWsBar        = "xmobar ~/.config/xmonad/xmobarrc"
 -- PP settings ---------------------------------------------------------------------------------
 wsPP :: PP
 wsPP           = xmobarPP { ppOrder               = id
-                          , ppTitle               = xmobarColor   blue ""  . shorten 50
-                          , ppCurrent             = xmobarColor   red "" . wrap "@" ""
-                          , ppUrgent              = xmobarColor   orange ""    . wrap "+" ""
+                          , ppTitle               = xmobarColor   purple ""  . shorten 50
+                          , ppCurrent             = xmobarColor   yellow "" . wrap "@" ""
+                          , ppUrgent              = xmobarColor   red ""    . wrap "+" ""
                           , ppVisible             = xmobarColor   cyan ""    . wrap ":" ""
                           , ppHiddenNoWindows     = const ""
                           , ppSep                 = " | "
@@ -229,9 +229,9 @@ myPromptTheme :: XPConfig
 myPromptTheme = def
     { font = myFont
     , bgColor = bg02
-    , fgColor = bg08
-    , fgHLight = bg02
-    , bgHLight = blue
+    , fgColor = fg
+    , fgHLight = fg
+    , bgHLight = bg03
     , borderColor = bg01
     , promptBorderWidth = 0
     , height = 20
@@ -247,7 +247,7 @@ myPromptTheme = def
 myStartupHook :: X ()
 myStartupHook = do
     spawn     "xrdb ~/.Xresources &"
-    spawn     "feh --bg-tile /home/e/media/pic/walls/tilerincewind.png &"
+    spawn     "feh --bg-fill /home/e/media/pic/walls/misty-garden-desktop-wallpaper.webp &"
     spawnOnce "dex -ae xmonad &"
     spawnOnce "xsetroot -cursor_name left_ptr &"
     spawnOnce "dunst &"
@@ -392,19 +392,19 @@ ltRect w = W.RationalRect (1 - w - 0.01) 0.03 w 0.96
 -- Grid select ---------------------------------------------------------------------------
 myGoColorizer :: Window -> Bool -> X (String, String)
 myGoColorizer = colorRangeFromClassName
-        (0xbd, 0xbd, 0xbd)      -- lowest inactive bg
-        (0xfa, 0xfa, 0xfa)      -- highest inactive bg
-        (0x3b, 0x6e, 0xa8)      -- active bg
-        (0x61, 0x61, 0x61)      -- inactive fg
-        (0xfa, 0xfa, 0xfa)      -- active fg
+        (0x34, 0x31, 0x45)      -- lowest inactive bg
+        (0x71, 0x67, 0x99)      -- highest inactive bg
+        (0x55, 0xb3, 0xcc)      -- active bg
+        (0xb5, 0xb2, 0xbd)      -- inactive fg
+        (0xf8, 0xf8, 0xf0)      -- active fg
 
 myBringColorizer :: Window -> Bool -> X (String, String)
 myBringColorizer = colorRangeFromClassName
-        (0xbd, 0xbd, 0xbd)      -- lowest inactive bg
-        (0xfa, 0xfa, 0xfa)      -- highest inactive bg
-        (0x3b, 0x6e, 0xa8)      -- active bg
-        (0x61, 0x61, 0x61)      -- inactive fg
-        (0xfa, 0xfa, 0xfa)      -- active fg
+        (0x34, 0x31, 0x45)      -- lowest inactive bg
+        (0x71, 0x67, 0x99)      -- highest inactive bg
+        (0x55, 0xb3, 0xcc)      -- active bg
+        (0xb5, 0xb2, 0xbd)      -- inactive fg
+        (0xf8, 0xf8, 0xf0)      -- active fg
 
 gsWnSelConfig colorizer = (buildDefaultGSConfig myGoColorizer)
     { gs_cellheight     = 40
@@ -501,11 +501,11 @@ tsConfig :: TS.TSConfig a
 tsConfig = TS.TSConfig
     { TS.ts_hidechildren   = True
     , TS.ts_font           = myFont
-    , TS.ts_background     = 0xffbdbdbd
-    , TS.ts_node           = (0xff454545, 0xffbdbdbd)
-    , TS.ts_nodealt        = (0xff454545, 0xffbdbdbd)
-    , TS.ts_highlight      = (0xffeeeeee, 0xff29838d)
-    , TS.ts_extra          = 0xfffafafa
+    , TS.ts_background     = 0xff343145
+    , TS.ts_node           = (0xffb5b2bd, 0xff343145)
+    , TS.ts_nodealt        = (0xffb5b2bd, 0xff343145)
+    , TS.ts_highlight      = (0xfff8f8f0, 0xff55b3cc)
+    , TS.ts_extra          = 0xffbfbfbf
     , TS.ts_node_width     = 200
     , TS.ts_node_height    = 30
     , TS.ts_originX        = 0
@@ -550,7 +550,7 @@ myKeys =
     [ ("M-<Return>", spawn myTerminal)                                          -- open a terminal
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
-    , ("M-r", spawn "dmenu_run -nf '#616161' -nb '#eeeeee' -sb '#3b6ea8' -sf '#fafafa' -fn 'Iosevka Curly:pixelsize=14'")
+    , ("M-r", spawn "dmenu_run -nf '#f8f8f0' -nb '#343145' -sb '#55b3cc' -sf '#f8f8f0' -fn 'Latin Modern Mono:pixelsize=15'")
     , ("M-f", spawn "edm")                                                      -- file select
     , ("M-S-p", spawn "unicode_dmenu")                                          -- select unicode symbol
     
@@ -612,7 +612,7 @@ myKeys =
     , ("<KP_Up>", focusUp)
     , ("<KP_Down>", focusDown)
     , ("<KP_Begin>", nextScreen)
-    , ("<KP_Enter>", spawn "dmenu_run -nf '#616161' -nb '#eeeeee' -sb '#3b6ea8' -sf '#fafafa' -fn 'Iosevka Curly:pixelsize=14'")
+    , ("<KP_Enter>", spawn "dmenu_run -nf '#f8f8f0' -nb '#343145' -sb '#55b3cc' -sf '#f8f8f0' -fn 'Latin Modern Mono:pixelsize=15'")
     , ("<KP_Home>", switchProjectPrompt myPromptTheme)
     , ("<KP_Prior>", shiftToProjectPrompt myPromptTheme)
     , ("<KP_Delete>", sendMessage NextLayout)

@@ -1,5 +1,5 @@
 [global]
-    font = Iosevka Curly 8, "WenQuanYi Micro Hei" 8 markup = full
+    font = Latin Modern Sans 8, "WenQuanYi Micro Hei" 8 markup = full
     format = "<b>%s</b>\n%b"
     sort = yes
     indicate_hidden = yes
@@ -41,20 +41,20 @@
     context = ctrl+underscore
 
 [urgency_low]
-    background = "#eeeeee"
-    foreground = "#454545"
-    frame_color = "#e0e0e0"
-    timeout = 10
+    background = "#6a6483"
+    foreground = "#f8f8f0"
+    frame_color = "#5a5475"
+    timeout = 5
 
 [urgency_normal]
-    background = "#eeeeee"
-    foreground = "#454545"
-    frame_color = "#e0e0e0"
+    background = "#6a6483"
+    foreground = "#f8f8f0"
+    frame_color = "#5a5475"
     timeout = 10
 
 [urgency_critical]
-    background = "#eeeeee"
-    foreground = "#454545"
-    frame_color = "#99324b"
+    background = "#6a6483"
+    foreground = "#f8f8f0"
+    frame_color = "#cc6666"
     frame_width = 3
     timeout = 10

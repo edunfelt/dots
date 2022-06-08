@@ -1,20 +1,20 @@
 :root {
-  --base00: #fafafa;
-  --base01: #eeeeee;
-  --base02: #f5f5f5;
-  --base03: #e0e0e0;
-  --base04: #bdbdbd;
-  --base05: #9e9e9e;
-  --base06: #757575;
-  --base07: #616161;
-  --base08: #424242;
-  --base09: #2a2a2a;
-  --base0A: #454545;
-  --base0B: #99324b;
-  --base0C: #4f894c;
-  --base0D: #9a7500;
-  --base0E: #3b6ea8;
-  --base0F: #97364b;
+  --base00: #5a5475;
+  --base01: #343145;
+  --base02: #464258;
+  --base03: #9673d3;
+  --base04: #a0a0c0;
+  --base05: #b8a2ce;
+  --base06: #726c8a;
+  --base07: #5b576c;
+  --base08: #716799;
+  --base09: #f8f8f0;
+  --base0A: #b5b2bd;
+  --base0B: #ffb8d1;
+  --base0C: #c2ffdf;
+  --base0D: #ffea00;
+  --base0E: #55b3cc;
+  --base0F: #cc6666;
 }
 
 /* Accent = 02
@@ -58,7 +58,7 @@
     --activity-card-background: var(--background-secondary);
 }
 body {
-    font-family: DinaRemaster
+    font-family: Latin Modern Mono
 }
 .scroller-2FKFPG {
     background-color: var(--background-primary);

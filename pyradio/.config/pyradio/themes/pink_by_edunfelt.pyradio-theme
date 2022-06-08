@@ -1,0 +1,8 @@
+PyRadio URL = 2,0
+Messages Border = 2,0
+Status Bar = 0,1
+Stations = 7,0
+Active Station = 1,0
+Active Cursor = 0,1
+Normal Cursor = 0,3
+Edit Cursor = 0,8

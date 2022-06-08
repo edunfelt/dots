@@ -29,9 +29,8 @@ set softtabstop=4		                  " number of spaces per tab when editing
 set wrap linebreak nolist                 " wrap things nicely
 
 " appearance
-"set termguicolors
-set background=light
-"colorscheme disco                         " colorscheme
+set termguicolors
+colorscheme fairyfloss                         " colorscheme
 syntax enable					          " syntax highlighting
 set number				                  " show line numbers
 set cursorline                            " highlight current line
@@ -138,8 +137,8 @@ endif
 
 " gui settings
 if has('gui_running')
-  colorscheme vacme
-  set guifont=Iosevka\ 11
+  colorscheme fairyfloss
+  set guifont=Latin\ Modern\ Mono
   set guioptions-=L                       " no scrollbar
   set guioptions-=T                       " no toolbar
   set guioptions-=m                       " no menubar

@@ -17,6 +17,15 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+; github
+(setq forge-owned-accounts '(("edunfelt")))
+
+; authentication
+(setq epg-gpg-program "gpg2")
+(setenv "GPG_AGENT_INFO" nil)
+(setq auth-source-debug t)
+(setq auth-sources
+    '((:source "~/.authinfo.gpg")))
 
 ; settings
 (setq-default 
@@ -44,12 +53,46 @@
 
 
 ; font
-(setq doom-font (font-spec :family "Terminus (TTF)" :size 16)
-      doom-big-font (font-spec :family "Terminus (TTF) Bold" :size 16))
+(setq doom-font (font-spec :family "Latin Modern Mono" :size 16)
+      doom-big-font (font-spec :family "Latin Modern Mono" :size 26)
+      doom-variable-pitch-font (font-spec :family "Latin Modern Sans" :size 16)
+      doom-unicode-font (font-spec :family "WenQuanYi Micro Hei")
+      doom-serif-font (font-spec :family "Latin Modern Roman" :weight 'light))
+
+
+; mixed pitch
+; https://tecosaur.github.io/emacs-config/config.html
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+(add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+
+(autoload #'mixed-pitch-serif-mode "mixed-pitch"
+  "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
+
+(after! mixed-pitch
+  (defface variable-pitch-serif
+    '((t (:family "serif")))
+    "A variable-pitch face with serifs."
+    :group 'basic-faces)
+  (setq mixed-pitch-set-height t)
+  (setq variable-pitch-serif-font (font-spec :family "Latin Modern Roman" :size 16))
+  (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
+  (defun mixed-pitch-serif-mode (&optional arg)
+    "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
+    (interactive)
+    (let ((mixed-pitch-face 'variable-pitch-serif))
+      (mixed-pitch-mode (or arg 'toggle)))))
 
 
 ; theme
-(setq doom-theme 'doom-opera-light)
+(setq doom-theme 'doom-fairy-floss)
 
 ; Change theme based on time of day
 ;; (defun synchronize-theme ()
@@ -107,8 +150,22 @@
       org-ellipsis " ▼ "
       org-adapt-indentation nil)
 
-; all the pretty things
-(add-hook! 'org-mode-hook #'+org-pretty-mode)
+
+; fonts
+(add-hook 'org-mode-hook #'+org-pretty-mode)
+(add-hook 'org-mode-hook 'writeroom-mode)
+(custom-set-faces!
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+(custom-set-faces!
+  '(org-document-title :height 1.2))
+(setq org-fontify-quote-and-verse-blocks t)
 
 
 ; toggle LaTeX fragments
@@ -531,6 +588,52 @@
 (global-set-key (kbd "C-c o") 'custom/olivetti-mode)
 
 
+; writeroom
+; https://tecosaur.github.io/emacs-config/config.html
+(setq +zen-text-scale 0.5)
+(defvar +zen-serif-p t
+  "Whether to use a serifed font with `mixed-pitch-mode'.")
+(after! writeroom-mode
+  (defvar-local +zen--original-org-indent-mode-p nil)
+  (defvar-local +zen--original-mixed-pitch-mode-p nil)
+  (defun +zen-enable-mixed-pitch-mode-h ()
+    "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
+    (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
+      (if writeroom-mode
+          (progn
+            (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
+            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
+        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1)))))
+  (pushnew! writeroom--local-variables
+            'display-line-numbers
+            'visual-fill-column-width
+            'org-adapt-indentation
+            'org-superstar-headline-bullets-list
+            'org-superstar-remove-leading-stars)
+  (add-hook 'writeroom-mode-enable-hook
+            (defun +zen-prose-org-h ()
+              "Reformat the current Org buffer appearance for prose."
+              (when (eq major-mode 'org-mode)
+                (setq display-line-numbers nil
+                      visual-fill-column-width 60
+                      org-adapt-indentation nil)
+                (when (featurep 'org-superstar)
+                  (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
+                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                              org-superstar-remove-leading-stars t)
+                  (org-superstar-restart))
+                (setq
+                 +zen--original-org-indent-mode-p org-indent-mode)
+                (org-indent-mode -1))))
+ (add-hook 'writeroom-mode-disable-hook
+            (defun +zen-nonprose-org-h ()
+              "Reverse the effect of `+zen-prose-org'."
+              (when (eq major-mode 'org-mode)
+                (when (featurep 'org-superstar)
+                  (org-superstar-restart))
+                (when +zen--original-org-indent-mode-p (org-indent-mode 1))
+                ))))
+
 
 ;; Code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -568,3 +671,16 @@
   :config
   (setq pyvenv-workon "emacs")  ; Default venv
   (pyvenv-tracking-mode 1))  ; Automatically use pyvenv-workon via dir-locals
+
+
+; company
+(use-package! company
+  :config
+  (setq +company-backend-alist (assq-delete-all 'text-mode +company-backend-alist))
+  (add-to-list '+company-backend-alist '(text-mode (:separate company-dabbrev company-yasnippet))))
+
+
+; markdown settings
+(use-package markdown-mode
+  :mode (("\\.md$" . gfm-mode)
+         ("\\.mkd$" . gfm-mode)))

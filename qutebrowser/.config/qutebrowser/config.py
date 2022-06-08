@@ -1,11 +1,11 @@
 config.load_autoconfig()
 
 # color scheme
-import opera.draw
-opera.draw.konda(c)
+import fairyfloss.draw
+fairyfloss.draw.konda(c)
 
 # font
-my_font = "10pt Terminus (TTF)"
+my_font = "11pt Latin Modern Mono"
 c.fonts.hints = my_font
 c.fonts.keyhint = my_font
 c.fonts.prompts = my_font
