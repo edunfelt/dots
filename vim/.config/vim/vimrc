@@ -30,7 +30,7 @@ set wrap linebreak nolist                 " wrap things nicely
 
 " appearance
 set termguicolors
-colorscheme fairyfloss                         " colorscheme
+colorscheme vacme                         " colorscheme
 syntax enable					          " syntax highlighting
 set number				                  " show line numbers
 set cursorline                            " highlight current line
@@ -137,7 +137,7 @@ endif
 
 " gui settings
 if has('gui_running')
-  colorscheme fairyfloss
+  colorscheme vacme
   set guifont=Latin\ Modern\ Mono
   set guioptions-=L                       " no scrollbar
   set guioptions-=T                       " no toolbar
@@ -207,6 +207,10 @@ let g:vimtex_quickfix_mode = 0
 set conceallevel=1
 let g:tex_conceal="abdmg"
 
+" Pandoc
+Plugin 'vim-pandoc/vim-pandoc'
+Plugin 'vim-pandoc/vim-pandoc-syntax'
+
 " Ultisnips
 Plugin 'SirVer/ultisnips'
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -234,6 +238,67 @@ let g:vimwiki_list = [{
       \'template_default': 'default',
       \'template_ext': '.html'
       \}]
+
+" fzf
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+imap <c-x><c-b> <Esc> :Buffers<CR>
+nmap <leader>b :Buffers<CR>
+imap <c-x><c-f> <Esc> :Files<CR>
+nmap <leader>f :Files<CR>
+imap <c-x><c-h> <Esc> :History<CR>
+nmap <leader>h :History<CR>
+
+" fzf-bibtex
+let $FZF_BIBTEX_CACHEDIR = '/home/e/tmp/fzf-bibtex'
+let $FZF_BIBTEX_SOURCES = '/home/e/media/doc/bibliography.bib'
+
+function! s:bibtex_cite_sink(lines)
+    let r=system("bibtex-cite ", a:lines)
+    execute ':normal! a' . r
+endfunction
+
+function! s:bibtex_markdown_sink(lines)
+    let r=system("bibtex-markdown ", a:lines)
+    execute ':normal! a' . r
+endfunction
+
+nnoremap <silent> <leader>c :call fzf#run({
+                        \ 'source': 'bibtex-ls',
+                        \ 'sink*': function('<sid>bibtex_cite_sink'),
+                        \ 'up': '40%',
+                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Cite> "'})<CR>
+
+nnoremap <silent> <leader>m :call fzf#run({
+                        \ 'source': 'bibtex-ls',
+                        \ 'sink*': function('<sid>bibtex_markdown_sink'),
+                        \ 'up': '40%',
+                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Markdown> "'})<CR>
+
+" find .bib files in current, parent, or child directory
+function! Bibtex_ls()
+  let bibfiles = (
+      \ globpath('.', '*.bib', v:true, v:true) +
+      \ globpath('..', '*.bib', v:true, v:true) +
+      \ globpath('*/', '*.bib', v:true, v:true)
+      \ )
+  let bibfiles = join(bibfiles, ' ')
+  let source_cmd = 'bibtex-ls '.bibfiles
+  return source_cmd
+endfunction
+
+function! s:bibtex_cite_sink_insert(lines)
+    let r=system("bibtex-cite ", a:lines)
+    execute ':normal! a' . r
+    call feedkeys('a', 'n')
+endfunction
+
+inoremap <silent> @@ <c-g>u<c-o>:call fzf#run({
+                        \ 'source': Bibtex_ls(),
+                        \ 'sink*': function('<sid>bibtex_cite_sink_insert'),
+                        \ 'up': '40%',
+                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Cite> "'})<CR>
+
 
 call vundle#end()
 
