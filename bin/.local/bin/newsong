@@ -1,7 +1,7 @@
 #! /bin/bash
 
 music_library="$HOME/media/mus/music"
-fallback_image="$HOME/.config/ncmpcpp/ncmpcpp-ueberzug/img/fallback.png"
+fallback_image="$HOME/.config/ncmpcpp/fallback.png"
 
 find_cover_image() {
 
@@ -40,6 +40,3 @@ find_cover_image        >/dev/null 2>&1
 
 # notification
 notify-send -i $cover_path "Now Playing" "$(mpc --format '%title% \n%artist% - %album%' current)"
-
-# update cover art in ncmpcpp
-$HOME/.config/ncmpcpp/ncmpcpp-ueberzug/ncmpcpp_cover_art.sh
