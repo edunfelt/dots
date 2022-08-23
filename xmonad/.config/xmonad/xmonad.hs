@@ -1,12 +1,8 @@
-----------------------------------------------------------------------------------------------
---                                      __
--- .--.--.--------.-----.-----.---.-.--|  |
--- |_   _|        |  _  |     |  _  |  _  |
--- |__.__|__|__|__|_____|__|__|___._|_____|
---
--- Emilia's xmonad config
--- Author: Emilia Dunfelt, edun@dunfelt.se
-----------------------------------------------------------------------------------------------
+--                          _ 
+--  _ _ _____ ___ ___ ___ _| |
+-- |_'_|     | . |   | .'| . |
+-- |_,_|_|_|_|___|_|_|__,|___|
+-- 
 
 ----------------------------------------------------------------------------------------------
 -- Modules
@@ -16,6 +12,7 @@
 import XMonad                                            -- core libraries
 import System.IO                                         -- for xmobar
 import qualified XMonad.StackSet as W                    -- window stack manipulation
+import Graphics.X11.ExtraTypes.XF86
 
 -- Hooks ---------------------------------------------------------------------------------
 import XMonad.ManageHook
@@ -25,22 +22,20 @@ import XMonad.Hooks.ManageDocks                          -- don't cover the bar 
 import XMonad.Hooks.SetWMName                            -- needed for JetBrains IDEs
 import XMonad.Hooks.EwmhDesktops                         -- recognize windows i.e. in Zoom
 import XMonad.Hooks.UrgencyHook                          -- highlight urgent windows
+-- import XMonad.Hooks.Rescreen (need to switch to v. 0.17)
 
 -- Layout --------------------------------------------------------------------------------
-import XMonad.Layout.Simplest
-import XMonad.Layout.Minimize
-import XMonad.Layout.Maximize
-import XMonad.Layout.Circle
-import XMonad.Layout.Accordion
+import XMonad.Layout.ThreeColumns
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.Spacing
-import XMonad.Layout.WindowNavigation                    -- window navigation (needed for tabs)
+import XMonad.Layout.Minimize                            -- minimize windows
 import XMonad.Layout.ResizableTile                       -- change window width/height
-import XMonad.Layout.Tabbed                              -- tabbed layout
-import XMonad.Layout.SubLayouts                          -- nested layouts (tabs everywhere)
-import qualified XMonad.Layout.Groups as G               -- create layout groups
 import XMonad.Layout.Groups.Helpers                      -- rearrange and move windows and groups
 import XMonad.Layout.NoBorders                           -- remove borders
+import XMonad.Layout.Tabbed                              -- tabbed layout
+import XMonad.Layout.Simplest                            -- needed for tabbed layout
+import XMonad.Layout.WindowNavigation                    -- window navigation (needed for tabs)
+import XMonad.Layout.SubLayouts                          -- nested layouts (tabs everywhere)
 import XMonad.Layout.IndependentScreens                  -- find the number of screens (for xmobar)
 import XMonad.Layout.MultiToggle as MT                   -- apply layout transformers
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
@@ -48,10 +43,9 @@ import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBO
 -- Actions -------------------------------------------------------------------------------
 import XMonad.Actions.CycleWS as CWS                     -- cycle through workspaces
 import XMonad.Actions.WithAll                            -- killAll
-import XMonad.Actions.SpawnOn
-import XMonad.Actions.DynamicProjects
-import XMonad.Actions.TreeSelect as TS
-import XMonad.Actions.GridSelect
+import XMonad.Actions.SpawnOn                            -- spawn on dedicated ws
+import XMonad.Actions.DynamicProjects                    -- project workspaces + prompt
+import XMonad.Actions.GridSelect                         -- bring/go to windows
 import XMonad.Actions.WindowMenu                         -- use GridSelect to display window options
 import XMonad.Actions.CopyWindow                         -- copy windows
 import XMonad.Actions.Minimize                           -- minimize windows
@@ -73,7 +67,6 @@ import XMonad.Prompt.AppendFile                          -- launch prompt to wri
 import qualified Data.Map as M
 import Data.Monoid
 import Data.List
-import Data.Tree
 
 
 ----------------------------------------------------------------------------------------------
@@ -84,49 +77,48 @@ myTerminal :: [Char]
 myTerminal                  = "kitty"
 
 myEditor :: [Char]
-myEditor                    = "emacs "
+myEditor                    = "vim "
 
 myModMask :: KeyMask
 myModMask                   = mod4Mask
 
 mySearchBrowser :: FilePath
-mySearchBrowser             = "/bin/firefox"
+mySearchBrowser             = "/bin/qutebrowser"
 
 -- Colors --------------------------------------------------------------------------------
-fg      = "#f8f8f0"
-bg      = "#5a5475"
+fg      = "#8B8198"
+bg      = "#FBF1F2"
 
-bg00    = "#343145"
-bg01    = "#514c66"
-bg02    = "#6a6483"
-bg03    = "#9673d3"
-bg04    = "#a0a0c0"
-bg05    = "#b8a2ce"
-bg06    = "#726c8a"
-bg07    = "#5b576c"
-bg08    = "#716799"
+bg00    = "#FBF1F2"
+bg01    = "#f2f1f4"
+bg02    = "#d8d5dd"
+bg03    = "#bfb9c6"
+bg04    = "#a59daf"
+bg05    = "#8b8198"
+bg06    = "#72677E"
+bg07    = "#585062"
 
-red     = "#cc6666"
-orange  = "#e6c000"
-yellow  = "#ffea00"
-green   = "#c2ffdf"
-cyan    = "#96cbfe"
-blue    = "#55b3cc"
-purple  = "#c5a3ff"
-teal    = "#8295d6"
+red     = "#D57E85"
+orange  = "#EBB790"
+yellow  = "#DCB16C"
+green   = "#A3B367"
+cyan    = "#69A9A7"
+blue    = "#7297B9"
+magenta = "#BB99B4"
+purple  = "#BAA58C"
 
 -- Theme ----------------------------------------------------------------------------------
 myFont :: [Char]
-myFont                      = "xft:Latin Modern Mono:pixelsize=15:antialias=true:hinting=true,FontAwesome:pixelsize=14"
+myFont                      = "xft:Terminus (TTF):pixelsize=14:antialias=true:hinting=true"
 
 myBorderWidth :: Dimension
 myBorderWidth               = 3
 
 myFocusedBorderColor :: [Char]
-myFocusedBorderColor        = blue
+myFocusedBorderColor        = red
 
 myNormalBorderColor :: [Char]
-myNormalBorderColor         = bg00
+myNormalBorderColor         = bg02
 
 -- Xmobar ---------------------------------------------------------------------------------
 myLogHook :: [Handle] -> X ()
@@ -138,8 +130,8 @@ myWsBar        = "xmobar ~/.config/xmonad/xmobarrc"
 -- PP settings ---------------------------------------------------------------------------------
 wsPP :: PP
 wsPP           = xmobarPP { ppOrder               = id
-                          , ppTitle               = xmobarColor   purple ""  . shorten 50
-                          , ppCurrent             = xmobarColor   yellow "" . wrap "@" ""
+                          , ppTitle               = xmobarColor   bg04 ""  . shorten 50
+                          , ppCurrent             = xmobarColor   green "" . wrap "@" ""
                           , ppUrgent              = xmobarColor   red ""    . wrap "+" ""
                           , ppVisible             = xmobarColor   cyan ""    . wrap ":" ""
                           , ppHiddenNoWindows     = const ""
@@ -160,66 +152,50 @@ wsPP           = xmobarPP { ppOrder               = id
 myWorkspaces :: [WorkspaceId]
 myWorkspaces = [ "tmp"          -- scratch
                , "net"          -- web stuff
-               , "res"          -- research tools hub
-               , "com"          -- communication
+               , "res"          -- research hub
                , "mul"          -- multimedia (games, music, video)
                , "wrk"          -- work/TA
-               , "alg-top"
-               , "num-thry"
-               , "rep-thry"
+               , "14.02"
+               , "14.09"
+               , "14.10"
+               , "14.11"
+               , "sec"
                ]
 
 -- Projects -------------------------------------------------------------------------------
 myProjects :: [Project]
-myProjects = [ Project -- net
+myProjects = [ Project -- tmp
+                { projectName = myWorkspaces !! 0
+                , projectDirectory = "~/current"
+                , projectStartHook = Nothing
+                }
+             , Project -- net
                 { projectName = myWorkspaces !! 1
                 , projectDirectory = "~/tmp"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 1) "firefox"
+                    spawnOn (myWorkspaces !! 1) "qutebrowser"
                 }
              , Project -- res
                 { projectName = myWorkspaces !! 2
                 , projectDirectory = "~/media/doc/sci"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 2) "zotero"
-                }
-            , Project -- com
-                { projectName = myWorkspaces !! 3
-                , projectDirectory = "~/tmp"
-                , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 3) "evolution"
-                    spawnOn (myWorkspaces !! 3) "pidg"
+                    spawnOn (myWorkspaces !! 2) (myTerminal ++ " -e xapers view")
                 }
             , Project -- mul
-                { projectName = myWorkspaces !! 4
+                { projectName = myWorkspaces !! 3
                 , projectDirectory = "~/media"
-                , projectStartHook = Nothing
-                }
-            , Project -- tmp
-                { projectName = myWorkspaces !! 0
-                , projectDirectory = "~/current"
-                , projectStartHook = Nothing
+                , projectStartHook = Just $ do
+                    spawnOn (myWorkspaces !! 3) (myTerminal ++ " -e ncmpcpp")
                 }
             , Project -- wrk
-                { projectName = myWorkspaces !! 5
+                { projectName = myWorkspaces !! 4
                 , projectDirectory = "~/current"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 5) "emacs"
-                    spawnOn (myWorkspaces !! 5) "discord"
-                }
-            , Project -- alg-top
-                { projectName = myWorkspaces !! 6
-                , projectDirectory = "~/current/14.06-algtopo"
-                , projectStartHook = Nothing
+                    spawnOn (myWorkspaces !! 4) myEditor
                 }
             , Project -- num-thry
-                { projectName = myWorkspaces !! 7
+                { projectName = myWorkspaces !! 5
                 , projectDirectory = "~/current/14.07-numtheory"
-                , projectStartHook = Nothing
-                }
-            , Project -- rep-thry
-                { projectName = myWorkspaces !! 8
-                , projectDirectory = "~/current/14.05-representations"
                 , projectStartHook = Nothing
                 }
             ]
@@ -228,14 +204,14 @@ myProjects = [ Project -- net
 myPromptTheme :: XPConfig
 myPromptTheme = def
     { font = myFont
-    , bgColor = bg02
-    , fgColor = fg
-    , fgHLight = fg
-    , bgHLight = bg03
+    , bgColor = bg01
+    , fgColor = bg06
+    , bgHLight = red
+    , fgHLight = bg01
     , borderColor = bg01
     , promptBorderWidth = 0
     , height = 20
-    , position = Top
+    , position = Bottom
     }
 
 
@@ -247,35 +223,35 @@ myPromptTheme = def
 myStartupHook :: X ()
 myStartupHook = do
     spawn     "xrdb ~/.Xresources &"
-    spawn     "feh --bg-fill /home/e/media/pic/walls/misty-garden-desktop-wallpaper.webp &"
+    spawn     "feh --bg-fill /home/e/media/pic/walls/city.jpg &"
     spawnOnce "dex -ae xmonad &"
     spawnOnce "xsetroot -cursor_name left_ptr &"
     spawnOnce "dunst &"
-    spawnOnce "tlp start &"
-    spawnOnce "stalonetray -c /home/e/.config/stalonetray/stalonetrayrc &"
+    spawnOnce "trayer --edge top --align right --monitor primary --widthtype request --heighttype pixel --height 22 &"
     spawnOnce "xscreensaver &"
+    spawnOnce "mpd-mpris &"
     setWMName "LG3D"
 
 -- Layouts --------------------------------------------------------------------------------
 tall = ResizableTall 1 (3/100) (6/10) []
-tallAccordion = G.group Accordion (Tall 1 (3/100) (6/10))
+three = ThreeColMid 1 (3/100) (1/2)
+
+myDefaultLayout = tall
+              ||| three
+              ||| emptyBSP
 
 -- Tabbed layout theme
 myTabConfig :: Theme
 myTabConfig = def { inactiveColor           = bg02
-                    , inactiveBorderColor   = bg02
+                    , inactiveBorderColor   = bg
                     , inactiveTextColor     = bg04
                     , activeColor           = bg01
                     , activeBorderColor     = bg01
-                    , activeTextColor       = bg07
+                    , activeTextColor       = bg05
                     , fontName              = myFont
                     }
-    
-myDefaultLayout = tall
-              ||| tallAccordion
-              ||| Circle
-              ||| emptyBSP
 
+-- Hook
 myLayoutHook = avoidStruts 
              $ configurableNavigation noNavigateBorders 
              $ addTabs shrinkText myTabConfig 
@@ -284,10 +260,9 @@ myLayoutHook = avoidStruts
              $ mkToggle (NBFULL ?? NOBORDERS ?? EOT)
              $ spacingRaw True (Border 5 5 5 5) True (Border 5 5 5 5) True
              $ minimize
-             $ maximize
              myDefaultLayout
 
--- Floating layouts -----------------------------------------------------------------------
+-- Floating layouts 
 myFloatLayouts :: [W.RationalRect]
 myFloatLayouts = [ rtRect 0.41
                  , ltRect 0.4
@@ -304,10 +279,11 @@ myFloatLayouts = [ rtRect 0.41
 myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
     [ className =? "Anki"                       --> doFloat
-    , className =? "gimp"                       --> doFloat
     , className =? "VirtualBox Manager"         --> doFloat
-    , className =? "VirtualBox Machine"         --> doFloat
     , className =? "Matplotlib"                 --> doCenterFloat
+    , className =? "R_x11"                      --> doCenterFloat
+    , title     =? "Terminal - "                --> doCenterFloat
+    , className =? "Gcolor3"                    --> doCenterFloat
     , className =? "TelegramDesktop"            --> doFloat
     , className =? "mpv"                        --> doFloat
     , className =? "libreoffice-startcenter"    --> doFloat
@@ -316,12 +292,7 @@ myManageHook = composeAll
     , className =? "Xscreensaver-settings"      --> doFloat
     , className =? "Blueman-manager"            --> doFloat
     , className =? "zoom"                       --> doFloat
-    , className =? "Quodlibet"                  --> doFloat
-    , className =? "xpad"                       --> doFloat
-    , className =? "R_x11"                      --> doCenterFloat
     , title     =? "Picture-in-Picture"         --> doFloat
-    , title     =? "Terminal - "                --> doCenterFloat
-    , className =? "qutebrowser"                --> doRectFloat (W.RationalRect 0.4 0.2 0.5 0.7)
     ]
     <+> composeOne
     [ currentWs =? "mul"                        -?> doCenterFloat ]
@@ -334,9 +305,9 @@ myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "htop"     (myTerminal ++ " --name=htop -e htop")
                                 (resource =? "htop")
                                 (customFloating $ W.RationalRect 0.59 0.03 0.4 0.3)
-                , NS "fff"      (myTerminal ++ " --name=fff -e fff")
-                                (resource =? "fff")
-                                (customFloating $ centeredRect 0.15 0.25)
+                , NS "ranger"   (myTerminal ++ " --name=ranger -e ranger")
+                                (resource =? "ranger")
+                                (customFloating $ centeredRect 0.30 0.30)
                 , NS "thunar"  "thunar"
                                 (className =? "Thunar")
                                 (customFloating $ W.RationalRect 0.35 0.35 0.3 0.3)
@@ -345,22 +316,28 @@ myScratchPads = [ NS "htop"     (myTerminal ++ " --name=htop -e htop")
                                 (customFloating $ W.RationalRect 0.8 0.3 0.2 0.3)
                 , NS "irc"      (myTerminal ++ " --name=weechat -e weechat")
                                 (resource =? "weechat")
-                                (customFloating $ centeredRect 0.5 0.4)
+                                (customFloating $ centeredRect 0.3 0.5)
                 , NS "vimwiki"  (myTerminal ++ " --name=vimwiki -e vim -c VimwikiIndex")
                                 (resource =? "vimwiki")
                                 (customFloating $ centeredRect 0.3 0.7)
                 , NS "sp"       (myTerminal ++ " --name=scratchpad")
                                 (resource =? "scratchpad")
                                 (customFloating $ W.RationalRect 0.59 0.68 0.4 0.3)
-                , NS "ql"       "quodlibet"
-                                (className =? "Quodlibet")
-                                (customFloating $ centeredRect 0.25 0.3)
+                , NS "mpd"      (myTerminal ++ " --name=ncmpcpp -e ncmpcpp")
+                                (resource =? "ncmpcpp")
+                                (customFloating $ centeredRect 0.3 0.2)
                 , NS "radio"    (myTerminal ++ " --name=pyradio -e pyradio")
                                 (resource =? "pyradio")
                                 (customFloating $ W.RationalRect 0.02 0.03 0.15 0.2)
                 , NS "weylus"   "weylus"
                                 (title =? "Weylus - 0.11.4")
                                 (customFloating $ centeredRect 0.25 0.3)
+                , NS "task"     (myTerminal ++ " --name=task -e taskwarrior-tui")
+                                (resource =? "task")
+                                (customFloating $ centeredRect 0.25 0.3)
+                , NS "mail"     (myTerminal ++ " --name=neomutt -e neomutt")
+                                (resource =? "neomutt")
+                                (customFloating $ centeredRect 0.6 0.7)
                 ]
 
 -- Float cycling -------------------------------------------------------------------------
@@ -390,144 +367,22 @@ rtRect :: Rational -> W.RationalRect
 ltRect w = W.RationalRect (1 - w - 0.01) 0.03 w 0.96
         
 -- Grid select ---------------------------------------------------------------------------
-myGoColorizer :: Window -> Bool -> X (String, String)
-myGoColorizer = colorRangeFromClassName
-        (0x34, 0x31, 0x45)      -- lowest inactive bg
-        (0x71, 0x67, 0x99)      -- highest inactive bg
-        (0x55, 0xb3, 0xcc)      -- active bg
-        (0xb5, 0xb2, 0xbd)      -- inactive fg
-        (0xf8, 0xf8, 0xf0)      -- active fg
+myColorizer :: Window -> Bool -> X (String, String)
+myColorizer = colorRangeFromClassName
+        (0x8b, 0x81, 0x98)      -- lowest inactive bg
+        (0xbf, 0xb9, 0xc6)      -- highest inactive bg
+        (0xd5, 0x7e, 0x85)      -- active bg
+        (0xfb, 0xf1, 0xf2)      -- inactive fg
+        (0xf2, 0xf1, 0xf4)      -- active fg
 
-myBringColorizer :: Window -> Bool -> X (String, String)
-myBringColorizer = colorRangeFromClassName
-        (0x34, 0x31, 0x45)      -- lowest inactive bg
-        (0x71, 0x67, 0x99)      -- highest inactive bg
-        (0x55, 0xb3, 0xcc)      -- active bg
-        (0xb5, 0xb2, 0xbd)      -- inactive fg
-        (0xf8, 0xf8, 0xf0)      -- active fg
-
-gsWnSelConfig colorizer = (buildDefaultGSConfig myGoColorizer)
+gsConfig colorizer = (buildDefaultGSConfig colorizer)
     { gs_cellheight     = 40
     , gs_cellwidth      = 200
     , gs_cellpadding    = 16
     , gs_originFractX   = 0.5
-    , gs_originFractY   = 0.3
+    , gs_originFractY   = 0.5
     , gs_font           = myFont
     }
-
-gsWnBringConfig colorizer = (buildDefaultGSConfig myBringColorizer)
-    { gs_cellheight     = 40
-    , gs_cellwidth      = 200
-    , gs_cellpadding    = 16
-    , gs_originFractX   = 0.5
-    , gs_originFractY   = 0.3
-    , gs_font           = myFont
-    }
-
-gsPopupConfig = def
-    { gs_cellheight   = 30
-    , gs_cellwidth    = 200
-    , gs_cellpadding  = 8
-    , gs_originFractX = 0.5
-    , gs_originFractY = 0.5
-    , gs_font         = myFont
-    }
-
-spawnSelected' :: [(String, String)] -> X ()
-spawnSelected' lst = gridselect conf lst >>= flip whenJust spawn
-    where conf = gsPopupConfig
-
--- Tree select ---------------------------------------------------------------------------
-treeActions :: [Tree (TS.TSNode (X ()))]
-treeActions = [ Node (TS.TSNode "Session" "" (return ()))
-                     [ Node (TS.TSNode "Shutdown" "Good night!" (spawn "poweroff")) []
-                     , Node (TS.TSNode "Restart" "See you soon!" (spawn "reboot")) []
-                     ]
-
-             , Node (TS.TSNode "Productivity" "" (return ()))
-                     [ Node (TS.TSNode "Zotero" "Your personal research assistant" (spawn "zotero")) []
-                     , Node (TS.TSNode "Emacs" "Doom emacs" (spawn "emacs")) []
-                     , Node (TS.TSNode "Vim" "" (spawn myEditor)) []
-                     , Node (TS.TSNode "Xournal++" "Take notes and annotate documents" (spawn "xournalpp")) []
-                     , Node (TS.TSNode "Scrivener" "Creative writing assistant" (spawn "scrivener")) []
-                     , Node (TS.TSNode "Calibre" "Ebook management" (spawn "calibre")) []
-                     , Node (TS.TSNode "Anki" "Study flashcards" (spawn "anki")) []
-                     , Node (TS.TSNode "LibreOffice" "Office productivity suite" (spawn "libreoffice")) []
-                     , Node (TS.TSNode "Vimwiki" "Personal wiki for Vim" (spawn (myEditor ++ "-c VimwikiIndex"))) []
-                     ]
-              , Node (TS.TSNode "Development" "" (return ()))
-                     [ Node (TS.TSNode "Cantor" "FOSS mathematics application" (spawn "cantor")) []
-                     , Node (TS.TSNode "Geany" "Small and lightweight IDE" (spawn "geany")) []
-                     , Node (TS.TSNode "Geogebra" "Create mathematical figures" (spawn "geogebra-classic")) []
-                     , Node (TS.TSNode "RStudio" "R IDE" (spawn "rstudio-bin")) []
-                     ]
-              , Node (TS.TSNode "Utilities" "" (return ()))
-                     [ Node (TS.TSNode "FFF" "Fucking fast filemanager" (spawn (myTerminal ++ " -e fff"))) []
-                     , Node (TS.TSNode "Thunar" "Fast file manager" (spawn "thunar")) []
-                     , Node (TS.TSNode "htop" "Simple, interactive process viewer" (spawn (myTerminal ++ " -e htop"))) []
-                     , Node (TS.TSNode "VirtualBox" "Oracle VM VirtualBox" (spawn "virtualbox")) []
-                     ]
-              , Node (TS.TSNode "Settings" "" (return ()))
-                     [ Node (TS.TSNode "LxAppearance" "Desktop independent theme switcher" (spawn "lxappearance")) []
-                     , Node (TS.TSNode "ARandR" "XRandR GUI" (spawn "arandr")) []
-                     , Node (TS.TSNode "Xscreensaver" "Xscreensaver settings" (spawn "xscreensaver-settings")) []
-                     , Node (TS.TSNode "Blueman manager" "Bluetooth settings" (spawn "blueman-manager")) []
-                     , Node (TS.TSNode "Font manager" "Font manager and organizer" (spawn "gnome-font-viewer")) []
-                     , Node (TS.TSNode "GColor3" "Color picker" (spawn "gcolor3")) []
-                     ]
-              , Node (TS.TSNode "Internet" "" (return ()))
-                     [ Node (TS.TSNode "Qutebrowser" "Minimal, keyboard-focused browser" (spawn "qutebrowser")) []
-                     , Node (TS.TSNode "Firefox" "Firefox browser" (spawn "firefox")) []
-                     , Node (TS.TSNode "Brave" "Brave browser" (spawn "brave")) []
-                     ]
-              , Node (TS.TSNode "Multimedia" "" (return ()))
-                     [ Node (TS.TSNode "QuodLibet" "Music player" (spawn "quodlibet")) []
-                     , Node (TS.TSNode "Spotify" "Digital music service" (spawn "spotify")) []
-                     , Node (TS.TSNode "gPodder" "Podcast player" (spawn "gpod")) []
-                     ]
-              , Node (TS.TSNode "Communication" "" (return ()))
-                     [ Node (TS.TSNode "Telegram" "Messaging client for personal" (spawn "telegram-desktop")) []
-                     , Node (TS.TSNode "Evolution" "Mail and calendar" (spawn "evolution")) []
-                     , Node (TS.TSNode "Discord" "Chat client for uni and work" (spawn "discord")) []
-                     , Node (TS.TSNode "Weechat" "IRC client" (spawn (myTerminal ++ " -e weechat"))) []
-                     , Node (TS.TSNode "Zoom" "Video conferencing tool" (spawn "zoom")) []
-                     ]
-              , Node (TS.TSNode "Games" "" (return ()))
-                     [ Node (TS.TSNode "Runelite" "Old School Runescape launcher" (spawn "runelite")) []
-                     ]
-          ]
-
-tsConfig :: TS.TSConfig a
-tsConfig = TS.TSConfig
-    { TS.ts_hidechildren   = True
-    , TS.ts_font           = myFont
-    , TS.ts_background     = 0xff343145
-    , TS.ts_node           = (0xffb5b2bd, 0xff343145)
-    , TS.ts_nodealt        = (0xffb5b2bd, 0xff343145)
-    , TS.ts_highlight      = (0xfff8f8f0, 0xff55b3cc)
-    , TS.ts_extra          = 0xffbfbfbf
-    , TS.ts_node_width     = 200
-    , TS.ts_node_height    = 30
-    , TS.ts_originX        = 0
-    , TS.ts_originY        = 0
-    , TS.ts_indent         = 50
-    , TS.ts_navigate       = tsNavigation
-    }
-
-tsNavigation = M.fromList
-    [ ((0, xK_Escape), TS.cancel)
-    , ((0, xK_Return), TS.select)
-    , ((0, xK_space),  TS.select)
-    , ((0, xK_Up),     TS.movePrev)
-    , ((0, xK_Down),   TS.moveNext)
-    , ((0, xK_Left),   TS.moveParent)
-    , ((0, xK_Right),  TS.moveChild)
-    , ((0, xK_k),      TS.movePrev)
-    , ((0, xK_j),      TS.moveNext)
-    , ((0, xK_h),      TS.moveParent)
-    , ((0, xK_l),      TS.moveChild)
-    ]
-
 
 ----------------------------------------------------------------------------------------------
 -- Search engines
@@ -550,43 +405,42 @@ myKeys =
     [ ("M-<Return>", spawn myTerminal)                                          -- open a terminal
     , ("M-<Esc>", spawn "xmonad --restart")                                     -- restart xmonad
     , ("M-S-<Esc>", spawn "xmonad --recompile")                                 -- recompile xmonad
-    , ("M-r", spawn "dmenu_run -nf '#f8f8f0' -nb '#343145' -sb '#55b3cc' -sf '#f8f8f0' -fn 'Latin Modern Mono:pixelsize=15'")
-    , ("M-f", spawn "edm")                                                      -- file select
-    , ("M-S-p", spawn "unicode_dmenu")                                          -- select unicode symbol
+    , ("M-S-.", spawn "dunstctl history-pop")                                   -- show notification history
+    , ("M-p p", spawn "rofi -show")                                             -- rofi
+    , ("M-p f", spawn "rofi -modi filebrowser -show")                           -- file select
+    , ("M-p q", spawn "rofi -show p -modi p:rofi-power-menu")                   -- power menu
+    , ("M-p b", spawn "buku-menu")                                              -- bookmark select
+    , ("M-p v", spawn "ytfzf -D")                                               -- search youtube
+    , ("M-p d", spawn "papis rofi")                                             -- find papers
     
 -- Navigation ----------------------------------------------------------------------------
-    , ("M-j", focusDown)                                              -- move focus up
-    , ("M-k", focusUp)                                                -- move focus down
-    , ("M-p", nextScreen)                                             -- move focus to next screen
-    , ("M-S-j", swapDown)                                             -- swap focused with next
-    , ("M-S-k", swapUp)                                               -- swap focused with previous
-    , ("M-g j", focusGroupDown)                                       -- move group focus up
-    , ("M-g k", focusGroupUp)                                         -- move group focus down
-    , ("M-g h", moveToGroupDown True)                                 -- move window to next group
-    , ("M-g l", moveToGroupUp True)                                   -- move window to previous group
-    , ("M-g g", splitGroup)                                           -- create new group
-    , ("M-<Backspace>", swapMaster)                                   -- promote focused to master
-    , ("M-q", kill)                                                   -- kill focused
-    , ("M-S-q", killAll)                                              -- kill workspace
-    , ("M-<Tab>", nextNonEmptyWS)                                     -- move to next workspace
-    , ("M-S-<Tab>", prevNonEmptyWS)                                   -- move to previous workspace
-    , ("M-w", switchProjectPrompt myPromptTheme)                      -- switch project
-    , ("M-S-w", shiftToProjectPrompt myPromptTheme)                   -- move window to project
-    , ("M-S-r", renameProjectPrompt myPromptTheme)                    -- rename current project
-    , ("M-S-d", changeProjectDirPrompt myPromptTheme)                 -- change project home directory
-    , ("M-S-g", goToSelected $ gsWnSelConfig myGoColorizer)           -- go to window
-    , ("M-S-b", bringSelected $ gsWnBringConfig myBringColorizer)     -- bring window
-    , ("M-a", treeselectAction tsConfig treeActions)                  -- open TS menu
-    , ("M-S-c", killAllOtherCopies)                                   -- kill all copies of window
+    , ("M-j", focusDown)                                                        -- move focus up
+    , ("M-k", focusUp)                                                          -- move focus down
+    , ("M-e", nextScreen)
+    , ("M-S-j", swapDown)                                                       -- swap focused with next
+    , ("M-S-k", swapUp)                                                         -- swap focused with previous
+    , ("M-<Backspace>", swapMaster)                                             -- promote focused to master
+    , ("M-q", kill)                                                             -- kill focused
+    , ("M-S-q", killAll)                                                        -- kill workspace
+    , ("M-<Tab>", nextNonEmptyWS)                                               -- move to next workspace
+    , ("M-S-<Tab>", prevNonEmptyWS)                                             -- move to previous workspace
+    , ("M-w", switchProjectPrompt myPromptTheme)                                -- switch project
+    , ("M-S-w", shiftToProjectPrompt myPromptTheme)                             -- move window to project
+    , ("M-S-r", renameProjectPrompt myPromptTheme)                              -- rename current project
+    , ("M-S-d", changeProjectDirPrompt myPromptTheme)                           -- change project home directory
+    , ("M-S-g", goToSelected $ gsConfig myColorizer)                            -- go to window
+    , ("M-S-b", bringSelected $ gsConfig myColorizer)                           -- bring window
+    , ("M-c x", killAllOtherCopies)                                             -- kill all copies of window
 
 -- Layout --------------------------------------------------------------------------------
-    , ("M-,", spawn "autorandr -c")                                          -- reload monitor config
+    , ("M-,", spawn "autorandr -c")                                             -- reload monitor config
     , ("M-<Space>", sendMessage NextLayout)                                     -- next layout
     , ("M-S-f", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)     -- fullscreen view
+    , ("M-S-t", toggleWindowSpacingEnabled >> toggleScreenSpacingEnabled)       -- toggle gaps
     , ("M-S-<Space>", withFocused $ windows . cycleFloat myFloatLayouts)        -- float cycle window
     , ("M-m", withFocused minimizeWindow)                                       -- minimize window
     , ("M-S-m", withLastMinimized maximizeWindowAndFocus)                       -- un-minimize last minimized
-    , ("M-o", windowMenu)                                                       -- open window menu
+    , ("M-b", withFocused $ windows . W.sink)
 
 -- Resizing ------------------------------------------------------------------------------
     , ("M-h", sendMessage Shrink)                                               -- shrink horizontally
@@ -606,60 +460,45 @@ myKeys =
     , ("M-C-m", withFocused (sendMessage . MergeAll))                           -- merge all windows on ws into tabbed
     , ("M-C-u", withFocused (sendMessage . UnMerge))                            -- unmerge tabbed
 
--- Keypad ---------------------------------------------------------------------------------
-    , ("<KP_Right>", nextNonEmptyWS)
-    , ("<KP_Left>", prevNonEmptyWS)
-    , ("<KP_Up>", focusUp)
-    , ("<KP_Down>", focusDown)
-    , ("<KP_Begin>", nextScreen)
-    , ("<KP_Enter>", spawn "dmenu_run -nf '#f8f8f0' -nb '#343145' -sb '#55b3cc' -sf '#f8f8f0' -fn 'Latin Modern Mono:pixelsize=15'")
-    , ("<KP_Home>", switchProjectPrompt myPromptTheme)
-    , ("<KP_Prior>", shiftToProjectPrompt myPromptTheme)
-    , ("<KP_Delete>", sendMessage NextLayout)
-    , ("<KP_Insert>", withFocused $ windows . cycleFloat myFloatLayouts)
-    , ("<KP_Divide>", focusUpTaggedGlobal "!")
-    , ("<KP_Multiply>", focusUpTaggedGlobal "!!")
-    , ("<KP_Subtract>", focusUpTaggedGlobal "!!!")
-    , ("<KP_End>", windowMenu)
-    , ("<KP_Next>", bringSelected $ gsWnBringConfig myBringColorizer)
-
 -- Media keys -----------------------------------------------------------------------------
-    , ("M-<XF86AudioMute>", spawn "playerctl -i Bose_QC35_II play-pause")       -- play/pause (no external kb)
-    , ("<XF86AudioPlay", spawn "playerctl -i Bose_QC35_II play-pause")          -- play/pause                        
-    , ("M-<XF86AudioRaiseVolume>", spawn "playerctl -i Bose_QC35_II next")      -- next track (no external kb)
-    , ("<XF86AudioNext>", spawn "playerctl -i Bose_QC35_II next")               -- next track
-    , ("M-<XF86AudioLowerVolume>", spawn "playerctl -i Bose_QC35_II previous")  -- prev track (no external kb)
-    , ("<XF86AudioPrev>", spawn "playerctl -i Bose_QC35_II previous")           -- prev track
-    , ("<XF86AudioMute>", spawn "amixer -D pulse set Master toggle")            -- mute
-    , ("<XF86AudioLowerVolume>",   spawn "amixer set Master 5%- unmute")        -- raise volume by 5%
-    , ("<XF86AudioRaiseVolume>",   spawn "amixer set Master 5%+ unmute")        -- lower volume by 5%
-    , ("<xf86MonBrightnessDown>", spawn "brightnessctl s 10%-")                 -- decrease brightness by 10%
-    , ("<XF86MonBrightnessUp>", spawn "brightnessctl s +10%")                   -- increase brightness by 10%
+    , ("<XF86AudioPlay>", spawn "playerctl play-pause")
+    , ("<XF86AudioNext>", spawn "playerctl next")                               -- next track
+    , ("<XF86AudioPrev>", spawn "playerctl previous")                           -- prev track
+    , ("<XF86AudioMute>", spawn "amixer -D pulse set Master toggle")
+    , ("<XF86AudioLowerVolume>",   spawn "amixer -D pulse set Master 5%- unmute")
+    , ("<XF86AudioRaiseVolume>",   spawn "amixer -D pulse set Master 5%+ unmute")
+    , ("M-<XF86AudioMute>", spawn "playerctl play-pause")       -- play/pause (no external kb)
+    , ("M-<XF86AudioLowerVolume>", spawn "playerctl previous")  -- prev track (no external kb)
+    , ("M-<XF86AudioRaiseVolume>", spawn "playerctl next")      -- next track (no external kb)
+    , ("<xf86MonBrightnessDown>", spawn "brightnessctl s 10%-")
+    , ("<XF86MonBrightnessUp>", spawn "brightnessctl s +10%")
     , ("<Print>", spawn "xfce4-screenshooter -s ~/media/pic/scrots -f")         -- full screenshot
     , ("M-<Print>", spawn "xfce4-screenshooter -s ~/media/pic/scrots -r")       -- interactive screenshot
 
 -- Scratchpads ---------------------------------------------------------------------------
-    , ("M-s f", namedScratchpadAction myScratchPads "fff")
+    , ("M-s f", namedScratchpadAction myScratchPads "ranger")
     , ("M-s g", namedScratchpadAction myScratchPads "thunar")
     , ("M-s v", namedScratchpadAction myScratchPads "vimwiki")
     , ("M-s p", namedScratchpadAction myScratchPads "htop")
     , ("M-s t", namedScratchpadAction myScratchPads "telegram")
     , ("M-s i", namedScratchpadAction myScratchPads "irc")
     , ("M-s s", namedScratchpadAction myScratchPads "sp")
-    , ("M-s m", namedScratchpadAction myScratchPads "ql")
+    , ("M-s m", namedScratchpadAction myScratchPads "mpd")
     , ("M-s r", namedScratchpadAction myScratchPads "radio")
     , ("M-s w", namedScratchpadAction myScratchPads "weylus")
+    , ("M-s d", namedScratchpadAction myScratchPads "task")
+    , ("M-s n", namedScratchpadAction myScratchPads "mail")
 
 -- Tag navigation ------------------------------------------------------------------------
-    -- , ("M-f 1", withFocused (addTag "!"))
-    -- , ("M-f 2", withFocused (addTag "!!"))
-    -- , ("M-f 3", withFocused (addTag "!!!"))
-    -- , ("M-f j", focusUpTaggedGlobal "!")
-    -- , ("M-f k", focusUpTaggedGlobal "!!")
-    -- , ("M-f l", focusUpTaggedGlobal "!!!")
-    -- , ("M-f a", tagPrompt myPromptTheme (\s -> withFocused (addTag s)))
-    -- , ("M-f t", tagPrompt myPromptTheme (\s -> focusUpTaggedGlobal s))
-    -- , ("M-f d", tagDelPrompt myPromptTheme)
+    , ("M-t 1", withFocused (addTag "!"))
+    , ("M-t 2", withFocused (addTag "!!"))
+    , ("M-t 3", withFocused (addTag "!!!"))
+    , ("M-t j", focusUpTaggedGlobal "!")
+    , ("M-t k", focusUpTaggedGlobal "!!")
+    , ("M-t l", focusUpTaggedGlobal "!!!")
+    , ("M-t a", tagPrompt myPromptTheme (\s -> withFocused (addTag s)))
+    , ("M-t t", tagPrompt myPromptTheme (\s -> focusUpTaggedGlobal s))
+    , ("M-t d", tagDelPrompt myPromptTheme)
 
 -- Search prompts ------------------------------------------------------------------------
     , ("M-d w", promptSearchBrowser myPromptTheme mySearchBrowser wikipedia)
@@ -670,10 +509,9 @@ myKeys =
     , ("M-d s", promptSearchBrowser myPromptTheme mySearchBrowser scholar)
 
 -- Productivity --------------------------------------------------------------------------
-    , ("M-S-n", appendFilePrompt myPromptTheme "/home/edun/LOG")
-    , ("M-S-s", spawn "echo '25 5' > ~/.cache/pomodoro_session")
-    , ("M-S-l", spawn "echo '50 10' > ~/.cache/pomodoro_session")
-    , ("M-S-x", spawn "rm ~/.cache/pomodoro_session")
+    , ("M-g s", spawn "echo '25 5' > ~/.cache/pomodoro_session")
+    , ("M-g l", spawn "echo '50 10' > ~/.cache/pomodoro_session")
+    , ("M-g x", spawn "rm ~/.cache/pomodoro_session")
     ]
     ++
     [("M-c " ++ (show i), windows $ copy ws) | (i,ws) <- zip [1..9] myWorkspaces]   -- copy window to workspace
@@ -709,7 +547,8 @@ getSortByIndexNoSP =
 
 main = do
     n <- countScreens
-    xmprocs <- mapM (\i -> spawnPipe $ myWsBar ++ " -x " ++ show i) [0..n-1]
+    -- xmprocs <- mapM (\i -> spawnPipe $ myWsBar ++ " -x " ++ show i) [0..n-1]
+    xmprocs <- mapM (\i -> spawnPipe $ myWsBar ++ " -x " ++ show i) [0]
     xmonad 
         $ withUrgencyHook NoUrgencyHook
         $ ewmh

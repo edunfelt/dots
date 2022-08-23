@@ -1,0 +1,24 @@
+#            _ _
+#  _____ ___|_| |___ ___ ___
+# |     | .'| | |  _| .'| . |
+# |_|_|_|__,|_|_|___|__,|  _|
+#                       |_|
+
+# HTML
+text/html; "$BROWSER" %s && sleep 3; test=test -n "$DISPLAY"
+text/html; w3m -I %{charset} -T text/html; copiousoutput;
+text/plain; vim %s
+
+# PDFs
+application/pdf; zathura --fork - && sleep 1; test=test -n "$DISPLAY"
+
+# Images
+image/png; feh %s
+image/jpeg; feh %s
+
+# Other
+text/x-python; vim %s
+application/msword; lowriter %s
+application/vnd.oasis.opendocument.text; lowriter %s
+application/vnd.ms-excel; localc %s
+application/vnd.oasis.opendocument.spreadsheet; localc %s

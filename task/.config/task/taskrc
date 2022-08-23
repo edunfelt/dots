@@ -1,0 +1,20 @@
+#  _           _
+# | |_ ___ ___| |_ ___ ___
+# |  _| .'|_ -| '_|  _|  _|
+# |_| |__,|___|_,_|_| |___|
+#
+
+data.location=~/.config/task/
+hooks.location=~/.config/task/hooks/
+include /usr/share/taskwarrior/light-256.theme
+news.version=2.6.0
+uda.taskwarrior-tui.task-report.show-info=false
+
+color.project.14.05 = black on blue
+color.project.14.07 = black on green
+color.project.14.12 = black on cyan
+color.project.23.01 = black on magenta
+color.tag.wrk = black on yellow
+color.active = color17
+
+context.today=(((scheduled<tomorrow or due<tomorrow or +next or +ACTIVE) and -COMPLETED) or end>=today)

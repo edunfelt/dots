@@ -1,0 +1,7 @@
+#! /bin/bash
+
+# notification
+notify-send --icon='/home/e/.icons/BeOS-r5-Icons-master/128x128/apps/BeOS_message.png' "You've got mail!"
+
+# sound
+aplay /home/e/media/sys/successful-239.wav > /dev/null 2>&1 &

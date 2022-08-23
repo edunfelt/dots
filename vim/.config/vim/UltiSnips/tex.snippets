@@ -17,27 +17,6 @@ def math():
 		return False
 endglobal
 
-snippet template "Basic template" b
-\documentclass[12pt, twoside, a4paper, titlepage]{report}
-\include{$1}
-\newcommand{\incfig}[1]{%
-    \def\svgwidth{\columnwidth}
-    \import{./$2/}{#1.pdf_tex}
-}
-
-%Header & footer
-\fancyhead[LE,RO]{}
-\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\thechapter.\ #1}}{}}
-\fancyhead[LO]{\nouppercase{\leftmark}}
-\fancyhead[RE]{\nouppercase{\rightmark}}
-\fancyfoot[C]{\thepage}
-\chead{}
-
-\begin{document}
-$0
-\end{document}
-endsnippet
-
 snippet beg "begin{} / end{}" bA
 \\begin{$1}
 	$0

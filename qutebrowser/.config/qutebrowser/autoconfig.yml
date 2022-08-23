@@ -6,7 +6,23 @@
 
 config_version: 2
 settings:
+  aliases:
+    global:
+      b: spawn --userscript qb-rbuku -s
+      ba: spawn --userscript qb-rbuku -a
+      br: spawn --userscript qb-rbuku -r
   auto_save.session:
     global: true
+  content.autoplay:
+    global: false
+  content.blocking.method:
+    global: both
   content.geolocation:
     https://www.cloud.dunfelt.se: true
+  content.notifications.enabled:
+    https://dnschecker.org: false
+    https://www.reddit.com: false
+  fonts.messages.error:
+    global: default_size default_family
+  fonts.messages.info:
+    global: 12pt Terminus (TTF)

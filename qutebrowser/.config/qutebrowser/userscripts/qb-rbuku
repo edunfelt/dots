@@ -1,0 +1,17 @@
+#!/bin/sh
+# Ref: https://github.com/kevindirect/KAR/blob/master/.config/qutebrowser/userscripts/qb-rbuku
+# Qutebrowser userscript wrapper for rbuku.
+# Options (I recommend adding these cases as qutebrowser aliases - see my config.yml):
+#	* -a: launch rbuku add prompt to add current or hint selected url as bookmark
+#	* -s: launch rbuku search prompt and open selected bookmark in new tab
+#	* -r: launch rbuku removal prompt
+RBUKU="$HOME/.local/bin/rbuku";
+
+while getopts "asr" arg; do
+	case $arg in
+		a) $RBUKU -a "$QUTE_URL";;
+		s) echo "open -t $($RBUKU -s)" >> "$QUTE_FIFO";;
+		r) notify-send "qb-rbuku" "rbuku -r disabled until we're sure it's safe";;# $RBUKU -r;;
+		*) notify-send "qb-rbuku" "invalid flag";;
+	esac;
+done;

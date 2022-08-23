@@ -42,9 +42,13 @@ export PF_COL2=0
 export GNUPGHOME="~/.config/gnupg"
 export WINEPREFIX="~/.cofig/wine"
 export GPODDER_HOME="/home/e/media/mus/pods"
+export XAPERS_ROOT="/home/e/media/doc/xapers"
+export BAT_THEME="base16-256"
+export YTFZF_EXTMENU="rofi -dmenu -fuzzy -width 1000"
+export YTFZF_ENABLE_FZF_DEFAULt_OPTS=0
 
 # path
-export PATH=$PATH:$HOME/.local/bin:$HOME/usr/bin:$PLAN9/bin:$HOME/usr/bin
+export PATH=$PATH:$HOME/.local/bin:$HOME/usr/bin:$PLAN9/bin:$HOME/usr/bin:$HOME/go/bin
 
 
 ########################################################
@@ -63,18 +67,16 @@ alias h='history'               # I'm lazy
 alias j='jobs -l'               # faster, better jobs
 alias ..='cd ..'                # up a dir
 alias ...='cd ../../..'         # up two dirs
+alias b='buku --suggest'        # search bookmarks
+alias bfzf='firefox $(buku -p -f 40 | fzf | cut -f1)'
+alias r='ranger'                # file manager
+alias twr='task ready'           # what's next?
 
 export jdfun
 alias cjd='jdfun'
 
-# print log
-alias l="cat ~/LOG"
-
 # screencast boox
 alias cast="scrcpy --tcpip=192.168.1.57:5555"
-
-alias claws-mail="claws-mail --alternate-config-dir $HOME/.config/claws-mail"
-alias pidgin="pidgin -c $HOME/.config/purple"
 
 
 ########################################################
@@ -105,7 +107,7 @@ ex ()
 
 # Johnny.Decimal
 jdfun() {
-    cd ~/Documents/*/*/${1}*
+    cd ~/archive/*/*/${1}*
 }
 
 
@@ -115,23 +117,27 @@ jdfun() {
 # Nice ls folder colors
 #LS_COLORS=$LS_COLORS:'tw=01;33:ow=01;33:'; export LS_COLORS
 
-# FFF
-# Directory color [0-9]
-export FFF_COL1=1
-# Status background color [0-9]
-export FFF_COL2=4
-# Selection color [0-9] (copied/moved files)
-export FFF_COL3=4
-# Cursor color [0-9]
-export FFF_COL4=6
-# Status foreground color [0-9]
-export FFF_COL5=7
-# Favorites (Bookmarks) (keys 1-9) (dir or file)
-export FFF_FAV1=~/current
-export FFF_FAV2=~/archive
-export FFF_FAV3=~/tmp
-export FFF_FAV5=~/media
-export FFF_FAV6=~/.config/
-export FFF_FAV7=~/media/tablet
+# FZF
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS"\
+" --color=bg+:$color01,bg:$color00,spinner:$color0C,hl:$color0D"\
+" --color=fg:$color04,header:$color0D,info:$color0A,pointer:$color0C"\
+" --color=marker:$color0C,fg+:$color06,prompt:$color0A,hl+:$color0D"
 
 export PATH=$PATH:/home/e/.spicetify
+
+# enable bash completion in interactive shells
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# Base16 Shell
+BASE16_SHELL_PATH="$HOME/.config/base16-shell"
+[ -n "$PS1" ] && \
+  [ -s "$BASE16_SHELL_PATH/profile_helper.sh" ] && \
+    source "$BASE16_SHELL_PATH/profile_helper.sh"
+
+. "$HOME/.cargo/env"

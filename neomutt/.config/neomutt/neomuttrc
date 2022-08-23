@@ -1,0 +1,20 @@
+#                        _   _
+#  ___ ___ ___ _____ _ _| |_| |_ ___ ___
+# |   | -_| . |     | | |  _|  _|  _|  _|
+# |_|_|___|___|_|_|_|___|_| |_| |_| |___|
+#
+# vim: filetype=muttrc
+
+source ~/.config/neomutt/settings
+source ~/.config/neomutt/colors
+source ~/.config/neomutt/mappings
+
+# accounts
+source ~/.config/neomutt/accounts/uni
+folder-hook $folder 'source ~/.config/neomutt/accounts/uni'
+
+source ~/.config/neomutt/accounts/news
+folder-hook $folder 'source ~/.config/neomutt/accounts/news'
+
+source ~/.config/neomutt/accounts/personal
+folder-hook $folder 'source ~/.config/neomutt/accounts/personal'

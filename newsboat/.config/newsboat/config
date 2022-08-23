@@ -1,0 +1,85 @@
+#                    _           _
+#  ___ ___ _ _ _ ___| |_ ___ ___| |_
+# |   | -_| | | |_ -| . | . | .'|  _|
+# |_|_|___|_____|___|___|___|__,|_|
+#
+# vim: tw=90 sts=-1 sw=3 et ft=conf
+
+auto-reload yes
+show-read-feeds yes
+show-read-articles yes
+feed-sort-order none
+goto-next-feed no
+browser "xdg-open"
+bookmark-cmd "~/.local/bin/bookmark-buku.sh"
+bookmark-interactive yes
+confirm-exit yes
+
+# podcasts
+download-path "~/media/mus/podcasts/%n"
+download-filename-format "%m%d-%t.%e"
+
+# appearance
+articlelist-format "%f %D  %?T?|%-17T| ?%t"
+articlelist-title-format "%T (%u unread, %t total)"
+feedlist-format " %t%>   %u "
+feedlist-title-format ""
+
+filebrowser-title-format "%?O?Open File&Save File? - %f"
+help-title-format "Help"
+selecttag-title-format "Select Tag"
+selectfilter-title-format "Select Filter"
+itemview-title-format "%T"
+urlview-title-format "URLs"
+dialogs-title-format "Dialogs"
+
+text-width 80
+display-article-progress yes
+
+color info                                                  black magenta 
+color article                                               default default
+color listnormal                                            default default
+color listnormal_unread                                     blue default bold
+color listfocus                                             default default reverse bold
+color listfocus_unread                                      black blue bold
+
+highlight article     "(^Feed:.*|^Title:.*|^Author:.*)"     blue      default
+highlight article     "(^Link:.*|^Date:.*)"                 cyan    default
+highlight article     "^Podcast Download URL:.*"            cyan     default
+highlight article     "^Links:"                             cyan  black    underline
+highlight article     "https?://[^ ]+"                      green    default
+highlight article     "^(Title):.*$"                        red     default
+highlight article     "\\[[0-9][0-9]*\\]"                   magenta  default  bold
+highlight article     "\\[image\\ [0-9]+\\]"                green    default  bold
+highlight article     "\\[embedded flash: [0-9][0-9]*\\]"   green    default  bold
+highlight article     ":.*\\(link\\)$"                      cyan     default
+highlight article     ":.*\\(image\\)$"                     blue     default
+highlight article     ":.*\\(embedded flash\\)$"            magenta  default
+highlight feedlist    "^.*\\(0/0\\)"                        red default invis bold
+
+
+# navigation
+macro m set browser "/usr/bin/mpv %u"; open-in-browser ; set browser "/usr/bin/w3m %u"
+macro w set browser "w3m"; open-in-browser ; set browser w3m
+
+bind-key h quit articlelist
+bind-key h quit article
+bind-key h quit tagselection
+bind-key h quit feedlist
+bind-key j down feedlist
+bind-key j down tagselection
+bind-key j next articlelist
+bind-key j down article
+bind-key J next-feed articlelist
+bind-key k up feedlist
+bind-key k prev articlelist
+bind-key k up tagselection
+bind-key K prev-feed articlelist
+bind-key k up article
+bind-key l open articlelist
+bind-key l open feedlist
+bind-key l open tagselection
+
+bind-key G end
+bind-key g home
+

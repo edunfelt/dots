@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# ref: https://blog.rzg.one/post/2021/01/06/rofi-menu-for-the-buku-bookmark-manager/
+
+getbookmarks() {
+    sqlite3 -column -separator $'\t' ~/.config/buku/bookmarks.db \
+        "select id,trim(tags,','),metadata from bookmarks order by tags"
+}
+
+menu=$(getbookmarks | rofi -dmenu -i -p 'buku')
+id="${menu%% *}"
+
+buku -o "${id}"
+

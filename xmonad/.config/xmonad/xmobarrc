@@ -1,27 +1,34 @@
-Config { font = "xft:Latin Modern Mono:size=11,WenQuanYi Micro Hei:size=11:antialias=true:hinting=true"
-       , bgColor = "#5a5475"
-       , fgColor = "#F8F8F0"
+--                 _
+--   _ _ _____ ___| |_ ___ ___ ___ ___
+--  |_'_|     | . | . | .'|  _|  _|  _|
+--  |_,_|_|_|_|___|___|__,|_| |_| |___|
+-- 
+
+Config { font = "xft:Terminus (TTF):size=12,WenQuanYi Micro Hei:size=11:antialias=true:hinting=true"
+       , bgColor = "#fbf1f2"
+       , fgColor = "#bb99b4"
        , position  = TopW L 100
        , allDesktops = True
        , persistent = True
-       , commands = [ Run Date "%b %d %Y  %H:%M:%S" "date" 10
+       , commands = [ Run Date "%b %d %Y  %H:%M" "date" 10
                     , Run Volume "default" "Master" [ "-t", "vol <volumebar> (<volume>%)" ] 10
-                    , Run Mpris2 "mpv" [ "-t", "<title>" ] 10
+                    , Run Com "playerctl" ["metadata", "title"] "song" 10
+                    , Run CommandReader "pymodoro -pp 'pom ' -bp 'brk ' -e ':' -b '#' -sp '/home/e/media/sys/appointed-529.wav' -sb '/home/e/media/sys/work.wav' -ah" "pomodoro"
                     , Run Cpu [ "-t", "cpu <bar> (<total>%)"
                               , "-H", "50"
-                              , "--high", "#CC6666"
+                              , "--high", "#d57e85"
                               ] 10
                     , Run Memory [ "-t", "mem <usedbar> (<usedratio>%)" ] 10
                     , Run DiskU [ ("/", "hdd <usedbar> (<used>)") ] [] 3600
                     , Run Battery [ "-t", "bat <leftbar> (<left>%)"
                                   , "--Low", "20"
                                   , "--High", "70"
-                                  , "--low", "#CC6666"
+                                  , "--low", "#d57e85"
                                   , "--"
                                   ] 50
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "  %StdinReader% } ♪ %mpris2% ♪ {<fc=#C2FFDF>%cpu%</fc>  <fc=#96CBFE>%memory%</fc>  <fc=#FFB8D1>%battery%</fc>  %date%            "
+       , template = "  %StdinReader% } ♪ %song% ♪ {<fc=#A3B367>%pomodoro%</fc>  <fc=#7297B9>%cpu%</fc>  <fc=#69A9A7>%memory%</fc>  <fc=#BB99B4>%battery%</fc>  %date%              "
        }

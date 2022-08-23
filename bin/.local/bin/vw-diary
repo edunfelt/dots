@@ -1,0 +1,15 @@
+#!/usr/bin/python
+import datetime
+
+today = datetime.date.today()
+wday = today.strftime('%A')
+
+content = """# {today}, {wday}
+
+- **study poms:**
+
+## tasks | (+READY -someday) or (+COMPLETED end:today)
+
+## notes"""
+
+print(content.format(today=today, wday=wday))

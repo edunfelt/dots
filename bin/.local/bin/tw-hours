@@ -1,0 +1,2 @@
+#!/bin/bash
+echo $(timew summary today | awk '{print $NF}' | tail -2)

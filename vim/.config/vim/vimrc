@@ -9,11 +9,11 @@
 " GENERAL --------------------------------------------------------------- {{{
 
 " misc stuff 
-set nocompatible                          " no vi compatibility
-filetype plugin indent on			      " filetype detection
-set encoding=UTF-8                        " encoding, please
-set spelllang=en_us                       " I write mostly in English anyway
-set history=500                           " more command history
+set nocompatible                        " no vi compatibility
+filetype plugin indent on               " filetype detection
+set encoding=UTF-8                      " encoding, please
+set spelllang=en_us                     " I write mostly in English anyway
+set history=500                         " more command history
 
 " paths
 set runtimepath+=~/.config/vim,~/.config/vim/after
@@ -21,32 +21,33 @@ set viminfo+=n~/.config/vim/viminfo
 set viewdir=~/.config/vim/view
 
 " tabs and spacing
-set autoindent			                  " autoindent new lines
-set expandtab					          " tabs are spaces
-set shiftwidth=4                          " shift are spaces
-set tabstop=4				              " number of visual spaces per TAB
-set softtabstop=4		                  " number of spaces per tab when editing
-set wrap linebreak nolist                 " wrap things nicely
+set autoindent                          " autoindent new lines
+set backspace=indent,eol,start          " backspace the usual way
+set expandtab                           " tabs are spaces
+set shiftwidth=4                        " shift are spaces
+set tabstop=4                           " number of visual spaces per TAB
+set softtabstop=4                       " number of spaces per tab when editing
+set wrap linebreak nolist               " wrap things nicely
 
 " appearance
+set background=light
 set termguicolors
-colorscheme vacme                         " colorscheme
-syntax enable					          " syntax highlighting
-set number				                  " show line numbers
-set cursorline                            " highlight current line
-set showmatch					          " highlight matching parentheses
+syntax enable                           " syntax highlighting
+set number                              " show line numbers
+set cursorline                          " highlight current line
+set nocursorcolumn                      " don't highlight current column
+set showmatch                           " highlight matching parentheses
 
-set showcmd		    	                  " show command in bottom bar
-set showmode                              " show current mode in bottom bar
-set wildmenu				              " visual autocomplete for command menu
-"set wildmode=list:longest                 " better wildmenu
+set showcmd                             " show command in bottom bar
+set showmode                            " show current mode in bottom bar
+set wildmenu                            " visual autocomplete for command menu
 set wildignore=*.aux,*.*fls,*.gz,*.bbl,*.bcf,*.blg,*.fdb_latexmk,*.pdf
 
 " searching
-set incsearch					          " search as characters are entered
-set ignorecase                            " not case sensitive
-set smartcase                             " unless I want it to be
-set hlsearch				              " highlight matches
+set incsearch                           " search as characters are entered
+set ignorecase                          " not case sensitive...
+set smartcase                           " ...unless I want it to be
+set hlsearch                            " highlight matches
 
 " }}}
 
@@ -65,9 +66,16 @@ nnoremap <leader><Esc> :nohlsearch<CR>
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 
 " system clipboard access
+set clipboard=unnamed
 nnoremap <C-C> "+y
 nnoremap <C-V> "+p
 inoremap <C-V> <ESC>"+pa
+
+" toggle undotree
+nnoremap <F8> :UndotreeToggle<CR>
+
+" toggle tagbar
+nnoremap <F9> :TagbarToggle<CR>
 
 " navigate splits better
 nnoremap <C-J> <C-W><C-J>
@@ -84,7 +92,6 @@ noremap <C-right> <C-W><
 " tab switching
 nnoremap <leader>- :tabprevious<CR>
 nnoremap <leader>+ :tabnext<CR>
-nnoremap <leader>t :tabnew 
 
 " better yanking
 nnoremap Y y$
@@ -92,8 +99,35 @@ nnoremap Y y$
 " line wrapping
 command! -nargs=* Wrap set wrap linebreak nolist
 
+" insert hours tracked
+nnoremap <C-x>t i<C-r>=system("tw-hours \| tr -d '\n'")<CR><Esc>
+
 " toggle nerdtree
 map <C-n> :NERDTreeToggle<CR>
+
+" toggle terminal
+nnoremap <C-t> :botright terminal ++rows=20<CR>
+
+" toggle markdown preview
+nmap <C-p> <Plug>MarkdownPreviewToggle
+
+" open calendar
+map <C-x><C-c>b :Calendar -view=year -split=horizontal -position=below -height=12<CR>
+map <C-x><C-c>c :Calendar -position=tab<CR>
+
+" find incomplete tasks
+nmap <Leader>wa :call VimwikiFindAllIncompleteTasks()<CR>
+nmap <Leader>wx :call VimwikiFindIncompleteTasks()<CR>
+
+" fzf files, buffers, history, bibtex
+imap <c-x><c-,> <Esc> :Buffers<CR>
+imap <c-x><c-f> <Esc> :Files<CR>
+imap <c-x><c-r> <Esc> :History<CR>
+nmap <leader>, :Buffers<CR>
+nmap <leader>f :Files<CR>
+nmap <leader>r :History<CR>
+nnoremap <leader>g :Rg<CR>
+nnoremap <leader>G :GGrep<CR>
 
 " uuid insert
 inoremap <C-U> <C-R>=trim(system('uuidgen'))<CR>
@@ -105,6 +139,18 @@ nnoremap <silent> <leader>p :%w !lp<CR>
 " run python
 imap <F5> <Esc>:w<CR>:!clear;python3 %<CR>
 nmap <F5> <Esc>:w<CR>:!clear;python3 %<CR>
+
+" ycm
+nmap <leader>yfw <Plug>(YCMFindSymbolInWorkspace)
+nmap <leader>yfd <Plug>(YCMFindSymbolInDocument)
+nnoremap <leader>ygd :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>yrn :YcmCompleter RefactorRename<CR>
+nmap <leader>D <plug>(YCMHover)
+
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-n>'
 
 " debugging
 packadd termdebug
@@ -118,14 +164,66 @@ noremap <silent> <leader>o :Over<cr>
 noremap <silent> <leader>e :Evaluate<cr>
 noremap <silent> <leader>x :Continue<cr>
 
+" bibtex cite
+nnoremap <silent> <leader>c :call fzf#run({
+                        \ 'source': 'bibtex-ls',
+                        \ 'sink*': function('<sid>bibtex_cite_sink'),
+                        \ 'up': '40%',
+                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Cite> "'})<CR>
+
+" bibtex print markdown
+nnoremap <silent> <leader>m :call fzf#run({
+                        \ 'source': 'bibtex-ls',
+                        \ 'sink*': function('<sid>bibtex_markdown_sink'),
+                        \ 'up': '40%',
+                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Markdown> "'})<CR>
+
+" find and cite .bib files in current, child, or parent dir
+inoremap <silent> @@ <c-g>u<c-o>:call fzf#run({
+                        \ 'source': Bibtex_ls(),
+                        \ 'sink*': function('<sid>bibtex_cite_sink_insert'),
+                        \ 'up': '40%',
+                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Cite> "'})<CR>
+
+" boxes
+autocmd BufEnter * nmap ,mc !!boxes -d pound-cmt<CR>
+autocmd BufEnter * nmap ,mb !!boxes -d shell<CR>
+autocmd BufEnter * vmap ,mc !boxes -d pound-cmt<CR>
+autocmd BufEnter * vmap ,mb !!boxes -d shell<CR>
+autocmd BufEnter * nmap ,xc !!boxes -d pound-cmt -r<CR>
+autocmd BufEnter * vmap ,xc !boxes -d pound-cmt -r<CR>
+autocmd BufEnter *.html nmap ,mc !!boxes -d html-cmt<CR>
+autocmd BufEnter *.html vmap ,mc !boxes -d html-cmt<CR>
+autocmd BufEnter *.html nmap ,xc !!boxes -d html-cmt -r<CR>
+autocmd BufEnter *.html vmap ,xc !boxes -d html-cmt -r<CR>
+autocmd BufEnter *.[chly],*.[pc]c nmap ,mc !!boxes -d c-cmt<CR>
+autocmd BufEnter *.[chly],*.[pc]c vmap ,mc !boxes -d c-cmt<CR>
+autocmd BufEnter *.[chly],*.[pc]c nmap ,xc !!boxes -d c-cmt -r<CR>
+autocmd BufEnter *.[chly],*.[pc]c vmap ,xc !boxes -d c-cmt -r<CR>
+autocmd BufEnter *.C,*.cpp,*.java nmap ,mc !!boxes -d java-cmt<CR>
+autocmd BufEnter *.C,*.cpp,*.java vmap ,mc !boxes -d java-cmt<CR>
+autocmd BufEnter *.C,*.cpp,*.java nmap ,xc !!boxes -d java-cmt -r<CR>
+autocmd BufEnter *.C,*.cpp,*.java vmap ,xc !boxes -d java-cmt -r<CR>
+autocmd BufEnter .vimrc*,.exrc nmap ,mc !!boxes -d vim-cmt<CR>
+autocmd BufEnter .vimrc*,.exrc vmap ,mc !boxes -d vim-cmt<CR>
+autocmd BufEnter .vimrc*,.exrc nmap ,xc !!boxes -d vim-cmt -r<CR>
+autocmd BufEnter .vimrc*,.exrc vmap ,xc !boxes -d vim-cmt -r<CR>
+autocmd BufEnter *.tex nmap ,mc !!boxes -d tex-cmt<CR>
+autocmd BufEnter *.tex vmap ,mc !boxes -d tex-cmt<CR>
+autocmd BufEnter *.tex nmap ,mb !!boxes -d tex-box<CR>
+autocmd BufEnter *.tex nmap ,xc !!boxes -d tex-cmt -r<CR>
+autocmd BufEnter *.tex vmap ,xc !boxes -d tex-cmt -r<CR>
+autocmd BufEnter *.tex nmap ,xb !!boxes -d tex-box -r<CR>
+
 " }}}
 
 " SCRIPTS -------------------------------------------------------------- {{{
 
-" folding
-augroup filetype_vim
+" remember folds
+augroup remember_folds
   autocmd!
-  autocmd FileType vim setlocal foldmethod=marker
+  autocmd BufWinLeave ?* mkview 1
+  autocmd BufWinEnter ?* silent! loadview 1
 augroup END
 
 " enable undofile
@@ -135,11 +233,16 @@ if version > 703
   set undoreload=10000
 endif
 
+" less indentation sometimes
+au BufNewFile,BufRead *.js, *.html, *.css, *.R, *.Rmd
+    \ set tabstop=2
+    \ set softtabstop=2
+    \ set shiftwidth=2
+
 " gui settings
 if has('gui_running')
-  colorscheme vacme
-  set guifont=Latin\ Modern\ Mono
-  set guioptions-=L                       " no scrollbar
+  set guifont=Terminus (TTF)\ 12
+  set nocursorcolumn                      " don't highlight current column
   set guioptions-=T                       " no toolbar
   set guioptions-=m                       " no menubar
   nnoremap <F12> :if &guioptions=~#'mT'<Bar>
@@ -149,7 +252,7 @@ if has('gui_running')
     \endif<Cr>
 endif
 
-" change by time of day
+" change theme by time of day
 "let hr = (strftime('%H'))
 "if hr >= 17
   "set background=dark
@@ -157,123 +260,47 @@ endif
   "set background=dark
 "endif
 
-" statusline mode
-function! StatuslineMode() abort
-  return { 'n': 'NORMAL', 'v': 'VISUAL',   'i': 'INSERT',  'R': 'REPLACE',
-         \ 's': 'SELECT', 't': 'TERMINAL', 'c': 'COMMAND', '!': 'SHELL',
-    \ }[mode()]
-endfunction
-
 " cursor only in active
 augroup cursor_off
     autocmd!
-    autocmd WinLeave * set nocursorline nocursorcolumn
-    autocmd WinEnter * set cursorline cursorcolumn
+    autocmd WinLeave * set nocursorline 
+    autocmd WinEnter * set cursorline 
 augroup END
 
-" }}}
+" fzf-bibtex and fzf.vim
+" ripgrep
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 
-" STATUS LINE ----------------------------------------------------------- {{{
+" ripgrep, advanced
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
-set laststatus=2
-set statusline=%#cursorlinenr#%{StatuslineMode()}%*
-set statusline+=\ [\%n\]\ %f\%m\ %Y\ %r
-set statusline+=%=
-set statusline+=(%l,%c%V)\ %P
+" git grep
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number '.shellescape(<q-args>), 0,
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 
-" }}}
-
-" PLUGINS ---------------------------------------------------------------- {{{
-
-set rtp+=$HOME/.config/vim/bundle/Vundle.vim/
-call vundle#begin('$HOME/.config/vim/bundle/')
-Plugin 'VundleVim/Vundle.vim'
-
-" distraction-free writing
-Plugin 'junegunn/goyo.vim'
-
-" easy commenting
-Plugin 'preservim/nerdcommenter'
-
-" C support
-Plugin 'WolfgangMehner/c-support'
-
-" LaTeX
-Plugin 'lervag/vimtex'
-Plugin 'honza/vim-snippets'
-let g:tex_flavor = "latex"
-let g:vimtex_view_method = "zathura"
-let g:vimtex_quickfix_mode = 0
-set conceallevel=1
-let g:tex_conceal="abdmg"
-
-" Pandoc
-Plugin 'vim-pandoc/vim-pandoc'
-Plugin 'vim-pandoc/vim-pandoc-syntax'
-
-" Ultisnips
-Plugin 'SirVer/ultisnips'
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-let g:UltiSnipsSnippetDirectories = ["~/.config/vim/UltiSnips"]
-
-" Nerdtree
-Plugin 'preservim/nerdtree'
-Plugin 'PhilRunninger/nerdtree-visual-selection'
-let g:NERDTreeGitStatusConcealBrackets = 1
-
-" Vimwiki
-Plugin 'vimwiki/vimwiki'
-Plugin 'itchyny/calendar.vim'
-let g:vimwiki_hl_cb_checked = 1
-let g:vimwiki_use_calendar = 1
-let g:vimwiki_auto_diary_index = 1
-let g:vimwiki_folding = "expr"
-let g:vimwiki_list = [{
-      \'path': '~/archive/00-09-meta/02-vimwiki/',
-      \'ext': '.wiki',
-      \'path_html': '~/archive/00-09-meta/02-vimwiki/docs/',
-      \'template_path': '~/archive/00-09-meta/02-vimwiki/templates/',
-      \'template_default': 'default',
-      \'template_ext': '.html'
-      \}]
-
-" fzf
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-imap <c-x><c-b> <Esc> :Buffers<CR>
-nmap <leader>b :Buffers<CR>
-imap <c-x><c-f> <Esc> :Files<CR>
-nmap <leader>f :Files<CR>
-imap <c-x><c-h> <Esc> :History<CR>
-nmap <leader>h :History<CR>
-
-" fzf-bibtex
-let $FZF_BIBTEX_CACHEDIR = '/home/e/tmp/fzf-bibtex'
-let $FZF_BIBTEX_SOURCES = '/home/e/media/doc/bibliography.bib'
-
+" bibtex cite article
 function! s:bibtex_cite_sink(lines)
     let r=system("bibtex-cite ", a:lines)
     execute ':normal! a' . r
 endfunction
 
+" bibtex print markdown
 function! s:bibtex_markdown_sink(lines)
     let r=system("bibtex-markdown ", a:lines)
     execute ':normal! a' . r
 endfunction
-
-nnoremap <silent> <leader>c :call fzf#run({
-                        \ 'source': 'bibtex-ls',
-                        \ 'sink*': function('<sid>bibtex_cite_sink'),
-                        \ 'up': '40%',
-                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Cite> "'})<CR>
-
-nnoremap <silent> <leader>m :call fzf#run({
-                        \ 'source': 'bibtex-ls',
-                        \ 'sink*': function('<sid>bibtex_markdown_sink'),
-                        \ 'up': '40%',
-                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Markdown> "'})<CR>
 
 " find .bib files in current, parent, or child directory
 function! Bibtex_ls()
@@ -293,13 +320,229 @@ function! s:bibtex_cite_sink_insert(lines)
     call feedkeys('a', 'n')
 endfunction
 
-inoremap <silent> @@ <c-g>u<c-o>:call fzf#run({
-                        \ 'source': Bibtex_ls(),
-                        \ 'sink*': function('<sid>bibtex_cite_sink_insert'),
-                        \ 'up': '40%',
-                        \ 'options': '--ansi --layout=reverse-list --multi --prompt "Cite> "'})<CR>
+" calendar weekend colors
+function! s:calendar_syntax()
+  highlight CalendarSunday ctermbg=40 ctermfg=0 guibg=#D47D84 guifg=#F2F1F4
+  highlight CalendarSundayTitle ctermbg=40 ctermfg=0 guibg=#D47D84 guifg=#F2F1F4
+  highlight CalendarTodaySunday ctermbg=40 ctermfg=0 guibg=#D47D84 guifg=#F2F1F4
+  highlight CalendarSaturday ctermbg=40 ctermfg=0 guibg=#d8d5dd guifg=#8b8198
+  highlight CalendarSaturdayTitle ctermbg=40 ctermfg=0 guibg=#d8d5dd guifg=#8b8198
+  highlight CalendarTodaySaturday ctermbg=40 ctermfg=0 guibg=#d8d5dd guifg=#8b8198
+  highlight CalendarToday ctermbg=40 ctermfg=0 guibg=#A3B367 guifg=#F2F2F4
+endfunction
+augroup CalendarSetSyntax
+  autocmd!
+  autocmd FileType calendar call s:calendar_syntax()
+augroup END
 
+" find incomplete vimwiki tasks
+function! VimwikiFindIncompleteTasks()
+  lvimgrep /- \[ \]/ %:p
+  lopen
+endfunction
 
-call vundle#end()
+function! VimwikiFindAllIncompleteTasks()
+  VimwikiSearch /- \[ \]/
+  lopen
+endfunction
+
 
 " }}}
+
+" STATUS LINE ----------------------------------------------------------- {{{
+
+" appearance
+let g:airline_theme = "base16_cupcake"
+let g:airline_stl_path_style = "short"
+
+" tabline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_tab_count = 1
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#tabline#tabs_label = ""
+let g:airline#extensions#tabline#formatter = "unique_tail"
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+
+" git extensions
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#empty_message = ""
+let g:airline#extensions#hunks#enabled = 1
+
+" other extensions
+let g:airline#extensions#nerdtree_statusline = 1
+let g:airline#extensions#vimtex#enabled = 1
+let g:airline#extensions#fzf#enabled = 1
+
+" layout
+let g:airline#extensions#default#layout = [
+      \ [ 'a', 'b', 'c' ],
+      \ [ 'x', 'z' ]
+      \ ]
+
+" }}}
+
+" PLUGINS ---------------------------------------------------------------- {{{
+
+" install vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.config/vim/plugged')
+
+" themes and things
+Plug 'base16-project/base16-vim'
+Plug 'powerman/vim-plugin-AnsiEsc'
+
+" startify
+Plug 'mhinz/vim-startify'
+let g:startify_session_dir = '~/.config/vim/session'
+let g:startify_session_autoload = 1
+let g:startify_custom_header = [
+     \"      --+-- WELCOME --+--        ",
+     \"   ~+                            ",
+     \"            *       +            ",
+     \"      '                  |       ",
+     \'  ()    .-.,="``"=.    - o -     ',
+     \"        '=/_       \     |       ",
+     \"     *   |  '=._    |            ",
+     \"          \     `=./`,        '  ",
+     \"       .   '=.__.=' `='      *   ",
+     \"                        +        ",
+     \"   O      *        '       .     ",
+     \" jgs                             ",
+     \ ]
+
+" airline
+Plug 'vim-airline/vim-airline'
+Plug 'dawikur/base16-vim-airline-themes'
+
+" git
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+
+" distraction-free writing
+Plug 'junegunn/goyo.vim'
+
+" brackets and co.
+Plug 'tpope/vim-surround'
+Plug 'gosukiwi/vim-smartpairs'
+
+" ycm
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
+
+" C support
+Plug 'WolfgangMehner/c-support'
+
+" python things
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+Plug 'tmhedberg/SimpylFold'
+Plug 'preservim/tagbar'
+
+" LaTeX
+Plug 'lervag/vimtex'
+Plug 'honza/vim-snippets'
+set conceallevel=1 
+let g:tex_flavor = "latex"
+let g:vimtex_view_method = "zathura"
+let g:vimtex_quickfix_mode = 0
+let g:tex_conceal="abdmg"
+
+" Pandoc and markdown
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax', { 'for': 'markdown' }
+Plug 'iamcco/markdown-preview.nvim'
+
+" Ultisnips
+Plug 'SirVer/ultisnips'
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsSnippetDirectories = ["~/.config/vim/UltiSnips"]
+
+" Nerdtree
+Plug 'preservim/nerdtree'
+Plug 'PhilRunninger/nerdtree-visual-selection'
+let g:NERDTreeGitStatusConcealBrackets = 1
+
+" Undotree
+Plug 'mbbill/undotree'
+let g:undotree_WindowLayout = 2
+let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_TreeNodeShape = '█'
+let g:undotree_TreeVertShape = '│'
+let g:undotree_TreeSplitShape = '╱'
+let g:undotree_TreeReturnShape = '╲'
+
+" Calendar
+Plug 'itchyny/calendar.vim'
+let g:calendar_cache_directory = '~/wiki/calendar'
+let g:calendar_views = ['year', 'month', 'week', 'day_5', 'day', 'event', 'agenda', 'clock']
+let g:calendar_first_day = 'monday'
+let g:calendar_week_number = 1
+let g:calendar_cyclic_view = 1
+
+" Vimwiki, taskwiki
+Plug 'vimwiki/vimwiki'
+Plug 'tools-life/taskwiki'
+au BufNewFile ~/wiki/diary/*.md :silent 0r !~/.local/bin/vw-diary '%'
+let g:taskwiki_taskrc_location = '~/.config/task/taskrc'
+let g:taskwiki_data_location = '~/.config/task'
+let g:vimwiki_table_mappings = 0            " tab should work for snippets also
+let g:vimwiki_hl_cb_checked = 1
+let g:vimwiki_auto_diary_index = 1
+let g:vimwiki_global_ext = 0
+let g:vimwiki_markdown_link_ext = 1
+let g:vimwiki_option_list_margin = 0
+"let g:vimwiki_filetypes = ['markdown']
+let g:vimwiki_folding = "expr"
+let home_wiki = {'name': 'home wiki',
+            \ 'path': '~/wiki/',
+            \ 'ext': '.md',
+            \ 'syntax': 'markdown',
+            \ 'auto_generate_links': 1,
+            \ 'html_filename_parameterization': 1,
+            \ 'path_html': '~/wiki/build',
+            \ 'template_path': '~/wiki/skel/',
+            \ 'template_default': 'default',
+            \ 'template_ext': '.tpl'}
+let thesis_wiki = {'name': 'thesis wiki',
+            \ 'path': '~/current/14.12-thesis/wiki/',
+            \ 'ext': '.md',
+            \ 'syntax': 'markdown',
+            \ 'auto_generate_links': 1,
+            \ 'html_filename_parameterization': 1,
+            \ 'path_html': '~/current/14.12-thesis/wiki/build',
+            \ 'template_path': '~/current/14.12-thesis/wiki/skel',
+            \ 'template_default': 'default',
+            \ 'template_ext': '.tpl'}
+let g:vimwiki_list = [home_wiki, thesis_wiki]
+
+" fzf
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+let $FZF_BIBTEX_CACHEDIR = '/home/e/tmp/fzf-bibtex'
+let $FZF_BIBTEX_SOURCES = '/home/e/media/doc/bibliography.bib'
+let g:fzf_buffers_jump = 1
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+call plug#end()
+
+" }}}
+
+" base16
+if exists('$BASE16_THEME')
+    \ && (!exists('g:colors_name') 
+    \ || g:colors_name != 'base16-$BASE16_THEME')
+  let base16colorspace=256
+  colorscheme base16-$BASE16_THEME
+endif
+

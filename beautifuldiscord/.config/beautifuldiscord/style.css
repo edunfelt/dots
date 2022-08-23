@@ -1,21 +1,26 @@
+
+/* Start flavours */
+/* {Cupcake} by {Chris Kempson (http://chriskempson.com)} */
+
 :root {
-  --base00: #5a5475;
-  --base01: #343145;
-  --base02: #464258;
-  --base03: #9673d3;
-  --base04: #a0a0c0;
-  --base05: #b8a2ce;
-  --base06: #726c8a;
-  --base07: #5b576c;
-  --base08: #716799;
-  --base09: #f8f8f0;
-  --base0A: #b5b2bd;
-  --base0B: #ffb8d1;
-  --base0C: #c2ffdf;
-  --base0D: #ffea00;
-  --base0E: #55b3cc;
-  --base0F: #cc6666;
+  --base00: #fbf1f2;
+  --base01: #f2f1f4;
+  --base02: #d8d5dd;
+  --base03: #bfb9c6;
+  --base04: #a59daf;
+  --base05: #8b8198;
+  --base06: #72677E;
+  --base07: #585062;
+  --base08: #D57E85;
+  --base09: #EBB790;
+  --base0A: #DCB16C;
+  --base0B: #A3B367;
+  --base0C: #69A9A7;
+  --base0D: #7297B9;
+  --base0E: #BB99B4;
+  --base0F: #BAA58C;
 }
+/* End flavours */
 
 /* Accent = 02
  * Background = 00
@@ -26,14 +31,14 @@
 .theme-dark {
     --header-primary: var(--base05);
     --header-secondary: var(--base04);
-    --text-normal: var(--base09);
-    --text-muted: var(--base0A);
-    --text-link: var(--base0E);
-    --channels-default: var(--base0A);
+    --text-normal: var(--base05);
+    --text-muted: var(--base04);
+    --text-link: var(--base08);
+    --channels-default: var(--base05);
     --interactive-normal: var(--base04);
     --interactive-hover: var(--base05);
-    --interactive-active: var(--base0B);
-    --interactive-muted: var(--base04);
+    --interactive-active: var(--base05);
+    --interactive-muted: var(--base03);
     --background-primary: var(--base00);
     --background-secondary: var(--base01);
     --background-secondary-alt: var(--base02);
@@ -41,8 +46,8 @@
     --background-accent: var(--base01);
     --background-floating: var(--base00);
     --background-mobile-primary: var(--background-primary);
-    --background-mobile-secondary: var(--base02);
-    --background-modifier-selected: var(--base03);
+    --background-mobile-secondary: var(--background-secondary);
+    --background-modifier-selected: var(--background-secondary);
     --scrollbar-thin-thumb: var(--base02);
     --scrollbar-auto-thumb: var(--base02);
     --scrollbar-auto-track: var(--base01);
@@ -58,7 +63,7 @@
     --activity-card-background: var(--background-secondary);
 }
 body {
-    font-family: Latin Modern Mono
+    font-family: Terminus (TTF);
 }
 .scroller-2FKFPG {
     background-color: var(--background-primary);
@@ -191,7 +196,7 @@ body {
     background-color: var(--header-secondary);
 }
 .panels-j1Uci_ {
-    background-color: var(--background-secondary);
+    background-color: var(--background-primary);
 }
 .navButton-2gQCx- {
     color: var(--interactive-normal);
@@ -228,5 +233,4 @@ body {
 .theme-dark .header-sJd8D7 {
 	color: var(--text-normal)
 }
-
 

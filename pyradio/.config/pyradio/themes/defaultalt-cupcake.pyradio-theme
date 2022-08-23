@@ -1,0 +1,43 @@
+# Base16 Cupcake for pyradio
+# By Chris Kempson (http:&#x2F;&#x2F;chriskempson.com)
+
+# Main foreground and background
+Stations            #8b8198 #fbf1f2
+
+# Playing station text color
+# (background color will come from Stations)
+Active Station      #7297B9
+
+# Status bar foreground and background
+Status Bar          #fbf1f2 #D57E85
+
+# Normal cursor foreground and background
+Normal Cursor       #fbf1f2 #D57E85
+
+# Cursor foreground and background
+# when cursor on playing station
+Active Cursor       #fbf1f2 #7297B9
+
+# Cursor foreground and background
+# This is the Line Editor cursor
+Edit Cursor         #fbf1f2 #8b8198
+
+# Text color for extra function indication
+# and jump numbers within the status bar
+# (background color will come from Stations)
+Extra Func          #7297B9
+
+# Text color for URL
+# (background color will come from Stations)
+PyRadio URL         #A3B367
+
+# Message window borser foreground
+# (background color will come from Stations)
+Messages Border     #bfb9c6
+
+# Theme Transparency
+# Values are:
+#   0: No transparency (default)
+#   1: Theme is transparent
+#   2: Obey config setting
+transparency        0
