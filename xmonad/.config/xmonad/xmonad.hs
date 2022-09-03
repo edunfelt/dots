@@ -153,13 +153,11 @@ myWorkspaces :: [WorkspaceId]
 myWorkspaces = [ "tmp"          -- scratch
                , "net"          -- web stuff
                , "res"          -- research hub
-               , "mul"          -- multimedia (games, music, video)
                , "wrk"          -- work/TA
                , "14.02"
                , "14.09"
                , "14.10"
-               , "14.11"
-               , "sec"
+               , "14.13"
                ]
 
 -- Projects -------------------------------------------------------------------------------
@@ -179,23 +177,32 @@ myProjects = [ Project -- tmp
                 { projectName = myWorkspaces !! 2
                 , projectDirectory = "~/media/doc/sci"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 2) (myTerminal ++ " -e xapers view")
-                }
-            , Project -- mul
-                { projectName = myWorkspaces !! 3
-                , projectDirectory = "~/media"
-                , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 3) (myTerminal ++ " -e ncmpcpp")
+                    spawnOn (myWorkspaces !! 2) "zotero"
                 }
             , Project -- wrk
-                { projectName = myWorkspaces !! 4
-                , projectDirectory = "~/current"
+                { projectName = myWorkspaces !! 3
+                , projectDirectory = "~/current/22.06-algorithms-complexity"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 4) myEditor
+                    spawnOn (myWorkspaces !! 3) (myTerminal ++ " -e vim")
                 }
-            , Project -- num-thry
+            , Project -- 14.02
+                { projectName = myWorkspaces !! 4
+                , projectDirectory = "~/current/14.02-topology"
+                , projectStartHook = Nothing
+                }
+            , Project -- 14.09
                 { projectName = myWorkspaces !! 5
-                , projectDirectory = "~/current/14.07-numtheory"
+                , projectDirectory = "~/current/14.09-analysis"
+                , projectStartHook = Nothing
+                }
+            , Project -- 14.10
+                { projectName = myWorkspaces !! 6
+                , projectDirectory = "~/current/14.10-mathcom"
+                , projectStartHook = Nothing
+                }
+            , Project -- 14.13
+                { projectName = myWorkspaces !! 7
+                , projectDirectory = "~/current/14.13-supcom"
                 , projectStartHook = Nothing
                 }
             ]
@@ -411,7 +418,7 @@ myKeys =
     , ("M-p q", spawn "rofi -show p -modi p:rofi-power-menu")                   -- power menu
     , ("M-p b", spawn "buku-menu")                                              -- bookmark select
     , ("M-p v", spawn "ytfzf -D")                                               -- search youtube
-    , ("M-p d", spawn "papis rofi")                                             -- find papers
+    , ("M-p d", spawn "rofi-zotero.py -z ~/dots/zotero")                        -- find papers
     
 -- Navigation ----------------------------------------------------------------------------
     , ("M-j", focusDown)                                                        -- move focus up

@@ -18,6 +18,7 @@ settings:
   content.blocking.method:
     global: both
   content.geolocation:
+    https://sl.se: true
     https://www.cloud.dunfelt.se: true
   content.notifications.enabled:
     https://dnschecker.org: false

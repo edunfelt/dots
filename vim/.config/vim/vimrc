@@ -241,7 +241,7 @@ au BufNewFile,BufRead *.js, *.html, *.css, *.R, *.Rmd
 
 " gui settings
 if has('gui_running')
-  set guifont=Terminus (TTF)\ 12
+  set guifont=Terminus\ 12
   set nocursorcolumn                      " don't highlight current column
   set guioptions-=T                       " no toolbar
   set guioptions-=m                       " no menubar
