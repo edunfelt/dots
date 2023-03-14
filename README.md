@@ -21,14 +21,15 @@ these dotfiles, don't hesitate to modify things to your liking.
 
 
 ## screenshots
-WS1 - with qutebrowser, ncmpcpp, ranger
+WS1 - (almost) actual work this time! with zathura, vim, pyradio
+![pic3](scrots/sec.png)
+
+WS2 - with qutebrowser, ncmpcpp, ranger
 ![pic1](scrots/net.png)
 
-WS2 - with gitui, newsboat, rofi
+WS3 - with gitui, newsboat, rofi
 ![pic2](scrots/tmp.png)
 
-WS3 - (almost) actual work this time! with zathura, vim, pyradio
-![pic3](scrots/sec.png)
 
 ## notes on the setup
 ### what I use
