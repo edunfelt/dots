@@ -15,11 +15,6 @@ set encoding=UTF-8                      " encoding, please
 set spelllang=en_us                     " I write mostly in English anyway
 set history=500                         " more command history
 
-" paths
-set runtimepath+=~/.config/vim,~/.config/vim/after
-set viminfo+=n~/.config/vim/viminfo
-set viewdir=~/.config/vim/view
-
 " tabs and spacing
 set autoindent                          " autoindent new lines
 set backspace=indent,eol,start          " backspace the usual way
@@ -28,6 +23,7 @@ set shiftwidth=4                        " shift are spaces
 set tabstop=4                           " number of visual spaces per TAB
 set softtabstop=4                       " number of spaces per tab when editing
 set wrap linebreak nolist               " wrap things nicely
+autocmd bufreadpre *.md setlocal textwidth=0    " wrap markdown
 
 " appearance
 set background=light
@@ -68,8 +64,6 @@ inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 " system clipboard access
 set clipboard=unnamed
 nnoremap <C-C> "+y
-nnoremap <C-V> "+p
-inoremap <C-V> <ESC>"+pa
 
 " toggle undotree
 nnoremap <F8> :UndotreeToggle<CR>
@@ -227,11 +221,9 @@ augroup remember_folds
 augroup END
 
 " enable undofile
-if version > 703
-  set undodir=~/.config/vim/backup
-  set undofile
-  set undoreload=10000
-endif
+set undodir=~/.vim/backup
+set undofile
+set undoreload=10000
 
 " less indentation sometimes
 au BufNewFile,BufRead *.js, *.html, *.css, *.R, *.Rmd
@@ -241,8 +233,7 @@ au BufNewFile,BufRead *.js, *.html, *.css, *.R, *.Rmd
 
 " gui settings
 if has('gui_running')
-  set guifont=Terminus\ 12
-  set nocursorcolumn                      " don't highlight current column
+  set guifont=Input\ Mono\ Regular\ 11
   set guioptions-=T                       " no toolbar
   set guioptions-=m                       " no menubar
   nnoremap <F12> :if &guioptions=~#'mT'<Bar>
@@ -250,6 +241,7 @@ if has('gui_running')
     \else<Bar>
     \set guioptions=+=mT<Bar>
     \endif<Cr>
+  color vacme
 endif
 
 " change theme by time of day
@@ -351,36 +343,17 @@ endfunction
 
 " STATUS LINE ----------------------------------------------------------- {{{
 
-" appearance
-let g:airline_theme = "base16_cupcake"
-let g:airline_stl_path_style = "short"
+function! StatuslineMode() abort
+  return { 'n': 'NORMAL', 'v': 'VISUAL',   'i': 'INSERT',  'R': 'REPLACE',
+         \ 's': 'SELECT', 't': 'TERMINAL', 'c': 'COMMAND', '!': 'SHELL',
+    \ }[mode()]
+endfunction
 
-" tabline
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_tab_count = 1
-let g:airline#extensions#tabline#show_tab_nr = 0
-let g:airline#extensions#tabline#show_buffers = 0
-let g:airline#extensions#tabline#show_splits = 0
-let g:airline#extensions#tabline#show_close_button = 0
-let g:airline#extensions#tabline#tabs_label = ""
-let g:airline#extensions#tabline#formatter = "unique_tail"
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-
-" git extensions
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#branch#empty_message = ""
-let g:airline#extensions#hunks#enabled = 1
-
-" other extensions
-let g:airline#extensions#nerdtree_statusline = 1
-let g:airline#extensions#vimtex#enabled = 1
-let g:airline#extensions#fzf#enabled = 1
-
-" layout
-let g:airline#extensions#default#layout = [
-      \ [ 'a', 'b', 'c' ],
-      \ [ 'x', 'z' ]
-      \ ]
+set laststatus=2
+set statusline=%#cursorlinenr#%{StatuslineMode()}%*
+set statusline+=\ [\%n\]\ %f\%m\ %Y\ %r
+set statusline+=%=
+set statusline+=(%l,%c%V)\ %P
 
 " }}}
 
@@ -393,7 +366,7 @@ silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
 autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-call plug#begin('~/.config/vim/plugged')
+call plug#begin('~/.vim/plugged')
 
 " themes and things
 Plug 'base16-project/base16-vim'
@@ -401,7 +374,7 @@ Plug 'powerman/vim-plugin-AnsiEsc'
 
 " startify
 Plug 'mhinz/vim-startify'
-let g:startify_session_dir = '~/.config/vim/session'
+let g:startify_session_dir = '~/.vim/session'
 let g:startify_session_autoload = 1
 let g:startify_custom_header = [
      \"      --+-- WELCOME --+--        ",
@@ -417,10 +390,6 @@ let g:startify_custom_header = [
      \"   O      *        '       .     ",
      \" jgs                             ",
      \ ]
-
-" airline
-Plug 'vim-airline/vim-airline'
-Plug 'dawikur/base16-vim-airline-themes'
 
 " git
 Plug 'tpope/vim-fugitive'
@@ -456,14 +425,14 @@ let g:tex_conceal="abdmg"
 " Pandoc and markdown
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax', { 'for': 'markdown' }
-Plug 'iamcco/markdown-preview.nvim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 " Ultisnips
 Plug 'SirVer/ultisnips'
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-let g:UltiSnipsSnippetDirectories = ["~/.config/vim/UltiSnips"]
+let g:UltiSnipsSnippetDirectories = ["~/.vim/UltiSnips"]
 
 " Nerdtree
 Plug 'preservim/nerdtree'
@@ -481,7 +450,7 @@ let g:undotree_TreeReturnShape = '╲'
 
 " Calendar
 Plug 'itchyny/calendar.vim'
-let g:calendar_cache_directory = '~/wiki/calendar'
+let g:calendar_cache_directory = '~/google-drive/Wiki/calendar'
 let g:calendar_views = ['year', 'month', 'week', 'day_5', 'day', 'event', 'agenda', 'clock']
 let g:calendar_first_day = 'monday'
 let g:calendar_week_number = 1
@@ -489,10 +458,10 @@ let g:calendar_cyclic_view = 1
 
 " Vimwiki, taskwiki
 Plug 'vimwiki/vimwiki'
-Plug 'tools-life/taskwiki'
-au BufNewFile ~/wiki/diary/*.md :silent 0r !~/.local/bin/vw-diary '%'
-let g:taskwiki_taskrc_location = '~/.config/task/taskrc'
-let g:taskwiki_data_location = '~/.config/task'
+" Plug 'tools-life/taskwiki'
+au BufNewFile ~/google-drive/Wiki/diary/*.md :silent 0r !~/.local/bin/vw-diary '%'
+" let g:taskwiki_taskrc_location = '~/.task/taskrc'
+" let g:taskwiki_data_location = '~/.task'
 let g:vimwiki_table_mappings = 0            " tab should work for snippets also
 let g:vimwiki_hl_cb_checked = 1
 let g:vimwiki_auto_diary_index = 1
@@ -500,49 +469,90 @@ let g:vimwiki_global_ext = 0
 let g:vimwiki_markdown_link_ext = 1
 let g:vimwiki_option_list_margin = 0
 "let g:vimwiki_filetypes = ['markdown']
-let g:vimwiki_folding = "expr"
+"let g:vimwiki_folding = "expr"
 let home_wiki = {'name': 'home wiki',
-            \ 'path': '~/wiki/',
+            \ 'path': '~/google-drive/Wiki/',
             \ 'ext': '.md',
             \ 'syntax': 'markdown',
             \ 'auto_generate_links': 1,
             \ 'html_filename_parameterization': 1,
-            \ 'path_html': '~/wiki/build',
-            \ 'template_path': '~/wiki/skel/',
+            \ 'path_html': '~/google-drive/Wiki/build',
+            \ 'template_path': '~/google-drive/Wiki/skel/',
             \ 'template_default': 'default',
             \ 'template_ext': '.tpl'}
 let thesis_wiki = {'name': 'thesis wiki',
-            \ 'path': '~/current/14.12-thesis/wiki/',
+            \ 'path': '~/google-drive/current/14.12-thesis/wiki/',
             \ 'ext': '.md',
             \ 'syntax': 'markdown',
             \ 'auto_generate_links': 1,
             \ 'html_filename_parameterization': 1,
-            \ 'path_html': '~/current/14.12-thesis/wiki/build',
-            \ 'template_path': '~/current/14.12-thesis/wiki/skel',
+            \ 'custom_wiki2html': 'vimwiki_markdown',
+            \ 'path_html': '~/google-drive/current/14.12-thesis/docs',
+            \ 'template_path': '~/google-drive/current/14.12-thesis/wiki/skel',
             \ 'template_default': 'default',
             \ 'template_ext': '.tpl'}
-let g:vimwiki_list = [home_wiki, thesis_wiki]
+let private_wiki = {'name': 'private wiki',
+            \ 'path': '~/Documents/Wiki/',
+            \ 'ext': '.md',
+            \ 'syntax': 'markdown',
+            \ 'auto_generate_links': 1,
+            \ 'html_filename_parameterization': 1,
+            \ 'path_html': '~/Documents/Wiki/build',
+            \ 'template_path': '~/Documents/Wiki/skel/',
+            \ 'template_default': 'default',
+            \ 'template_ext': '.tpl'}
+let zettel = {'name': 'zettelkasten',
+            \ 'ext': '.md',
+            \ 'syntax': 'markdown',
+            \ 'link_space_char': '-',
+            \ 'path': '~/google-drive/Zettelkasten'}
+let g:vimwiki_list = [zettel, home_wiki, thesis_wiki, private_wiki]
 
 " fzf
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-let $FZF_BIBTEX_CACHEDIR = '/home/e/tmp/fzf-bibtex'
-let $FZF_BIBTEX_SOURCES = '/home/e/media/doc/bibliography.bib'
+let $FZF_BIBTEX_CACHEDIR = '/home/emilia/Downloads/fzf-bibtex'
+let $FZF_BIBTEX_SOURCES = '/home/emilia/google-drive/current/bibliography.bib'
 let g:fzf_buffers_jump = 1
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
 
+" vim-zettel
+Plug 'michal-h21/vim-zettel'
+Plug 'https://github.com/alok/notational-fzf-vim'
+let g:nv_search_paths = ['~/google-drive/Zettelkasten']
+let g:zettel_format = "%y%m%d%H%M"
+let g:zettel_default_title = "unnamed"
+
+function! s:insert_id()
+if exists("g:zettel_current_id")
+  return g:zettel_current_id
+else
+  return "unnamed"
+endif
+endfunction
+ 
+let g:zettel_options = [{"template" :  "~/google-drive/Zettelkasten/templates/note.tpl",
+            \'front_matter': [['tags', ':tag:'],['id', function('s:insert_id')]]}]
+
+nnoremap <leader>zn :ZettelNew<space>
+nnoremap <leader>zo :ZettelOpen<CR>
+nnoremap <leader>zs :NV<CR>
+nmap gB :NV \(<C-R>=expand("%:t:r")<CR><CR> 
+
 call plug#end()
 
 " }}}
 
 " base16
-if exists('$BASE16_THEME')
-    \ && (!exists('g:colors_name') 
-    \ || g:colors_name != 'base16-$BASE16_THEME')
-  let base16colorspace=256
-  colorscheme base16-$BASE16_THEME
-endif
+" if exists('$BASE16_THEME')
+"     \ && (!exists('g:colors_name') 
+"     \ || g:colors_name != 'base16-$BASE16_THEME')
+"   let base16colorspace=256
+"   colorscheme base16-$BASE16_THEME
+" endif
+
+colorscheme vacme
 

@@ -8,22 +8,22 @@ configuration {
 }
 
 /**
- * Base16 Cupcake ROFI Color theme
+ * Acme ROFI Color theme
  *
  * Authors
- *  Scheme: Chris Kempson (http://chriskempson.com)
+ *  Scheme: 
  *  Template: Jordi Pakey-Rodriguez (https://github.com/0xdec), Andrea Scarpino (https://github.com/ilpianista)
  */
 
 * {
-    font:                        "Terminus (TTF) 12";
-    red:                         rgba ( 213, 126, 133, 100 % );
-    blue:                        rgba ( 114, 151, 185, 100 % );
-    lightfg:                     rgba ( 114, 103, 126, 100 % );
-    lightbg:                     rgba ( 242, 241, 244, 100 % );
-    foreground:                  rgba ( 139, 129, 152, 100 % );
-    background:                  rgba ( 251, 241, 242, 100 % );
-    background-color:            rgba ( 251, 241, 242, 0 % );
+    font:                        "Iosevka Aile 11";
+    red:                         #f2acaa;
+    blue:                        #d0d0f7;
+    lightfg:                     #424242;
+    lightbg:                     #eefeff;
+    foreground:                  #424242;
+    background:                  #e2f1f8;
+    background-color:            #ffffec;
     separatorcolor:              @foreground;
     border-color:                @foreground;
     selected-normal-foreground:  @lightbg;

@@ -1,48 +1,28 @@
-XTerm.vt100.faceName: Terminus (TTF):size=12:antialias=false
+XTerm.vt100.faceName: Input Mono:size=12:antialias=false
 XTerm.vt100.font: 7x13
 
-! Base16 Cupcake
-! Scheme: Chris Kempson (http://chriskempson.com)
-
-#define base00 #fbf1f2
-#define base01 #f2f1f4
-#define base02 #d8d5dd
-#define base03 #bfb9c6
-#define base04 #a59daf
-#define base05 #8b8198
-#define base06 #72677e
-#define base07 #585062
-#define base08 #d57e85
-#define base09 #ebb790
-#define base0A #dcb16c
-#define base0B #a3b367
-#define base0C #69a9a7
-#define base0D #7297b9
-#define base0E #bb99b4
-#define base0F #baa58c
-
-*foreground:   base05
+*foreground:   #424242
 #ifdef background_opacity
-*background:   [background_opacity]base00
+*background:   [background_opacity]#424242
 #else
-*background:   base00
+*background:   #ffffec
 #endif
-*cursorColor:  base05
+*cursorColor:  #8f7634
 
-*color0:       base00
-*color1:       base08
-*color2:       base0B
-*color3:       base0A
-*color4:       base0D
-*color5:       base0E
-*color6:       base0C
-*color7:       base05
+*color0:         #424242
+*color1:         #b85c57
+*color2:         #57864e
+*color3:         #8f7634
+*color4:         #2a8dc5
+*color5:         #8888c7
+*color6:         #6aa7a8
+*color7:         #999957
 
-*color8:       base03
-*color9:       base09
-*color10:      base01
-*color11:      base02
-*color12:      base04
-*color13:      base06
-*color14:      base0F
-*color15:      base07
+*color8:         #b7b19c
+*color9:         #f2acaa
+*color10:        #98ce8f
+*color11:        #ededa6
+*color12:        #a6dcf8
+*color13:        #d0d0f7
+*color14:        #b0eced
+*color15:        #ffffec

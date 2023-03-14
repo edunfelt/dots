@@ -46,6 +46,15 @@ set pipe_decode          # strip headers and eval mimes when piping
 set thorough_search      # strip headers and eval mimes before searching
 set timeout = 0
 
+# encryption
+set crypt_use_gpgme=yes
+set postpone_encrypt = yes
+set pgp_self_encrypt = yes
+set crypt_use_pka = no
+set crypt_autosign = no
+set crypt_autoencrypt = no
+set crypt_autopgp = yes 
+
 # status bar, date format, finding stuff etc.
 set status_chars = " *%A"
 set status_format = "[ Folder: %f ] [%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]%>─%?p?( %p postponed )?"
@@ -62,7 +71,7 @@ set arrow_cursor = "no" # Change `color indicator` depending
 set sidebar_divider_char = "│"
 set sidebar_folder_indent
 set sidebar_indent_string = "  " 
-set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
+set sidebar_sort_method = "alpha"
 
 # Pager View Options
 set pager_index_lines = 10  # Shows 10 lines of index when pager is active

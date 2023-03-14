@@ -7,57 +7,62 @@
 # vim: filetype=muttrc
 
 #       object          attr        fg      bg      pattern
-color attachment                    cyan    default
-color bold                          default default
+color attachment                    color8  default
+color bold              bold        blue    default
 color error                         red     default
 color hdrdefault        bold        blue    default
-color indicator         bold        blue    default
-color markers                       color14 default
+color indicator                     default color11 
+color markers                       green   default
 color message                       default default
 color normal                        default default
-color progress                      white   cyan
-color prompt                        white   color11
+color progress                      black   color13
+color prompt                        color15 magenta
 color search            bold        yellow  default
 color signature         bold        green   default
-color status            bold        green   black
-color tilde                         color11 default
-color tree                          magenta default
-color underline                     blue    default
+color status            bold        black   color12
+color tilde                         color12 default
+color tree                          color8  default
+color underline         underline   blue    default
 
 # Quoted message colors
 color quoted                        green   default
 color quoted1                       blue    default
-color quoted2                       cyan    default
-color quoted3                       magenta default
+color quoted2                       magenta default
+color quoted3                       cyan    default
 color quoted4                       red     default
 color quoted5                       yellow  default
-color quoted6                       color14 default
+color quoted6                       color8  default
 
 # Header colors
-color header            bold        color12 default ".*"
-color header            bold        magenta default "^(From)"
-color header            bold        red     default "^(To)"
+color header                        color8  default ".*"
+color header            bold        cyan    default "^(From)"
+color header            bold        magenta default "^(To)"
 color header            bold        blue    default "^(Subject)"
 color header            bold        default default "^(CC|BCC)"
 
 # Index colors
-color index                         cyan    default '.*'
-color index_author                  red     default '.*'
-color index_number                  color11 default
-color index_subject                 blue    default '.*'
+color index                         default default '.*'
+color index_author      bold        default default '.*'
+color index_number                  color7  default
+color index_subject                 yellow  default '.*'
 color index_flags                   default default '.*'
-color index_label                   default default
-color index                         color11 default "~D"
-color index                         yellow  default "~T"
-color index             bold        green   black   "~N"
-color index_author      bold        magenta black   "~N"
-color index_subject     bold        blue    black   "~N"
+color index_label                   green   default
+color index                         color8  default "~D"
+color index_author                  color8  default "~D"
+color index_subject                 color8  default "~D"
+color index_flags                   color8  default "~D"
+color index                         green   default "~T"
+color index             bold        black   color11 "~N"
+color index_author      bold        black   color11 "~N"
+color index_subject     bold        black   color11 "~N"
+color index_flags       bold        black   color11 "~N"
 
 # Sidebar colors
-color sidebar_highlight             red     default
-color sidebar_divider   bold        yellow  black
-color sidebar_flagged               red     black
-color sidebar_new                   green   black
+color sidebar_highlight             default color11
+color sidebar_indicator bold        yellow  default
+color sidebar_divider   bold        color8  default
+color sidebar_flagged   bold        green   black
+color sidebar_new       bold        black   color11
 
 # Body colors
 # Ref: https://gideonwolfe.com/posts/workflow/neomutt/intro/
@@ -75,10 +80,11 @@ color body                          yellow  default "[;:][)(|]"
 color body                          yellow  default "[ ][*][^*]*[*][ ]?"
 color body                          yellow  default "[ ]?[*][^*]*[*][ ]"
 color body                          red     default "(BAD signature)"
-color body                          cyan    default "(Good signature)"
+color body                          green   default "(Good signature)"
 color body                          default default "^gpg: Good signature .*"
 color body                          default default "^gpg: "
 color body                          black   red "^gpg: BAD signature from.*"
+
 # mohttps://neomutt.org/code/config_vars.htmlno body bold "^gpg: BAD signature from.*"
 color body red default "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
 

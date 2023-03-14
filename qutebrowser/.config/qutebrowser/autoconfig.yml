@@ -23,6 +23,8 @@ settings:
   content.notifications.enabled:
     https://dnschecker.org: false
     https://www.reddit.com: false
+  content.user_stylesheets:
+    global: null
   fonts.messages.error:
     global: default_size default_family
   fonts.messages.info:

@@ -1,49 +1,40 @@
-
-/* Start flavours */
-/* {Cupcake} by {Chris Kempson (http://chriskempson.com)} */
+/* Acme colorscheme */
 
 :root {
-  --base00: #fbf1f2;
-  --base01: #f2f1f4;
-  --base02: #d8d5dd;
-  --base03: #bfb9c6;
-  --base04: #a59daf;
-  --base05: #8b8198;
-  --base06: #72677E;
-  --base07: #585062;
-  --base08: #D57E85;
-  --base09: #EBB790;
-  --base0A: #DCB16C;
-  --base0B: #A3B367;
-  --base0C: #69A9A7;
-  --base0D: #7297B9;
-  --base0E: #BB99B4;
-  --base0F: #BAA58C;
+  --base00: #ffffec;
+  --base01: #eaebdb;
+  --base02: #b7b19c;
+  --base03: #e2f1f8;
+  --base04: #eefeff;
+  --base05: #424242;
+  --base06: #effeec;
+  --base07: #999957;
+  --base08: #b85c57;
+  --base09: #ededa6;
+  --base0A: #8f7634;
+  --base0B: #57864e;
+  --base0C: #6aa7a8;
+  --base0D: #2a8dc5;
+  --base0E: #8888c7;
+  --base0F: #999957;
 }
-/* End flavours */
-
-/* Accent = 02
- * Background = 00
- * Header bg = 01
- *
- */
 
 .theme-dark {
     --header-primary: var(--base05);
-    --header-secondary: var(--base04);
+    --header-secondary: var(--base02);
     --text-normal: var(--base05);
-    --text-muted: var(--base04);
-    --text-link: var(--base08);
+    --text-muted: var(--base02);
+    --text-link: var(--base0D);
     --channels-default: var(--base05);
-    --interactive-normal: var(--base04);
-    --interactive-hover: var(--base05);
-    --interactive-active: var(--base05);
-    --interactive-muted: var(--base03);
+    --interactive-normal: var(--base02);
+    --interactive-hover: var(--base0F);
+    --interactive-active: var(--base0A);
+    --interactive-muted: var(--base01);
     --background-primary: var(--base00);
     --background-secondary: var(--base01);
-    --background-secondary-alt: var(--base02);
-    --background-tertiary: var(--base02);
-    --background-accent: var(--base01);
+    --background-secondary-alt: var(--base01);
+    --background-tertiary: var(--base01);
+    --background-accent: var(--base06);
     --background-floating: var(--base00);
     --background-mobile-primary: var(--background-primary);
     --background-mobile-secondary: var(--background-secondary);
@@ -63,7 +54,7 @@
     --activity-card-background: var(--background-secondary);
 }
 body {
-    font-family: Terminus (TTF);
+    font-family: Input Sans;
 }
 .scroller-2FKFPG {
     background-color: var(--background-primary);

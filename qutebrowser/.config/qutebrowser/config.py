@@ -1,11 +1,14 @@
 config.load_autoconfig()
 
 # color scheme
-import cupcake.draw
-cupcake.draw.konda(c)
+import acme.draw
+acme.draw.konda(c)
+
+c.content.user_stylesheets = ['~/.config/qutebrowser/css/acme.css']
+config.bind('<Ctrl-R>', 'config-cycle content.user_stylesheets "~/.config/qutebrowser/css/acme.css" ""')
 
 # font
-my_font = "10pt Iosevka Curly"
+my_font = "10pt Iosevka Aile"
 c.fonts.hints = my_font
 c.fonts.keyhint = my_font
 c.fonts.prompts = my_font
@@ -41,4 +44,5 @@ c.hints.selectors["code"] = [
     "pre"
 ]
 config.bind(',c', 'hint code userscript code_select')
+
 

@@ -86,54 +86,54 @@ mySearchBrowser :: FilePath
 mySearchBrowser             = "/bin/qutebrowser"
 
 -- Colors --------------------------------------------------------------------------------
-fg      = "#8B8198"
-bg      = "#FBF1F2"
+fg      = "#424242"
+bg      = "#ffffec"
 
-bg00    = "#FBF1F2"
-bg01    = "#f2f1f4"
-bg02    = "#d8d5dd"
-bg03    = "#bfb9c6"
-bg04    = "#a59daf"
-bg05    = "#8b8198"
-bg06    = "#72677E"
-bg07    = "#585062"
+color00 = "#424242"
+color01 = "#b85c57"
+color02 = "#57864e"
+color03 = "#8f7634"
+color04 = "#2a8dc5"
+color05 = "#8888c7"
+color06 = "#6aa7a8"
+color07 = "#999957"
 
-red     = "#D57E85"
-orange  = "#EBB790"
-yellow  = "#DCB16C"
-green   = "#A3B367"
-cyan    = "#69A9A7"
-blue    = "#7297B9"
-magenta = "#BB99B4"
-purple  = "#BAA58C"
+color08 = "#b7b19c"
+color09 = "#f2acaa"
+color10 = "#98ce8f"
+color11 = "#ededa6"
+color12 = "#a6dcf8"
+color13 = "#d0d0f7"
+color14 = "#b0eced"
+color15 = "#ffffec"
 
 -- Theme ----------------------------------------------------------------------------------
 myFont :: [Char]
-myFont                      = "xft:Terminus (TTF):pixelsize=14:antialias=true:hinting=true"
+myFont                      = "xft:Iosevka Aile:pixelsize=15:antialias=true:hinting=true"
 
 myBorderWidth :: Dimension
 myBorderWidth               = 3
 
 myFocusedBorderColor :: [Char]
-myFocusedBorderColor        = red
+myFocusedBorderColor        = color14
 
 myNormalBorderColor :: [Char]
-myNormalBorderColor         = bg02
+myNormalBorderColor         = color06
 
 -- Xmobar ---------------------------------------------------------------------------------
 myLogHook :: [Handle] -> X ()
 myLogHook h    = mapM_ (\handle -> dynamicLogWithPP $ wsPP { ppOutput = hPutStrLn handle }) h
 
 myWsBar :: [Char]
-myWsBar        = "xmobar ~/.config/xmonad/xmobarrc"
+myWsBar        = "xmobar ~/.xmonad/xmobarrc"
 
 -- PP settings ---------------------------------------------------------------------------------
 wsPP :: PP
 wsPP           = xmobarPP { ppOrder               = id
-                          , ppTitle               = xmobarColor   bg04 ""  . shorten 50
-                          , ppCurrent             = xmobarColor   green "" . wrap "@" ""
-                          , ppUrgent              = xmobarColor   red ""    . wrap "+" ""
-                          , ppVisible             = xmobarColor   cyan ""    . wrap ":" ""
+                          , ppTitle               = xmobarColor   color00 ""    . shorten 50
+                          , ppCurrent             = xmobarColor   color04 ""    . wrap "@" ""
+                          , ppUrgent              = xmobarColor   color01 ""    . wrap "+" ""
+                          , ppVisible             = xmobarColor   color00 ""    . wrap ":" ""
                           , ppHiddenNoWindows     = const ""
                           , ppSep                 = " | "
                           , ppWsSep               = " "
@@ -154,56 +154,51 @@ myWorkspaces = [ "tmp"          -- scratch
                , "net"          -- web stuff
                , "res"          -- research hub
                , "wrk"          -- work/TA
-               , "14.02"
+               , "sec"          -- infosec courses
                , "14.09"
-               , "14.10"
-               , "14.13"
+               , "14.12"
                ]
 
 -- Projects -------------------------------------------------------------------------------
 myProjects :: [Project]
 myProjects = [ Project -- tmp
                 { projectName = myWorkspaces !! 0
-                , projectDirectory = "~/current"
+                , projectDirectory = "~/google-drive/current"
                 , projectStartHook = Nothing
                 }
              , Project -- net
                 { projectName = myWorkspaces !! 1
-                , projectDirectory = "~/tmp"
+                , projectDirectory = "~/Downloads"
                 , projectStartHook = Just $ do
-                    spawnOn (myWorkspaces !! 1) "qutebrowser"
+                    spawnOn (myWorkspaces !! 1) "firefox"
                 }
              , Project -- res
                 { projectName = myWorkspaces !! 2
-                , projectDirectory = "~/media/doc/sci"
+                , projectDirectory = "~/google-drive/current"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 2) "zotero"
                 }
             , Project -- wrk
                 { projectName = myWorkspaces !! 3
-                , projectDirectory = "~/current/22.06-algorithms-complexity"
+                , projectDirectory = "~/google-drive/current"
                 , projectStartHook = Just $ do
                     spawnOn (myWorkspaces !! 3) (myTerminal ++ " -e vim")
                 }
-            , Project -- 14.02
+            , Project -- sec
                 { projectName = myWorkspaces !! 4
-                , projectDirectory = "~/current/14.02-topology"
+                , projectDirectory = "~/google-drive/current"
                 , projectStartHook = Nothing
                 }
             , Project -- 14.09
                 { projectName = myWorkspaces !! 5
-                , projectDirectory = "~/current/14.09-analysis"
+                , projectDirectory = "~/google-drive/current/14.09-analysis"
                 , projectStartHook = Nothing
                 }
-            , Project -- 14.10
+            , Project -- 14.12
                 { projectName = myWorkspaces !! 6
-                , projectDirectory = "~/current/14.10-mathcom"
-                , projectStartHook = Nothing
-                }
-            , Project -- 14.13
-                { projectName = myWorkspaces !! 7
-                , projectDirectory = "~/current/14.13-supcom"
-                , projectStartHook = Nothing
+                , projectDirectory = "~/google-drive/current/14.12-thesis"
+                , projectStartHook = Just $ do
+                    spawnOn (myWorkspaces !! 6) (myTerminal ++ " -e vim")
                 }
             ]
                 
@@ -211,11 +206,11 @@ myProjects = [ Project -- tmp
 myPromptTheme :: XPConfig
 myPromptTheme = def
     { font = myFont
-    , bgColor = bg01
-    , fgColor = bg06
-    , bgHLight = red
-    , fgHLight = bg01
-    , borderColor = bg01
+    , bgColor = color11
+    , fgColor = color00
+    , bgHLight = color15
+    , fgHLight = color00
+    , borderColor = color03
     , promptBorderWidth = 0
     , height = 20
     , position = Bottom
@@ -230,11 +225,13 @@ myPromptTheme = def
 myStartupHook :: X ()
 myStartupHook = do
     spawn     "xrdb ~/.Xresources &"
-    spawn     "feh --bg-fill /home/e/media/pic/walls/city.jpg &"
+    spawn     "feh --bg-tile ~/Pictures/tilerincewind.png &"
     spawnOnce "dex -ae xmonad &"
     spawnOnce "xsetroot -cursor_name left_ptr &"
     spawnOnce "dunst &"
-    spawnOnce "trayer --edge top --align right --monitor primary --widthtype request --heighttype pixel --height 22 &"
+    spawnOnce "redshift &"
+    spawnOnce "flameshot &"
+    spawnOnce "trayer --edge top --align right --monitor primary --widthtype request --heighttype pixel --height 22 --transparent true --alpha 0 --tint 0xe9ffff &"
     spawnOnce "xscreensaver &"
     spawnOnce "mpd-mpris &"
     setWMName "LG3D"
@@ -249,12 +246,12 @@ myDefaultLayout = tall
 
 -- Tabbed layout theme
 myTabConfig :: Theme
-myTabConfig = def { inactiveColor           = bg02
-                    , inactiveBorderColor   = bg
-                    , inactiveTextColor     = bg04
-                    , activeColor           = bg01
-                    , activeBorderColor     = bg01
-                    , activeTextColor       = bg05
+myTabConfig = def { inactiveColor           = color12
+                    , inactiveBorderColor   = color00
+                    , inactiveTextColor     = color00
+                    , activeColor           = color04
+                    , activeBorderColor     = color04
+                    , activeTextColor       = color15
                     , fontName              = myFont
                     }
 
@@ -315,15 +312,15 @@ myScratchPads = [ NS "htop"     (myTerminal ++ " --name=htop -e htop")
                 , NS "ranger"   (myTerminal ++ " --name=ranger -e ranger")
                                 (resource =? "ranger")
                                 (customFloating $ centeredRect 0.30 0.30)
-                , NS "thunar"  "thunar"
-                                (className =? "Thunar")
-                                (customFloating $ W.RationalRect 0.35 0.35 0.3 0.3)
+                , NS "pcmanfm"  "pcmanfm"
+                                (className =? "Pcmanfm")
+                                (customFloating $ W.RationalRect 0.35 0.35 0.3 0.4)
                 , NS "telegram" "telegram-desktop"
                                 (className =? "TelegramDesktop")
                                 (customFloating $ W.RationalRect 0.8 0.3 0.2 0.3)
                 , NS "irc"      (myTerminal ++ " --name=weechat -e weechat")
                                 (resource =? "weechat")
-                                (customFloating $ centeredRect 0.3 0.5)
+                                (customFloating $ centeredRect 0.5 0.6)
                 , NS "vimwiki"  (myTerminal ++ " --name=vimwiki -e vim -c VimwikiIndex")
                                 (resource =? "vimwiki")
                                 (customFloating $ centeredRect 0.3 0.7)
@@ -335,7 +332,7 @@ myScratchPads = [ NS "htop"     (myTerminal ++ " --name=htop -e htop")
                                 (customFloating $ centeredRect 0.3 0.2)
                 , NS "radio"    (myTerminal ++ " --name=pyradio -e pyradio")
                                 (resource =? "pyradio")
-                                (customFloating $ W.RationalRect 0.02 0.03 0.15 0.2)
+                                (customFloating $ W.RationalRect 0.02 0.03 0.15 0.3)
                 , NS "weylus"   "weylus"
                                 (title =? "Weylus - 0.11.4")
                                 (customFloating $ centeredRect 0.25 0.3)
@@ -376,11 +373,11 @@ ltRect w = W.RationalRect (1 - w - 0.01) 0.03 w 0.96
 -- Grid select ---------------------------------------------------------------------------
 myColorizer :: Window -> Bool -> X (String, String)
 myColorizer = colorRangeFromClassName
-        (0x8b, 0x81, 0x98)      -- lowest inactive bg
-        (0xbf, 0xb9, 0xc6)      -- highest inactive bg
-        (0xd5, 0x7e, 0x85)      -- active bg
-        (0xfb, 0xf1, 0xf2)      -- inactive fg
-        (0xf2, 0xf1, 0xf4)      -- active fg
+        (0xa6, 0xdc, 0xf8)      -- lowest inactive bg
+        (0x2a, 0x8d, 0xc5)      -- highest inactive bg
+        (0x88, 0x88, 0xc7)      -- active bg
+        (0x42, 0x42, 0x42)      -- inactive fg
+        (0xff, 0xff, 0xec)      -- active fg
 
 gsConfig colorizer = (buildDefaultGSConfig colorizer)
     { gs_cellheight     = 40
@@ -418,7 +415,7 @@ myKeys =
     , ("M-p q", spawn "rofi -show p -modi p:rofi-power-menu")                   -- power menu
     , ("M-p b", spawn "buku-menu")                                              -- bookmark select
     , ("M-p v", spawn "ytfzf -D")                                               -- search youtube
-    , ("M-p d", spawn "rofi-zotero.py -z ~/dots/zotero")                        -- find papers
+    , ("M-p d", spawn "rofi-zotero.py -z ~/google-drive/Zotero")                        -- find papers
     
 -- Navigation ----------------------------------------------------------------------------
     , ("M-j", focusDown)                                                        -- move focus up
@@ -479,12 +476,12 @@ myKeys =
     , ("M-<XF86AudioRaiseVolume>", spawn "playerctl next")      -- next track (no external kb)
     , ("<xf86MonBrightnessDown>", spawn "brightnessctl s 10%-")
     , ("<XF86MonBrightnessUp>", spawn "brightnessctl s +10%")
-    , ("<Print>", spawn "xfce4-screenshooter -s ~/media/pic/scrots -f")         -- full screenshot
-    , ("M-<Print>", spawn "xfce4-screenshooter -s ~/media/pic/scrots -r")       -- interactive screenshot
+    , ("<Print>", spawn "xfce4-screenshooter -s ~/Pictures/Screenshots -f")         -- full screenshot
+    , ("M-<Print>", spawn "xfce4-screenshooter -s ~/Pictures/Screenshots -r")       -- interactive screenshot
 
 -- Scratchpads ---------------------------------------------------------------------------
     , ("M-s f", namedScratchpadAction myScratchPads "ranger")
-    , ("M-s g", namedScratchpadAction myScratchPads "thunar")
+    , ("M-s g", namedScratchpadAction myScratchPads "pcmanfm")
     , ("M-s v", namedScratchpadAction myScratchPads "vimwiki")
     , ("M-s p", namedScratchpadAction myScratchPads "htop")
     , ("M-s t", namedScratchpadAction myScratchPads "telegram")
