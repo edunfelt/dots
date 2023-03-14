@@ -22,18 +22,18 @@ these dotfiles, don't hesitate to modify things to your liking.
 
 ## screenshots
 WS1 - with qutebrowser, ncmpcpp, ranger
-![pic1](scrots/media/pic/scrots/pic1.png)
+![pic1](scrots/net.png)
 
-WS2 - with vim(wiki), weechat, newsboat, rofi
-![pic2](scrots/media/pic/scrots/pic2.png)
+WS2 - with gitui, newsboat, rofi
+![pic2](scrots/tmp.png)
 
 WS3 - (almost) actual work this time! with zathura, vim, pyradio
-![pic3](scrots/media/pic/scrots/pic3.png)
+![pic3](scrots/sec.png)
 
 ## notes on the setup
 ### what I use
-* Colorscheme: [Cupcake](https://github.com/base16-project/base16-schemes)
-* Font: [Terminus](https://sourceforge.net/projects/terminus-font/)
+* Colorscheme: [Acme](https://github.com/olivertaylor/vacme)
+* Font: [Iosevka](https://github.com/be5invis/Iosevka)
 * WM: [Xmonad](https://xmonad.org/)
 * Bar: [Xmobar](https://xmobar.org/)
 * Menu: [rofi](https://github.com/davatorium/rofi), [XMonad TreeSelect](https://hackage.haskell.org/package/xmonad-contrib-0.16/docs/XMonad-Actions-TreeSelect.html), and [XMonad Prompts](https://hackage.haskell.org/package/xmonad-contrib-0.16/docs/XMonad-Prompt.html)
@@ -42,8 +42,8 @@ WS3 - (almost) actual work this time! with zathura, vim, pyradio
 * File manager: [Ranger](https://github.com/ranger/ranger)
 * Browser: Firefox and [Qutebrowser](https://qutebrowser.org/)
 * Terminal: [Kitty](https://github.com/kovidgoyal/kitty/tree/604458810e5248fd2869131d4b440f38541a1d95)
-* Shell: [Zsh](https://zsh.sourceforge.io/)
-* OS: Ubuntu
+* Shell: [Bash](https://www.gnu.org/software/bash/)
+* OS: Pop!_OS
 
 ### installation
 Make sure to **backup your own settings** before applying!
